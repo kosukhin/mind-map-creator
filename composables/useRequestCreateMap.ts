@@ -1,18 +1,22 @@
-import { useRequest } from '~/composables'
-import { API_CREATE_MAP, POST } from '~/constants'
-
-type Response = { ok: boolean; document: string }
+import { getDirectoryHandler } from '~/libraries/browser-fs'
+import { createMap as newMap } from '~/utils'
 
 export function useRequestCreateMap() {
-  const { http } = useRequest()
-  const createMap = async (mapName: string): Promise<Response> => {
-    return (await http<{ name: string }>({
-      method: POST,
-      url: API_CREATE_MAP,
-      data: {
-        name: mapName,
-      },
-    } as const)) as Response
+  const createMap = async (mapName: string): Promise<void> => {
+    const directoryHandler = getDirectoryHandler()
+
+    if (directoryHandler) {
+      const map = newMap('', mapName)
+      const fileHandle = await directoryHandler.getFileHandle(
+        mapName + '.json',
+        {
+          create: true,
+        }
+      )
+      const writable = await fileHandle.createWritable()
+      await writable.write(JSON.stringify(map))
+      await writable.close()
+    }
   }
 
   return {

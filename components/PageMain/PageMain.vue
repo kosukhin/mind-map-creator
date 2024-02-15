@@ -5,23 +5,19 @@ import { watch } from '@vue/runtime-core'
 import { useSeoMeta } from '@vueuse/head'
 import { useI18n } from 'vue-i18n'
 import { useStorage } from '@vueuse/core'
+import { directoryOpen } from 'browser-fs-access'
 import { calculateProgressBg, urlTrim } from '~/utils'
-import {
-  useRequestCreateMap,
-  useRequestGetMaps,
-  useRequestSearch,
-} from '~/composables'
+import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import { HISTORY_STORAGE_KEY } from '~/constants'
+import { maps, setFiles } from '~/libraries/browser-fs'
 
 const i18n = useI18n()
 useSeoMeta({
   title: i18n.t('pageMain.mainTitle'),
 })
 
-const { getMaps } = useRequestGetMaps()
-const maps = await getMaps()
 const progress = computed(() => {
   const max = Math.max(...Object.values(maps.progress))
 
@@ -75,11 +71,19 @@ watch(
 const newMapName = ref('')
 const { createMap } = useRequestCreateMap()
 const onCreateMap = async () => {
-  const response = await createMap(newMapName.value)
+  await createMap(newMapName.value)
+  // if (response.ok) {
+  //   location.href = `/${response.document}`
+  // }
+}
 
-  if (response.ok) {
-    location.href = `/${response.document}`
-  }
+// TODO временный код перенести, сделать нужно модалку если нет доступа к ФС
+const onOpenFiles = async () => {
+  const blobs = await directoryOpen({
+    recursive: true,
+    mode: 'readwrite',
+  })
+  setFiles(blobs as File[])
 }
 
 const mapsHistory = useStorage<{ url: string; title: string }[]>(
@@ -91,6 +95,8 @@ const mapsHistory = useStorage<{ url: string; title: string }[]>(
 <template>
   <div class="PageMain scrollable">
     <h2 class="PageMain-Title">Mind-Map-Creator</h2>
+    <BaseButton @click="onOpenFiles">Открыть проект</BaseButton>
+    <br />
     <div class="PageMain-Row">
       <a href="/api/create-search-index" target="_blank">
         {{ $t('pageMain.updateIndex') }}
@@ -129,7 +135,7 @@ const mapsHistory = useStorage<{ url: string; title: string }[]>(
         :key="file.url + file.name"
         class="PageMain-File"
       >
-        <a :href="file.url">{{ file.name }}</a>
+        <NuxtLink :to="file.url">{{ file.name }}</NuxtLink>
       </div>
     </div>
     <br />

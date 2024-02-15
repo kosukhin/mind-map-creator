@@ -1,14 +1,14 @@
-import { useRequest } from '~/composables'
 import { GetMapsResponse } from '~/entities'
-import { API_GET_MAPS, GET } from '~/constants'
 
 export function useRequestGetMaps() {
-  const { http } = useRequest()
+  // TODO Вместо запроса сделать обращение к файлапи
   const getMaps = async (): Promise<GetMapsResponse> => {
-    return (await http({
-      method: GET,
-      url: API_GET_MAPS,
-    })) as GetMapsResponse
+    return await Promise.resolve({
+      ok: true,
+      progress: {},
+      favorites: {},
+      files: [{ name: 'string', url: 'string' }],
+    })
   }
 
   return {

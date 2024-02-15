@@ -45,6 +45,7 @@
     "@nuxt/test-utils": "^3.5.2",
     "@vueuse/core": "^9.13.0",
     "@vueuse/head": "^1.1.26",
+    "browser-fs-access": "^0.35.0",
     "canvg": "^4.0.1",
     "color-blend": "^4.0.0",
     "fp-ts": "^2.13.1",

@@ -1,20 +1,20 @@
-import { useRequest } from '~/composables'
-import { MapResponse, MapStructure, MapType } from '~/entities'
-import { API_GET_MAP, GET } from '~/constants'
 import { requestNormalizeGetMap } from '~/application'
+import { MapStructure, MapType } from '~/entities'
+import { readFileByName } from '~/libraries/browser-fs'
 
 export function useRequestGetMap() {
-  const { http } = useRequest()
   const getMap = async (
     mapName: string
   ): Promise<[MapStructure, MapType[]]> => {
-    const response = (await http({
-      method: GET,
-      url: API_GET_MAP,
-      params: {
-        document: mapName,
-      },
-    })) as MapResponse
+    const data = JSON.parse(String(await readFileByName(mapName)))
+    const response = {
+      document: mapName,
+      ok: !!data,
+      parentTypes: [],
+      data: { structure: data } as any,
+    }
+    console.log(response)
+
     return requestNormalizeGetMap(response, mapName)
   }
 

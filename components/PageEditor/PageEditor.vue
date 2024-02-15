@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useRuntimeConfig } from '#app/nuxt'
 import { watch } from '@vue/runtime-core'
+import { useRuntimeConfig } from '#app/nuxt'
 import {
   SHOW_SETTINGS,
   SHOW_SEARCH,
@@ -70,6 +70,7 @@ const handleLock = () => {
 
 const { version } = useRuntimeConfig()
 const { isSidebarOpen } = useSharedSideBar()
+const { map } = useSharedMap()
 </script>
 
 <template>
@@ -87,6 +88,7 @@ const { isSidebarOpen } = useSharedSideBar()
     <hr />
   </div>
   <div class="PageEditor">
+    {{ map?.value?.settings.title }}
     <TheHeader class="PageEditor-Header" />
     <TheSideBar :class="['PageEditor-SideBar', { opened: isSidebarOpen }]" />
     <TheEditor class="PageEditor-Editor" />
