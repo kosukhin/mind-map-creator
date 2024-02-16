@@ -26,8 +26,22 @@ export const setFiles = (blobs: File[]) => {
 
 export const getDirectoryHandler = () => directoryHandler
 
+const filesContents = new WeakMap()
 export const readFile = async (blob: File) => {
-  return await new Response(blob as any).text()
+  let result = ''
+  if (!filesContents.has(blob)) {
+    result = await new Response(blob as any).text()
+    filesContents.set(blob, result)
+  } else {
+    result = filesContents.get(blob)
+  }
+  return result
+}
+
+export const updateBlobContent = (blob: File, content: string) => {
+  if (filesContents.has(blob)) {
+    filesContents.set(blob, content)
+  }
 }
 
 export const readFileByName = (name: string): Promise<string | null> => {

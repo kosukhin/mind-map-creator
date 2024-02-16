@@ -13,7 +13,6 @@ export function useRequestGetMap() {
       parentTypes: [],
       data: { structure: data } as any,
     }
-    console.log(response)
 
     return requestNormalizeGetMap(response, mapName)
   }

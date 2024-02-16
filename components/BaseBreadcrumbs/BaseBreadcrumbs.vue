@@ -5,8 +5,6 @@ import { useSharedMap } from '~/composables'
 
 const { mapName, map } = useSharedMap()
 const mapHistory = computed(() => {
-  console.log(mapName.value, 'mpname')
-
   let link = ''
   const result: any = map.map((vMap) => {
     return mapName.value.split('/').map((history) => {
@@ -18,8 +16,6 @@ const mapHistory = computed(() => {
     })
   }).value
   map.map((vMap) => {
-    console.log(vMap.settings.title)
-
     result[result.length - 1].name = vMap.settings.title
   })
   return result

@@ -70,7 +70,6 @@ const handleLock = () => {
 
 const { version } = useRuntimeConfig()
 const { isSidebarOpen } = useSharedSideBar()
-const { map } = useSharedMap()
 </script>
 
 <template>
@@ -88,7 +87,6 @@ const { map } = useSharedMap()
     <hr />
   </div>
   <div class="PageEditor">
-    {{ map?.value?.settings.title }}
     <TheHeader class="PageEditor-Header" />
     <TheSideBar :class="['PageEditor-SideBar', { opened: isSidebarOpen }]" />
     <TheEditor class="PageEditor-Editor" />
