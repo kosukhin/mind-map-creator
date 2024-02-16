@@ -11,7 +11,7 @@ export function useRequestGetMap() {
       document: mapName,
       ok: !!data,
       parentTypes: [],
-      data: { structure: data } as any,
+      data: 'structure' in data ? data : ({ structure: data } as any),
     }
 
     return requestNormalizeGetMap(response, mapName)
