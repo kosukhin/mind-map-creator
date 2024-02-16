@@ -44,6 +44,7 @@ export const useSharedMap = createSharedComposable(() => {
   watch(
     route,
     () => {
+      firstMapLoad.value = false
       mapName.value = route.path.replace('/', '')
 
       getMap(mapName.value)
