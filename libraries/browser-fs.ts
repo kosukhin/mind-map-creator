@@ -8,6 +8,9 @@ export const maps: GetMapsResponse = reactive({
   favorites: {},
   files: [],
 })
+export const topMaps = computed(() => {
+  return maps.files.filter((map) => map.name[0] !== '_')
+})
 
 export const openDirectory = () => {}
 

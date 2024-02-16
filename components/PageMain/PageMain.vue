@@ -11,7 +11,7 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import { HISTORY_STORAGE_KEY } from '~/constants'
-import { maps, setFiles } from '~/libraries/browser-fs'
+import { maps, topMaps, setFiles } from '~/libraries/browser-fs'
 
 const i18n = useI18n()
 useSeoMeta({
@@ -131,7 +131,7 @@ const mapsHistory = useStorage<{ url: string; title: string }[]>(
     <h3 class="PageMain-SubTitle">{{ $t('pageMain.existedMaps') }}</h3>
     <div class="PageMain-Files">
       <div
-        v-for="file in maps.files"
+        v-for="file in topMaps"
         :key="file.url + file.name"
         class="PageMain-File"
       >
