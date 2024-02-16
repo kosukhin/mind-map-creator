@@ -76,7 +76,9 @@ export const openUrlByObject = (object: MapObject) => {
     if (object.targetBlank) {
       window.open(link)
     } else {
-      location.href = link
+      const router = useRouter()
+      router.push(link)
+      // location.href = link
     }
     return true
   }
