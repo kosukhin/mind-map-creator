@@ -5,5 +5,5 @@ const { mapName } = useSharedMap()
 </script>
 
 <template>
-  <EditorPage :key="'map-' + mapName" />
+  <EditorPage />
 </template>

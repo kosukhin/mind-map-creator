@@ -21,6 +21,9 @@ export const useSharedMap = createSharedComposable(() => {
   const mapName = ref(route.path.replace('/', ''))
   const { getMap } = useRequestGetMap()
   const { saveMap } = useRequestSaveMap()
+
+  const { createLayer } = useSharedLayer()
+
   watch(
     map,
     () => {
@@ -45,7 +48,11 @@ export const useSharedMap = createSharedComposable(() => {
     route,
     () => {
       firstMapLoad.value = false
-      mapName.value = route.path.replace('/', '')
+      mapName.value = route.path.replace('/', '').replaceAll('/', '_')
+
+      if (mapName.value.match('_')) {
+        mapName.value = '_' + mapName.value
+      }
 
       getMap(mapName.value)
         .then(([vMap, vParentTypes]) => {
