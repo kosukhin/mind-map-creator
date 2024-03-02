@@ -12,6 +12,11 @@ import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
 // TODO подумать как сохранять пути к проектам открытым ранее
+// TODO баг при открытии внешних ссылок
+// TODO баг в вычислении позиции предпросмотра
+// TODO хлебные крошки не работают
+// TODO на главной странице нужно читтаь названия файлов
+// TODO поисковый индекс нужно исправить
 
 const i18n = useI18n()
 useSeoMeta({
