@@ -11,7 +11,6 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
-// TODO избранное
 // TODO хлебные крошки не работают
 // TODO баг в вычислении позиции предпросмотра
 // TODO подумать как сохранять пути к проектам открытым ранее

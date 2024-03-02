@@ -29,7 +29,7 @@ export const useSharedLayer = createSharedComposable(() => {
       setTimeout(() => {
         firstMapLoad.value = true
       }, 100)
-    }, 20)
+    }, 0)
   }
 
   return {
