@@ -19,29 +19,27 @@ export function useMapRenderer() {
   )
 
   watch([layer, map], () => {
-    console.log('all init', layer.value, map.value)
-  })
-
-  all([stage, map] as const).map(([vStage, vMap]) => {
-    if (vMap.position) {
-      vStage.position({
-        x: -vMap.position[0] + 50,
-        y: -vMap.position[1] + 50,
-      })
-    }
-  })
-  all([layer, map, maybeDragLocked] as const)
-    .map(renderMapObjects)
-    .map((dispatch) => {
-      dispatch((vObjects) => {
-        vObjects.forEach(([objectId, objects]) => {
-          layerObjects.set(objectId, objects)
+    all([stage, map] as const).map(([vStage, vMap]) => {
+      if (vMap.position) {
+        vStage.position({
+          x: -vMap.position[0] + 50,
+          y: -vMap.position[1] + 50,
         })
-        setTimeout(() => {
-          triggerPartialRendering()
-        }, 1000)
-      })
+      }
     })
+    all([layer, map, maybeDragLocked] as const)
+      .map(renderMapObjects)
+      .map((dispatch) => {
+        dispatch((vObjects) => {
+          vObjects.forEach(([objectId, objects]) => {
+            layerObjects.set(objectId, objects)
+          })
+          setTimeout(() => {
+            triggerPartialRendering()
+          }, 1000)
+        })
+      })
+  })
 
   return {
     map,

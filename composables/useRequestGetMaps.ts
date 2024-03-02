@@ -1,7 +1,6 @@
 import { GetMapsResponse } from '~/entities'
 
 export function useRequestGetMaps() {
-  // TODO Вместо запроса сделать обращение к файлапи
   const getMaps = async (): Promise<GetMapsResponse> => {
     return await Promise.resolve({
       ok: true,

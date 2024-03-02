@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { useMapRenderer, useLayerListeners } from '~/composables'
+import { useMapRenderer } from '~/composables'
 import { CANVAS_DOM_ID } from '~/constants'
 
 useMapRenderer()
-useLayerListeners()
 const counter = ref(0)
 
 const { createLayer, layer, stage } = useSharedLayer()

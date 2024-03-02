@@ -43,17 +43,12 @@ const { scrollToObject } = useMoveToObject()
 const { hashChanged } = useSharedHashChange()
 watch(hashChanged, () => {
   hashChanged.map((vHash) => {
-    console.log(vHash, 'hash')
     if (!vHash) {
       return
     }
 
     scrollToObject(vHash)
   })
-})
-
-onMounted(() => {
-  console.log('mounted')
 })
 
 const { overlayName } = useSharedOverlay()

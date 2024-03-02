@@ -22,8 +22,6 @@ export const useSharedMap = createSharedComposable(() => {
   const { getMap } = useRequestGetMap()
   const { saveMap } = useRequestSaveMap()
 
-  const { createLayer } = useSharedLayer()
-
   watch(
     map,
     () => {

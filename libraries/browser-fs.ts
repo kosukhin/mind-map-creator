@@ -49,7 +49,6 @@ export const updateBlobContent = (blob: File, content: string) => {
 
 export const readFileByName = (name: string): Promise<string | null> => {
   name += '.json'
-  console.log('filename', name)
 
   if (!files[name]) {
     return Promise.resolve(null)

@@ -11,6 +11,8 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
+// TODO подумать как сохранять пути к проектам открытым ранее
+
 const i18n = useI18n()
 useSeoMeta({
   title: i18n.t('pageMain.mainTitle'),
@@ -48,12 +50,8 @@ const newMapName = ref('')
 const { createMap } = useRequestCreateMap()
 const onCreateMap = async () => {
   await createMap(newMapName.value)
-  // if (response.ok) {
-  //   location.href = `/${response.document}`
-  // }
 }
 
-// TODO временный код перенести, сделать нужно модалку если нет доступа к ФС
 const onOpenFiles = async () => {
   const blobs = await directoryOpen({
     recursive: true,

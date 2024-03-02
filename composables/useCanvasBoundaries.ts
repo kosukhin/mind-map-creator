@@ -1,13 +1,17 @@
-import { useCanvas } from '~/composables'
 import { canvasRestrictBoundaries } from '~/application'
-import { Vector2d } from '~/entities'
+import { useCanvas } from '~/composables'
 import { DEFAULT_BOUNDARIES } from '~/constants'
-import { map } from '~/utils'
+import { Vector2d } from '~/entities'
 
 export function useCanvasBoundaries() {
   const { canvasSize } = useCanvas()
-  const restrictBoundaries = (pos: Vector2d) =>
-    map(canvasRestrictBoundaries(pos))(canvasSize).value ?? DEFAULT_BOUNDARIES
+  const restrictBoundaries = (pos: Vector2d) => {
+    if (!canvasSize.value) {
+      return DEFAULT_BOUNDARIES
+    }
+
+    return canvasRestrictBoundaries(pos)(canvasSize.value)
+  }
 
   return {
     restrictBoundaries,

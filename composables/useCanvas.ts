@@ -1,18 +1,13 @@
-import { onMounted, watch } from '@vue/runtime-core'
+import { watch } from '@vue/runtime-core'
+import { createSharedComposable } from '@vueuse/core'
 import flow from 'lodash/flow'
-import { Size } from '~/entities'
 import { canvasCreateSize } from '~/application'
-import { setValue, reMaybe, map, isTruthy, findById, apply } from '~/utils'
-import { ifElse } from '~/utils/fp'
-import { CANVAS_DOM_ID } from '~/constants'
+import { Size } from '~/entities'
+import { apply, map, reMaybe, setValue } from '~/utils'
 
-export function useCanvas() {
+export const useCanvas = createSharedComposable(() => {
   const canvas = reMaybe<HTMLElement>()
   const canvasSize = reMaybe<Size>()
-
-  onMounted(() => {
-    apply(findById(CANVAS_DOM_ID), ifElse(isTruthy, setValue(canvas)))
-  })
 
   watch(canvas, () => {
     apply(canvas, map(flow(canvasCreateSize, setValue(canvasSize))))
@@ -22,4 +17,4 @@ export function useCanvas() {
     canvas,
     canvasSize,
   }
-}
+})
