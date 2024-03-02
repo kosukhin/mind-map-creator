@@ -21,10 +21,10 @@ export function useMapRenderer() {
   watch([layer, map], () => {
     all([stage, map] as const).map(([vStage, vMap]) => {
       if (vMap.position) {
-        vStage.position({
-          x: -vMap.position[0] + 50,
-          y: -vMap.position[1] + 50,
-        })
+        // vStage.position({
+        //   x: -vMap.position[0] + 50,
+        //   y: -vMap.position[1] + 50,
+        // })
       }
     })
     all([layer, map, maybeDragLocked] as const)

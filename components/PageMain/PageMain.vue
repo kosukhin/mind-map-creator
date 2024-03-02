@@ -11,12 +11,13 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
+// TODO избранное
+// TODO хлебные крошки не работают
+// TODO баг в вычислении позиции предпросмотра
 // TODO подумать как сохранять пути к проектам открытым ранее
 // TODO баг при открытии внешних ссылок
-// TODO баг в вычислении позиции предпросмотра
-// TODO хлебные крошки не работают
-// TODO на главной странице нужно читтаь названия файлов
 // TODO поисковый индекс нужно исправить
+// TODO сделать шаблоны внутри SVG чтобы писать текст внутри картинок
 
 const i18n = useI18n()
 useSeoMeta({
@@ -51,6 +52,47 @@ watch(
   }, 500)
 )
 
+const { getMap } = useRequestGetMap()
+const topMapsWithNames = ref<any>([])
+const favorites = ref<any>({})
+
+watch(
+  topMaps,
+  async () => {
+    const files = await Promise.all(
+      topMaps.value.map((file) => {
+        return getMap(file.url)
+      })
+    )
+    topMapsWithNames.value = files.map((f) => ({
+      title: f[0].settings.title,
+      url: f[0].url,
+      favorite: f[0].settings.favoriteGroup,
+    }))
+
+    favorites.value = files.reduce((acc: any, f) => {
+      const group = String(f[0].settings.favoriteGroup)
+      if (!group) {
+        return acc
+      }
+
+      if (!acc[group]) {
+        acc[group] = []
+      }
+
+      acc[group].push({
+        title: f[0].settings.title,
+        url: f[0].url,
+      })
+
+      return acc
+    }, {})
+  },
+  {
+    immediate: true,
+  }
+)
+
 const newMapName = ref('')
 const { createMap } = useRequestCreateMap()
 const onCreateMap = async () => {
@@ -72,14 +114,6 @@ const onOpenFiles = async () => {
     <BaseButton @click="onOpenFiles">Открыть проект</BaseButton>
     <template v-if="topMaps.length">
       <br />
-      <div class="PageMain-Row">
-        <a href="/api/create-search-index" target="_blank">
-          {{ $t('pageMain.updateIndex') }}
-        </a>
-      </div>
-      <div class="PageMain-Row">
-        <BaseInput v-model="searchQuery" placeholder="Поиск в картах" />
-      </div>
       <div v-if="lastSearchDate" class="PageMain-Row">
         {{ $t('pageMain.lastSearchTime') }}: {{ lastSearchDate }}
       </div>
@@ -91,14 +125,26 @@ const onOpenFiles = async () => {
         <a :href="result.url">{{ result.name }}</a>
         [{{ result.url }}]
       </div>
+      <h3 class="PageMain-SubTitle">Избранное</h3>
+      <div>
+        <div v-for="(links, group) in favorites" :key="group">
+          <b>{{ group }}</b
+          >:
+          <span v-for="favorite in links" :key="favorite.url">
+            <NuxtLink :to="favorite.url">{{ favorite.title }}</NuxtLink>
+            &nbsp;
+          </span>
+          <p>&nbsp;</p>
+        </div>
+      </div>
       <h3 class="PageMain-SubTitle">{{ $t('pageMain.existedMaps') }}</h3>
       <div class="PageMain-Files">
         <div
-          v-for="file in topMaps"
-          :key="file.url + file.name"
+          v-for="file in topMapsWithNames"
+          :key="file.url + file.title"
           class="PageMain-File"
         >
-          <NuxtLink :to="file.url">{{ file.name }}</NuxtLink>
+          <NuxtLink :to="file.url">{{ file.title }}</NuxtLink>
         </div>
       </div>
       <br />

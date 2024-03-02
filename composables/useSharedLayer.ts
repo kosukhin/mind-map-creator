@@ -13,7 +13,7 @@ export const useSharedLayer = createSharedComposable(() => {
   const layerObjects: MapLayerObjects = new Map()
   const { firstMapLoad } = useSharedMap()
 
-  const doDreateLayer = () => {
+  const doCreateLayer = () => {
     setTimeout(() => {
       firstMapLoad.value = false
       const wrapper = findById(CANVAS_DOM_ID)
@@ -36,6 +36,6 @@ export const useSharedLayer = createSharedComposable(() => {
     layer,
     stage,
     layerObjects,
-    createLayer: doDreateLayer,
+    createLayer: doCreateLayer,
   }
 })

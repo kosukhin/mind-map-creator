@@ -1,15 +1,15 @@
 import { watch } from '@vue/runtime-core'
 import { createSharedComposable } from '@vueuse/core'
+import { mapObjectClick } from '~/application'
 import {
-  useSharedMap,
   useSharedLayerEvents,
+  useSharedLocks,
+  useSharedMap,
   useSharedMapObject,
   useSharedOverlay,
   useSharedSideBar,
-  useSharedLocks,
 } from '~/composables'
-import { all, any, openUrlByObject, setValue } from '~/utils'
-import { mapObjectClick } from '~/application'
+import { all, openUrlByObject, setValue } from '~/utils'
 
 export const useSharedLayerListenerClick = createSharedComposable(() => {
   const { click, tap, stageClick } = useSharedLayerEvents()
