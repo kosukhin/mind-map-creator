@@ -1,4 +1,5 @@
 import { GetMapsResponse } from '~/entities'
+import { documentNormalize } from '~/utils'
 
 let directoryHandler: FileSystemDirectoryHandle | null = null
 const files: Record<string, File> = {}
@@ -48,7 +49,7 @@ export const updateBlobContent = (blob: File, content: string) => {
 }
 
 export const readFileByName = (name: string): Promise<string | null> => {
-  name += '.json'
+  name = documentNormalize(name) + '.json'
 
   if (!files[name]) {
     return Promise.resolve(null)

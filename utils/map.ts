@@ -1,5 +1,6 @@
 import { slugify } from 'transliteration'
 import cloneDeep from 'lodash/cloneDeep'
+import debounce from 'lodash/debounce'
 import {
   Arrow,
   KonvaLayerObject,
@@ -70,11 +71,15 @@ export function createMapObjectUrl(object: MapObject) {
   return link
 }
 
+const openExternalLink = debounce((link: string) => {
+  window.open(link)
+}, 200)
+
 export const openUrlByObject = (object: MapObject) => {
-  if (object.linked) {
+  if (object?.linked) {
     const link = createMapObjectUrl(object)
     if (object.targetBlank) {
-      window.open(link)
+      openExternalLink(link)
     } else {
       const router = useRouter()
       router.push(link)

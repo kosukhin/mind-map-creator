@@ -12,7 +12,6 @@ import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
 // TODO подумать как сохранять пути к проектам открытым ранее
-// TODO баг при открытии внешних ссылок
 // TODO поисковый индекс нужно исправить
 // TODO сделать шаблоны внутри SVG чтобы писать текст внутри картинок
 
