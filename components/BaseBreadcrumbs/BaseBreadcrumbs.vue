@@ -4,13 +4,14 @@ import uniqueId from 'lodash/uniqueId'
 import { useSharedMap } from '~/composables'
 
 const { mapName, map } = useSharedMap()
+
 const mapHistory = computed(() => {
-  let link = ''
+  const link: any = []
   const result: any = map.map((vMap) => {
-    return mapName.value.split('/').map((history) => {
-      link += '/' + history
+    return mapName.value.split('_').map((history) => {
+      link.push(history)
       return {
-        link,
+        link: [...link],
         name: vMap?.parentNames?.[history] ?? history,
       }
     })
@@ -30,7 +31,7 @@ const mapHistory = computed(() => {
       :key="history ? history.link : uniqueId('history_')"
     >
       /
-      <NuxtLink v-if="history" :to="history.link">
+      <NuxtLink v-if="history" :to="history.link.join('/')">
         {{ history.name }}
       </NuxtLink>
     </span>
