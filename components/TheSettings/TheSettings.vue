@@ -27,10 +27,10 @@ const { map, mapName, firstMapLoad, parentTypes } = useSharedMap()
 watch(
   firstMapLoad,
   () => {
-    map.map((vMap) => {
-      form.value = { ...vMap.settings }
+    if (map.value) {
+      form.value = { ...map.value.settings }
       form.value.prevFavoriteGroup = form.value.favoriteGroup
-    })
+    }
   },
   {
     immediate: true,
@@ -49,9 +49,9 @@ const onRemove = async () => {
 const { close, overlayName, isOpened } = useSharedOverlay()
 const onSave = () => {
   close()
-  map.map((vMap) => {
-    vMap.settings = { ...form.value } as MapSettings
-  })
+  if (map.value) {
+    map.value.settings = { ...form.value } as MapSettings
+  }
 }
 
 const { ctrlSFired } = useSharedKeybindings()
@@ -63,8 +63,7 @@ watch(ctrlSFired, () => {
 })
 
 const isDirty = computed(
-  () =>
-    stringify(form.value) !== stringify(map.map((vMap) => vMap.settings).value)
+  () => stringify(form.value) !== stringify(map.value?.settings)
 )
 useFormDirtyCheck(isDirty, SHOW_SETTINGS)
 </script>
@@ -77,14 +76,14 @@ useFormDirtyCheck(isDirty, SHOW_SETTINGS)
           <BaseButton
             class="TheSettings-Button"
             type="primary"
-            @click="overlayName.value = SHOW_JSON"
+            @click="overlayName = SHOW_JSON"
           >
             {{ $t('theSettings.jsonExportImport') }}
           </BaseButton>
           <BaseButton
             class="TheSettings-Button"
             type="primary"
-            @click="overlayName.value = SHOW_KEYBINDINGS"
+            @click="overlayName = SHOW_KEYBINDINGS"
           >
             {{ $t('theSettings.keybindings') }}
           </BaseButton>
@@ -92,7 +91,7 @@ useFormDirtyCheck(isDirty, SHOW_SETTINGS)
             v-if="parentTypes.length"
             type="primary"
             class="TheSettings-Button"
-            @click="overlayName.value = SHOW_PARENT_TYPES"
+            @click="overlayName = SHOW_PARENT_TYPES"
           >
             {{ $t('theSettings.parentTypes') }}
           </BaseButton>

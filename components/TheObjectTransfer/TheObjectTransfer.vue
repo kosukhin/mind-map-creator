@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import { useStorage, watchOnce } from '@vueuse/core'
 import { ref } from '@vue/reactivity'
-import { HISTORY_STORAGE_KEY, SHOW_TRANSFER } from '~/constants'
+import { useStorage, watchOnce } from '@vueuse/core'
+import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import {
   useObjectActions,
   useOverlayAutoClose,
@@ -9,24 +9,25 @@ import {
   useSharedMapObject,
   useSharedOverlay,
 } from '~/composables'
-import BaseButton from '~/components/BaseButton/BaseButton.vue'
-import { all, createMapObjectUrl } from '~/utils'
 import { useRequestTransfer } from '~/composables/useRequestTransfer'
+import { HISTORY_STORAGE_KEY, SHOW_TRANSFER } from '~/constants'
+import { MapObject } from '~/entities'
+import { createMapObjectUrl } from '~/utils'
 
 useOverlayAutoClose(SHOW_TRANSFER)
 const { currentObject } = useSharedMapObject()
 const { map, firstMapLoad } = useSharedMap()
-const linkedObjects = ref([])
+const linkedObjects = ref<any>([])
 
 watchOnce(firstMapLoad, () => {
-  map.map((vMap) => {
-    linkedObjects.value = Object.values(vMap.objects).filter(
+  if (map.value) {
+    linkedObjects.value = Object.values(map.value.objects).filter(
       (item) => item.linked
     )
-  })
+  }
 })
 
-const getObjectLink = (object) => {
+const getObjectLink = (object: MapObject) => {
   if (object.outlink) {
     return object.outlink
   }
@@ -37,17 +38,21 @@ const getObjectLink = (object) => {
 const { close } = useSharedOverlay()
 const { removeCurrentObject } = useObjectActions(false)
 const { transferMap } = useRequestTransfer()
-const transfer = (url, remove = true) => {
-  all([currentObject, map] as const).map(async ([vCurObj, vMap]) => {
-    await transferMap(url, {
-      object: vCurObj,
-      type: { ...vMap.types[vCurObj.type], id: vCurObj.type },
+const transfer = (url: string, remove = true) => {
+  if (currentObject.value && map.value) {
+    transferMap(url, {
+      object: currentObject.value,
+      type: {
+        ...map.value.types[currentObject.value.type],
+        id: currentObject.value.type,
+      },
+    }).then(() => {
+      if (remove) {
+        removeCurrentObject()
+      }
+      close()
     })
-    if (remove) {
-      removeCurrentObject()
-    }
-    close()
-  })
+  }
 }
 
 const mapsHistory = useStorage<{ url: string; title: string }[]>(
@@ -60,8 +65,8 @@ const mapsHistory = useStorage<{ url: string; title: string }[]>(
   <BaseModal :name="SHOW_TRANSFER">
     <template #header>
       <h2>
-        Перенести объект {{ currentObject.value.name }}
-        {{ currentObject.value.additionalName }}
+        Перенести объект {{ currentObject?.name }}
+        {{ currentObject?.additionalName }}
       </h2>
     </template>
     <ul class="TheObjectTransfer-Items">

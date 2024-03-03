@@ -9,9 +9,9 @@ useOverlayAutoClose(SHOW_PARENT_TYPES)
 
 const { map, parentTypes } = useSharedMap()
 const addType = (type: MapType) => {
-  map.map((vMap) => {
-    vMap.types[type.name] = type
-  })
+  if (map.value) {
+    map.value.types[type.name] = type
+  }
 }
 </script>
 

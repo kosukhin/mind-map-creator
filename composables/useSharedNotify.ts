@@ -1,10 +1,10 @@
-import { createSharedComposable } from '@vueuse/core'
 import { watch } from '@vue/runtime-core'
-import { reMaybe, setValue } from '~/utils'
+import { createSharedComposable } from '@vueuse/core'
 import { NOTIFY_DELAY } from '~/constants'
+import { setValue } from '~/utils'
 
 export const useSharedNotify = createSharedComposable(() => {
-  const message = reMaybe<[string, string]>()
+  const message = ref<[string, string]>()
   watch(message, () => {
     message.map(() => {
       setTimeout(() => {

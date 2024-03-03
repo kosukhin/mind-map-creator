@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { computed, ref } from '@vue/reactivity'
-import { useI18n } from 'vue-i18n'
 import { watch } from '@vue/runtime-core'
 import Konva from 'konva'
 import flattenDeep from 'lodash/flattenDeep'
+import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import {
   useSharedLayer,
-  useSharedLayerEvents,
   useSharedLocks,
   useSharedMap,
   useSharedMapObject,
 } from '~/composables'
-import { all, cloneObject } from '~/utils'
+import { MapStructure } from '~/entities'
+import { cloneObject } from '~/utils'
 
 const { layer, layerObjects } = useSharedLayer()
 const i18n = useI18n()
@@ -27,7 +27,7 @@ const groups = new Set()
 let transformer = new Konva.Group({})
 
 function createSelection(nodes: any) {
-  nodes.forEach((node) => {
+  nodes.forEach((node: any) => {
     node.draggable(false)
     transformer.add(node)
 
@@ -39,18 +39,18 @@ function createSelection(nodes: any) {
 
 function findNodes() {
   return flattenDeep(
-    [...groups].map((objectId) => {
-      return layerObjects.get(objectId)
-    })
+    Array.from(groups).map((objectId) => {
+      return layerObjects.get(objectId as string)
+    }) as any
   )
 }
 
 const cloneGroup = () => {
-  all([map, layer] as const).map(([vMap, vLayer]) => {
-    ;[...groups].forEach(async (objectId) => {
-      const vObj = vMap.objects[objectId]
-      await cloneObject(vObj, vMap, vLayer, layerObjects)
-    })
+  ;[...groups].forEach(async (objectId) => {
+    if (map.value && layer.value) {
+      const vObj = map.value.objects[objectId as string]
+      await cloneObject(vObj, map.value, layer.value, layerObjects)
+    }
   })
 }
 
@@ -73,21 +73,24 @@ const onClick = () => {
   transformer.on('dragend', () => {
     const nodes = findNodes()
 
-    map.map((vMap) => {
+    if (map.value) {
       nodes.forEach((node) => {
         if (node instanceof Konva.Image) {
-          const object = vMap.objects[node.attrs.objectId]
+          const object = (map.value as MapStructure).objects[
+            node.attrs.objectId
+          ]
           object.position = [
             node.x() + transformer.x(),
             node.y() + transformer.y(),
           ]
         }
       })
-    })
+    }
   })
-  layer.map((vLayer) => {
-    vLayer.add(transformer)
-  })
+
+  if (layer.value) {
+    layer.value.add(transformer)
+  }
 
   if (stopNextObjectWatcher) {
     stopWatcher()
@@ -97,7 +100,7 @@ const onClick = () => {
   title.value = 'Отменить'
   type.value = 'danger'
   isClickLocked.value = true
-  currentObjectId.value = null
+  currentObjectId.value = undefined
   stopNextObjectWatcher = watch(currentObjectId, () => {
     if (!currentObjectId.value) {
       return
@@ -113,7 +116,7 @@ const onClick = () => {
 
     createSelection(objects)
     setTimeout(() => {
-      currentObjectId.value = null
+      currentObjectId.value = undefined
     })
   })
 }

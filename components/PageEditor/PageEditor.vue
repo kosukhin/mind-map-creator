@@ -42,13 +42,9 @@ useSharedMeta()
 const { scrollToObject } = useMoveToObject()
 const { hashChanged } = useSharedHashChange()
 watch(hashChanged, () => {
-  hashChanged.map((vHash) => {
-    if (!vHash) {
-      return
-    }
-
-    scrollToObject(vHash)
-  })
+  if (hashChanged.value) {
+    scrollToObject(hashChanged.value)
+  }
 })
 
 const { overlayName } = useSharedOverlay()

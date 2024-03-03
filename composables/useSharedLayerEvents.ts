@@ -1,20 +1,20 @@
 import { watch } from '@vue/runtime-core'
-import { KonvaEventObject } from 'konva/lib/Node'
 import { createSharedComposable } from '@vueuse/core'
-import { shallowReMaybe, setValue } from '~/utils'
+import { KonvaEventObject } from 'konva/lib/Node'
 import { useSharedLayer } from '~/composables'
+import { setValue } from '~/utils'
 
 export const useSharedLayerEvents = createSharedComposable(() => {
   const { layer, stage } = useSharedLayer()
-  const dragend = shallowReMaybe<KonvaEventObject<DragEvent>>()
-  const dragstart = shallowReMaybe<KonvaEventObject<DragEvent>>()
-  const click = shallowReMaybe<KonvaEventObject<MouseEvent>>()
-  const stageClick = shallowReMaybe<KonvaEventObject<MouseEvent>>()
-  const tap = shallowReMaybe<KonvaEventObject<PointerEvent>>()
-  const mouseenter = shallowReMaybe<KonvaEventObject<MouseEvent>>()
-  const mouseleave = shallowReMaybe<KonvaEventObject<MouseEvent>>()
-  const wheel = shallowReMaybe<KonvaEventObject<WheelEvent>>()
-  const dragmove = shallowReMaybe<KonvaEventObject<DragEvent>>()
+  const dragend = shallowRef<KonvaEventObject<DragEvent>>()
+  const dragstart = shallowRef<KonvaEventObject<DragEvent>>()
+  const click = shallowRef<KonvaEventObject<MouseEvent>>()
+  const stageClick = shallowRef<KonvaEventObject<MouseEvent>>()
+  const tap = shallowRef<KonvaEventObject<PointerEvent>>()
+  const mouseenter = shallowRef<KonvaEventObject<MouseEvent>>()
+  const mouseleave = shallowRef<KonvaEventObject<MouseEvent>>()
+  const wheel = shallowRef<KonvaEventObject<WheelEvent>>()
+  const dragmove = shallowRef<KonvaEventObject<DragEvent>>()
 
   watch(layer, () => {
     layer.map((vLayer) => {

@@ -19,9 +19,9 @@ const { map } = useSharedMap()
 watch(
   map,
   () => {
-    map.map((vMap) => {
-      form.value = JSON.stringify(vMap)
-    })
+    if (map.value) {
+      form.value = JSON.stringify(map.value)
+    }
   },
   {
     immediate: true,
@@ -32,9 +32,7 @@ const onSave = async () => {
   await nextTick()
   location.reload()
 }
-const isDirty = computed(
-  () => form.value !== stringify(map.map((vObj) => vObj).value)
-)
+const isDirty = computed(() => form.value !== stringify(map.value))
 useFormDirtyCheck(isDirty, SHOW_JSON)
 
 const { close, overlayName } = useSharedOverlay()

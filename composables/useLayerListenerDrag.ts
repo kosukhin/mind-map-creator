@@ -1,21 +1,21 @@
 import { watch } from '@vue/runtime-core'
-import debounce from 'lodash/debounce'
 import Konva from 'konva'
+import debounce from 'lodash/debounce'
+import { layerDragHandler, layerDragObjectHandler } from '~/application'
 import {
-  useSharedLayerEvents,
-  useSharedMap,
-  useCanvasBoundaries,
-  useSharedLayer,
-  useSharedLocks,
-  useMapPartialRenderer,
   useCanvas,
+  useCanvasBoundaries,
+  useMapPartialRenderer,
+  useSharedLayer,
+  useSharedLayerEvents,
+  useSharedLocks,
+  useSharedMap,
 } from '~/composables'
 import { all, applyArrowPoints, debug, setProperty } from '~/utils'
-import { layerDragHandler, layerDragObjectHandler } from '~/application'
 
 export function useLayerListenerDrag() {
   const { canvasSize } = useCanvas()
-  const { stage, layerObjects } = useSharedLayer()
+  const { stage, layer, layerObjects } = useSharedLayer()
   const { firstMapLoad, map } = useSharedMap()
   const { isDragLocked } = useSharedLocks()
   const { dragend, dragmove, wheel } = useSharedLayerEvents()
@@ -26,59 +26,64 @@ export function useLayerListenerDrag() {
   watch(dragend, () => {
     debug('debug fired', 'drag')
     if (isDragLocked.value) return
-    all([dragend, map] as const)
-      .map(layerDragHandler)
-      .map(([object, position]) => {
-        setProperty(object, 'position', [position.x, position.y])
-      })
+    if (dragend.value && map.value) {
+      const [object, position] = layerDragHandler([dragend.value, map.value])
+      setProperty(object, 'position', [position.x, position.y])
+    }
     dragMoveInterval && clearInterval(dragMoveInterval)
   })
 
   watch(dragmove, () => {
     if (isDragLocked.value) return
-    all([stage, dragmove, canvasSize] as const).map(
-      ([vLayer, vDMove, vSize]) => {
-        if (
-          vDMove.evt instanceof PointerEvent ||
-          vDMove.evt instanceof TouchEvent
-        ) {
+    if (stage.value && dragmove.value && canvasSize.value) {
+      if (
+        dragmove.value.evt instanceof PointerEvent ||
+        dragmove.value.evt instanceof TouchEvent
+      ) {
+        return
+      }
+      if (
+        dragmove.value.target instanceof Konva.Image ||
+        dragmove.value.target instanceof Konva.Group
+      ) {
+        const { offsetX: ofx, offsetY: ofy } = dragmove.value.evt
+        const mustMove =
+          ofx < 50 ||
+          ofx > canvasSize.value.w - 50 ||
+          ofy < 50 ||
+          ofy > canvasSize.value.h - 50
+
+        if (!mustMove) {
+          dragMoveInterval && clearInterval(dragMoveInterval)
           return
         }
-        if (
-          vDMove.target instanceof Konva.Image ||
-          vDMove.target instanceof Konva.Group
-        ) {
-          const { offsetX: ofx, offsetY: ofy } = vDMove.evt
-          const mustMove =
-            ofx < 50 || ofx > vSize.w - 50 || ofy < 50 || ofy > vSize.h - 50
 
-          if (!mustMove) {
-            dragMoveInterval && clearInterval(dragMoveInterval)
-            return
-          }
-
-          const offsetX = (Math.round(vSize.w / 2) - vDMove.evt.offsetX) / 10
-          const offsetY = (Math.round(vSize.h / 2) - vDMove.evt.offsetY) / 10
-          dragMoveInterval && clearInterval(dragMoveInterval)
-          dragMoveInterval = setInterval(() => {
-            vLayer.position(
+        const offsetX =
+          (Math.round(canvasSize.value.w / 2) - dragmove.value.evt.offsetX) / 10
+        const offsetY =
+          (Math.round(canvasSize.value.h / 2) - dragmove.value.evt.offsetY) / 10
+        dragMoveInterval && clearInterval(dragMoveInterval)
+        dragMoveInterval = setInterval(() => {
+          if (layer.value) {
+            layer.value.position(
               restrictBoundaries({
-                x: vLayer.x() + offsetX,
-                y: vLayer.y() + offsetY,
+                x: layer.value.x() + offsetX,
+                y: layer.value.y() + offsetY,
               })
             )
-          }, 30)
-        }
+          }
+        }, 30)
       }
-    )
-    all([dragmove, map] as const)
-      .map(layerDragObjectHandler(layerObjects))
-      .map(({ text, arrows, relatedArrows, additionalText }) => {
-        text.map(([text, position]) => text.position(position))
-        arrows.map(applyArrowPoints)
-        relatedArrows.map(applyArrowPoints)
-        additionalText.map(([text, position]) => text.position(position))
-      })
+    }
+
+    if (dragmove.value && map.value) {
+      const { text, arrows, relatedArrows, additionalText } =
+        layerDragObjectHandler(layerObjects)([dragmove.value, map.value])
+      text.map(([text, position]) => text.position(position))
+      arrows.map(applyArrowPoints)
+      relatedArrows.map(applyArrowPoints)
+      additionalText.map(([text, position]) => text.position(position))
+    }
   })
 
   const partialRenderingDelay = 100

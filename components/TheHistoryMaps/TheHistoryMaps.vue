@@ -44,7 +44,7 @@ watch(head, () => {
           :key="index"
           class="TheHistoryMaps-Item"
         >
-          <a :href="history.url">{{ history.title }}</a>
+          <NuxtLink :to="history.url">{{ history.title }}</NuxtLink>
           ({{ history.url }})
         </li>
       </ul>

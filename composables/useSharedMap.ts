@@ -16,7 +16,7 @@ export const useSharedMap = createSharedComposable(() => {
   const { message } = useSharedNotify()
   const firstMapLoad = ref(false)
   const parentTypes = ref<MapType[]>([])
-  const map = reactive(MaybeError<MapStructure>())
+  const map = ref<MapStructure>()
   const route = useRoute()
   const mapName = ref(route.path.replace('/', ''))
   const { getMap } = useRequestGetMap()

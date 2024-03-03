@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { useMiniMap } from '~/composables'
-import { reMaybe } from '~/utils'
 
-const miniMap = reMaybe<HTMLDivElement>()
+const miniMap = ref<HTMLDivElement>()
 const setMiniMap = (vMiniMap) => {
   miniMap.value = vMiniMap
 }
 
-const miniMapScreen = reMaybe<HTMLDivElement>()
+const miniMapScreen = ref<HTMLDivElement>()
 const setMiniMapScreen = (vMiniMapScreen) => {
   miniMapScreen.value = vMiniMapScreen
 }

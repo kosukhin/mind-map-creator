@@ -1,51 +1,51 @@
 <script lang="ts" setup>
-import { watch } from '@vue/runtime-core'
 import { computed, ref } from '@vue/reactivity'
-import cloneDeep from 'lodash/cloneDeep'
+import { watch } from '@vue/runtime-core'
 import { useClipboard } from '@vueuse/core'
+import cloneDeep from 'lodash/cloneDeep'
+import BaseButton from '~/components/BaseButton/BaseButton.vue'
+import BaseCheckbox from '~/components/BaseCheckbox/BaseCheckbox.vue'
+import BaseDrawer from '~/components/BaseDrawer/BaseDrawer.vue'
+import BaseInput from '~/components/BaseInput/BaseInput.vue'
+import BaseSelect from '~/components/BaseSelect/BaseSelect.vue'
+import BaseTextarea from '~/components/BaseTextarea/BaseTextarea.vue'
 import {
-  useSharedMapObject,
-  useSettings,
-  useSharedOverlay,
-  useSharedMap,
-  useSharedLayer,
-  useSharedKeybindings,
-  useSharedNotify,
   useFormDirtyCheck,
   useObjectActions,
+  useSettings,
+  useSharedKeybindings,
+  useSharedLayer,
+  useSharedMap,
+  useSharedMapObject,
+  useSharedNotify,
+  useSharedOverlay,
 } from '~/composables'
 import {
   COPIED,
-  NOT_SUPPOERTED,
   NOTIFY_ERROR,
   NOTIFY_SUCCESS,
+  NOT_SUPPOERTED,
   SHOW_OBJECT,
   SHOW_TRANSFER,
 } from '~/constants'
 import { MapObject } from '~/entities'
-import { all, cloneObject, createMapObjectUrl, setValue } from '~/utils'
+import { cloneObject, createMapObjectUrl, setValue } from '~/utils'
 import { updateObjectOnLayer } from '~/utils/konva'
-import BaseButton from '~/components/BaseButton/BaseButton.vue'
-import BaseTextarea from '~/components/BaseTextarea/BaseTextarea.vue'
-import BaseCheckbox from '~/components/BaseCheckbox/BaseCheckbox.vue'
-import BaseInput from '~/components/BaseInput/BaseInput.vue'
-import BaseDrawer from '~/components/BaseDrawer/BaseDrawer.vue'
-import BaseSelect from '~/components/BaseSelect/BaseSelect.vue'
 
 const { stringify } = JSON
 
 const { map } = useSharedMap()
 const mapTypes = computed(() => {
-  const result = []
+  const result: { id: string; name: string }[] = []
 
-  map.map((vMap) => {
-    Object.entries(vMap.types).forEach(([typeId, type]) => {
+  if (map.value) {
+    Object.entries(map.value.types).forEach(([typeId, type]) => {
       result.push({
         id: typeId,
         name: type.name,
       })
     })
-  })
+  }
 
   return result
 })
@@ -59,14 +59,14 @@ watch(ctrlSFired, () => {
   save()
 })
 
-const form = ref({})
+const form = ref<any>({})
 const { currentObject } = useSharedMapObject()
 watch(
   currentObject,
   () => {
-    currentObject.map((vObj) => {
-      form.value = cloneDeep(vObj)
-    })
+    if (currentObject.value) {
+      form.value = cloneDeep(currentObject.value)
+    }
   },
   {
     flush: 'post',
@@ -88,50 +88,44 @@ const objectUrl = computed({
 })
 
 const { layer, layerObjects } = useSharedLayer()
-const save = () => {
+const save = async () => {
   close()
-  all([currentObject, map, layer] as const).map(
-    async ([vObj, vMap, vLayer]) => {
-      vMap.objects[vObj.id] = {
-        ...vMap.objects[vObj.id],
-        ...form.value,
-        outlink: objectUrl.value,
-      }
-      await updateObjectOnLayer(
-        layerObjects,
-        vLayer,
-        vMap.objects[vObj.id],
-        vMap
-      )
+  if (currentObject.value && map.value && layer.value) {
+    map.value.objects[currentObject.value.id] = {
+      ...map.value.objects[currentObject.value.id],
+      ...form.value,
+      outlink: objectUrl.value,
     }
-  )
+    await updateObjectOnLayer(
+      layerObjects,
+      layer.value,
+      map.value.objects[currentObject.value.id],
+      map.value
+    )
+  }
 }
-const removeRelation = (index: number) => {
+const removeRelation = async (index: number) => {
   if (!(form.value as MapObject).arrows) return
-  all([currentObject, map, layer] as const).map(
-    async ([vObj, vMap, vLayer]) => {
-      ;(form.value as MapObject).arrows.splice(index, 1)
-      await updateObjectOnLayer(
-        layerObjects,
-        vLayer,
-        vMap.objects[vObj.id],
-        vMap
-      )
-    }
-  )
+  if (currentObject.value && map.value && layer.value) {
+    ;(form.value as MapObject).arrows.splice(index, 1)
+    await updateObjectOnLayer(
+      layerObjects,
+      layer.value,
+      map.value.objects[currentObject.value.id],
+      map.value
+    )
+  }
 }
 
 const cancel = () => {
   close()
 }
 
-const clone = () => {
+const clone = async () => {
   close()
-  all([currentObject, map, layer] as const).map(
-    async ([vObj, vMap, vLayer]) => {
-      await cloneObject(vObj, vMap, vLayer, layerObjects)
-    }
-  )
+  if (currentObject.value && map.value && layer.value) {
+    await cloneObject(currentObject.value, map.value, layer.value, layerObjects)
+  }
 }
 
 const { message } = useSharedNotify()
@@ -141,10 +135,10 @@ function onCopyUrl() {
     setValue(message, [NOT_SUPPOERTED, NOTIFY_ERROR])
     return
   }
-  currentObject.map((vObject) => {
-    copy(`${location.pathname}#${vObject.id}`)
+  if (currentObject.value) {
+    copy(`${location.pathname}#${currentObject.value.id}`)
     setValue(message, [COPIED, NOTIFY_SUCCESS])
-  })
+  }
 }
 
 const { settings } = useSettings()
@@ -155,22 +149,22 @@ const { removeCurrentObject } = useObjectActions()
   <BaseDrawer :name="SHOW_OBJECT">
     <template #header>
       <h2 class="FormObject-MainTitle">{{ $t('formObject.mapObject') }}</h2>
-      <small v-if="currentObject.value" class="FormObject-MainSubTitle">
-        <span> ID #{{ currentObject.value.id }} </span>
+      <small v-if="currentObject" class="FormObject-MainSubTitle">
+        <span> ID #{{ currentObject.id }} </span>
         <BaseButton size="sm" type="primary" @click="onCopyUrl">
           {{ $t('formObject.copy') }}
         </BaseButton>
       </small>
     </template>
-    <div v-if="!settings.isNothing && form" class="FormObject">
-      <div v-if="!settings.value.isEditable" class="FormObject-Inner">
+    <div v-if="settings && form && currentObject" class="FormObject">
+      <div v-if="!settings.isEditable" class="FormObject-Inner">
         <div class="FormObject-Title">{{ $t('formObject.name') }}</div>
-        <div class="FormObject-Description">{{ currentObject.value.name }}</div>
+        <div class="FormObject-Description">{{ currentObject.name }}</div>
         <div class="FormObject-Title">{{ $t('formObject.description') }}</div>
         <div class="FormObject-Description">
           {{
-            currentObject.value.description
-              ? currentObject.value.description
+            currentObject.description
+              ? currentObject.description
               : $t('formObject.noDescription')
           }}
         </div>
@@ -259,11 +253,8 @@ const { removeCurrentObject } = useObjectActions()
               :key="arrow.id"
               class="FormObject-Arrow"
             >
-              <span
-                v-if="map.value.objects[arrow.id]"
-                class="FormObject-ArrowName"
-              >
-                #{{ index + 1 }} {{ map.value.objects[arrow.id].name }}
+              <span v-if="map?.objects[arrow.id]" class="FormObject-ArrowName">
+                #{{ index + 1 }} {{ map.objects[arrow.id].name }}
               </span>
               <BaseButton
                 class="FormObject-ArrowButton"

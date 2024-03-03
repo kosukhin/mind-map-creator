@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
+import { watch } from '@vue/runtime-core'
 import { useI18n } from 'vue-i18n'
-import {
-  useSharedMap,
-  useSharedLayer,
-  useSharedMapObject,
-  useSharedLocks,
-} from '~/composables'
-import { all } from '~/utils'
-import { updateObjectOnLayer } from '~/utils/konva'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
+import {
+  useSharedLayer,
+  useSharedLocks,
+  useSharedMap,
+  useSharedMapObject,
+} from '~/composables'
+import { updateObjectOnLayer } from '~/utils/konva'
 
 const { layer, layerObjects } = useSharedLayer()
 const { map } = useSharedMap()
@@ -30,7 +29,7 @@ const startRelation = () => {
     type.value = 'default'
     return
   }
-  currentObjectId.value = null
+  currentObjectId.value = undefined
   title.value = i18n.t('theLinker.chooseSource')
   isClickLocked.value = true
   type.value = 'danger'
@@ -39,24 +38,24 @@ const startRelation = () => {
     stopNextObjectWatcher()
     title.value = i18n.t('theLinker.chooseTarget')
     type.value = 'success'
-    const fromObjectId = currentObjectId.map((objId) => objId).value as string
+    const fromObjectId = currentObjectId.value ?? ''
 
     const stopSecond = watch(currentObjectId, () => {
       stopSecond()
-      const toObjectId = currentObjectId.map((objId) => objId).value as string
+      const toObjectId = String(currentObjectId.value ?? '')
       title.value = i18n.t('theLinker.makeRelation')
       isClickLocked.value = false
       type.value = 'default'
 
-      all([map, layer] as const).map(async ([vMap, vLayer]) => {
-        vMap.objects[fromObjectId].arrows.push({ id: toObjectId })
-        await updateObjectOnLayer(
+      if (map.value && layer.value) {
+        map.value.objects[fromObjectId].arrows.push({ id: toObjectId })
+        updateObjectOnLayer(
           layerObjects,
-          vLayer,
-          vMap.objects[fromObjectId],
-          vMap
+          layer.value,
+          map.value.objects[fromObjectId],
+          map.value
         )
-      })
+      }
     })
   })
 }

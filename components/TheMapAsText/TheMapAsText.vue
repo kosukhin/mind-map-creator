@@ -13,8 +13,8 @@ useOverlayAutoClose(SHOW_TEXT)
 const { map } = useSharedMap()
 const mapAsString = computed(() => {
   return (
-    map.map((vMap) => {
-      return Object.values(vMap.objects)
+    (map.value &&
+      Object.values(map.value.objects)
         .map((object) => {
           return `<div class="TheMapAsText-Item">
           <h3>
@@ -28,8 +28,8 @@ const mapAsString = computed(() => {
           </p>
         </div>`
         })
-        .join('')
-    }).value ?? ''
+        .join('')) ??
+    ''
   )
 })
 
@@ -47,13 +47,13 @@ const onShare = () => {
 
 const textRef = ref()
 const onSelectAll = () => {
-  map.map((vMap) => {
+  if (map.value) {
     const range = new Range()
     range.setStart(textRef.value, 0)
-    range.setEnd(textRef.value, Object.values(vMap.objects).length)
+    range.setEnd(textRef.value, Object.values(map.value.objects).length)
     document.getSelection()?.removeAllRanges()
     document.getSelection()?.addRange(range)
-  })
+  }
 }
 </script>
 
@@ -80,7 +80,7 @@ const onSelectAll = () => {
         </BaseButton>
       </h2>
     </template>
-    <article v-if="!map.isNothing" class="TheMapAsText">
+    <article v-if="map" class="TheMapAsText">
       <div ref="textRef" v-html="mapAsString"></div>
     </article>
   </BaseModal>

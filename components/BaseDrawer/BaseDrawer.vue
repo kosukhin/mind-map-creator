@@ -27,9 +27,9 @@ const close = () => {
 }
 const isOpened = ref(false)
 watch(overlayName, () => {
-  overlayName.map((vDrawer) => {
-    isOpened.value = vDrawer === props.name
-  })
+  if (overlayName.value) {
+    isOpened.value = overlayName.value === props.name
+  }
 })
 const { current } = useMagicKeys()
 watch(current, () => {

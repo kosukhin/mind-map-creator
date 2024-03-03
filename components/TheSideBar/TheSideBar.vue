@@ -1,28 +1,28 @@
 <script setup lang="ts">
 import svg64 from 'svg64'
 import { useI18n } from 'vue-i18n'
+import BaseButton from '~/components/BaseButton/BaseButton.vue'
+import BaseGroup from '~/components/BaseGroup/BaseGroup.vue'
+import BaseIcon from '~/components/BaseIcon/BaseIcon.vue'
+import TheGrouper from '~/components/TheGrouper/TheGrouper.vue'
+import TheLinker from '~/components/TheLinker/TheLinker.vue'
 import {
-  useSharedMapType,
-  useSharedMap,
-  useSharedOverlay,
   useSharedLayer,
+  useSharedMap,
+  useSharedMapType,
+  useSharedOverlay,
   useSharedSideBar,
 } from '~/composables'
 import {
   DEFAULT_SVG,
   HEADER_HEIGHT,
-  SHOW_TYPE,
   SHOW_SETTINGS,
+  SHOW_TYPE,
   SIDEBAR_WIDTH,
 } from '~/constants'
 import { KonvaLayerObject, MapObject } from '~/entities'
-import { createObject, all } from '~/utils'
+import { createObject } from '~/utils'
 import { addObjectToLayer } from '~/utils/konva'
-import BaseButton from '~/components/BaseButton/BaseButton.vue'
-import TheLinker from '~/components/TheLinker/TheLinker.vue'
-import BaseGroup from '~/components/BaseGroup/BaseGroup.vue'
-import BaseIcon from '~/components/BaseIcon/BaseIcon.vue'
-import TheGrouper from '~/components/TheGrouper/TheGrouper.vue'
 
 const { overlayName } = useSharedOverlay()
 const { currentTypeId } = useSharedMapType()
@@ -34,9 +34,9 @@ const selectType = (name: string) => {
 const i18n = useI18n()
 const { map } = useSharedMap()
 const addType = () => {
-  map.map((vMap) => {
+  if (map.value) {
     const newTypeId = Date.now().toString()
-    vMap.types[newTypeId] = {
+    map.value.types[newTypeId] = {
       name: i18n.t('theSideBar.newType'),
       svg: DEFAULT_SVG,
       width: 100,
@@ -44,13 +44,13 @@ const addType = () => {
     }
     currentTypeId.value = newTypeId
     overlayName.value = SHOW_TYPE
-  })
+  }
 }
 
 const removeType = (typeId: string) => {
-  map.map((vMap) => {
+  if (map.value) {
     let isTypeUsed = false
-    Object.values(vMap.objects).forEach((object) => {
+    Object.values(map.value.objects).forEach((object) => {
       if (object.type === typeId) {
         isTypeUsed = true
       }
@@ -61,39 +61,43 @@ const removeType = (typeId: string) => {
       return
     }
 
-    delete vMap.types[typeId]
-  })
+    delete map.value.types[typeId]
+  }
 }
 
 const { isSidebarOpen } = useSharedSideBar()
 const { layer, stage, layerObjects } = useSharedLayer()
-const addToCanvas = (e: DragEvent, type: string, useStagePosition = false) => {
-  all([layer, map, stage] as const).map(async ([vLayer, vMap, vStage]) => {
-    const vType = vMap.types[type]
+const addToCanvas = async (
+  e: DragEvent,
+  type: string,
+  useStagePosition = false
+) => {
+  if (layer.value && map.value && stage.value) {
+    const vType = map.value.types[type]
     let position: [number, number] = [
-      e.x - SIDEBAR_WIDTH - vType.width / 2 + vStage.x() * -1,
-      e.y - HEADER_HEIGHT - vType.height / 2 + vStage.y() * -1,
+      e.x - SIDEBAR_WIDTH - vType.width / 2 + stage.value.x() * -1,
+      e.y - HEADER_HEIGHT - vType.height / 2 + stage.value.y() * -1,
     ]
 
     if (useStagePosition) {
-      position = [vStage.x() * -1, vStage.y() * -1]
+      position = [stage.value.x() * -1, stage.value.y() * -1]
     }
 
     const newObject: MapObject = createObject(position, type)
 
     isSidebarOpen.value = false
-    vMap.objects[newObject.id] = newObject
-    const objects = await addObjectToLayer(vLayer, newObject, vMap)
+    map.value.objects[newObject.id] = newObject
+    const objects = await addObjectToLayer(layer.value, newObject, map.value)
     layerObjects.set(newObject.id, objects as KonvaLayerObject[])
-  })
+  }
 }
 </script>
 
 <template>
   <div class="TheSideBar">
-    <div v-if="!map.isNothing" class="TheSideBar-Items">
+    <div v-if="map" class="TheSideBar-Items">
       <div
-        v-for="(type, name) in map.value.types"
+        v-for="(type, name) in map.types"
         :key="name"
         class="TheSideBar-Item"
       >
@@ -104,7 +108,7 @@ const addToCanvas = (e: DragEvent, type: string, useStagePosition = false) => {
           class="TheSideBar-ItemImage"
           draggable="true"
           :title="$t('theSideBar.notifications.dragToCanvasToAdd')"
-          @dblclick="addToCanvas($event, name, true)"
+          @dblclick="addToCanvas($event as any, name, true)"
           @dragend="addToCanvas($event, name)"
         />
         <div class="TheSideBar-ItemButtons">
@@ -129,7 +133,7 @@ const addToCanvas = (e: DragEvent, type: string, useStagePosition = false) => {
         <BaseButton
           :title="$t('theSideBar.settings')"
           type="primary"
-          @click="overlayName.value = SHOW_SETTINGS"
+          @click="overlayName = SHOW_SETTINGS"
         >
           <BaseIcon icon="fa-cog" />
         </BaseButton>

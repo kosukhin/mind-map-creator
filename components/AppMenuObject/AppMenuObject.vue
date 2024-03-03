@@ -8,21 +8,22 @@ import {
   useOverlayAutoClose,
 } from '~/composables'
 import { SHOW_OBJECT_MENU } from '~/constants'
+import { MapObject } from '~/entities'
 
 useOverlayAutoClose(SHOW_OBJECT_MENU)
 
 const { firstMapLoad, map } = useSharedMap()
-const menuItems = ref([])
+const menuItems = ref<MapObject[]>([])
 watch(
   firstMapLoad,
   () => {
-    map.map((vMap) => {
-      menuItems.value = Object.values(vMap.objects)
+    if (map.value) {
+      menuItems.value = Object.values(map.value.objects)
         .filter((object) => {
           return object.inMenu
         })
         .sort((a, b) => a.menuOrder - b.menuOrder)
-    })
+    }
   },
   {
     immediate: true,

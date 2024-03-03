@@ -1,19 +1,18 @@
 <script lang="ts" setup>
 import { computed, ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
-import {
-  useSharedMap,
-  useSharedMapType,
-  useSharedOverlay,
-  useFormDirtyCheck,
-  useSharedKeybindings,
-} from '~/composables'
-import { SHOW_TYPE } from '~/constants'
-import { all } from '~/utils'
 import AppSvgEditor from '~/components/AppSvgEditor/AppSvgEditor.vue'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import BaseModal from '~/components/BaseModal/BaseModal.vue'
+import {
+  useFormDirtyCheck,
+  useSharedKeybindings,
+  useSharedMap,
+  useSharedMapType,
+  useSharedOverlay,
+} from '~/composables'
+import { SHOW_TYPE } from '~/constants'
 
 const { stringify } = JSON
 
@@ -23,11 +22,11 @@ const { map } = useSharedMap()
 watch(
   currentType,
   () => {
-    currentType.map((vType) => {
+    if (currentType.value) {
       form.value = {
-        ...vType,
+        ...currentType.value,
       }
-    })
+    }
   },
   {
     flush: 'post',
@@ -41,12 +40,12 @@ useFormDirtyCheck(isDirty, SHOW_TYPE)
 
 const save = () => {
   close()
-  all([map, currentTypeId] as const).map(([vMap, vTypeId]) => {
-    vMap.types[vTypeId] = {
-      ...vMap.types[vTypeId],
+  if (map.value && currentTypeId.value) {
+    map.value.types[currentTypeId.value] = {
+      ...map.value.types[currentTypeId.value],
       ...form.value,
     }
-  })
+  }
 }
 
 const { close, isOpened } = useSharedOverlay()
@@ -64,7 +63,7 @@ watch(ctrlSFired, () => {
     <template #header>
       <h2>{{ $t('formType.mapType') }}</h2>
     </template>
-    <div v-if="!currentType.isNothing" class="FormType">
+    <div v-if="currentType" class="FormType">
       <BaseInput v-model="form.name" class="FormType-Row" />
       <AppSvgEditor v-model="form" />
     </div>

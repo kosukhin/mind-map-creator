@@ -7,18 +7,18 @@ const { mapName, map } = useSharedMap()
 
 const mapHistory = computed(() => {
   const link: any = []
-  const result: any = map.map((vMap) => {
-    return mapName.value.split('_').map((history) => {
+  let result: any = []
+  if (map.value) {
+    result = mapName.value.split('_').map((history) => {
       link.push(history)
       return {
         link: [...link],
-        name: vMap?.parentNames?.[history] ?? history,
+        name: map.value?.parentNames?.[history] ?? history,
       }
     })
-  }).value
-  map.map((vMap) => {
-    result[result.length - 1].name = vMap.settings.title
-  })
+    result[result.length - 1].name = map.value.settings.title
+  }
+
   return result
 })
 </script>

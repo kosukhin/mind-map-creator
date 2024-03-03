@@ -15,21 +15,23 @@ useOverlayAutoClose(SHOW_SEARCH)
 const query = ref('')
 const { map } = useSharedMap()
 const searchResults = computed(() => {
-  return map.map((vMap) => {
-    if (query.value) {
-      const searchQuery = query.value.toLowerCase()
-      const objects = Object.values(vMap.objects)
-      return objects.filter((object) => {
-        return (
-          object.name.toLowerCase().includes(searchQuery) ||
-          (object.additionalName &&
-            object.additionalName.toLowerCase().includes(searchQuery))
-        )
-      })
-    }
-
+  if (!map.value) {
     return []
-  }).value
+  }
+
+  if (query.value) {
+    const searchQuery = query.value.toLowerCase()
+    const objects = Object.values(map.value.objects)
+    return objects.filter((object) => {
+      return (
+        object.name.toLowerCase().includes(searchQuery) ||
+        (object.additionalName &&
+          object.additionalName.toLowerCase().includes(searchQuery))
+      )
+    })
+  }
+
+  return []
 })
 
 const { close } = useSharedOverlay()

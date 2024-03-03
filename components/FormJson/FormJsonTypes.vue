@@ -19,25 +19,24 @@ const form = ref('')
 watch(
   map,
   () => {
-    map.map((vMap) => {
-      form.value = stringify(vMap.types)
-    })
+    if (map.value) {
+      form.value = stringify(map.value.types)
+    }
   },
   {
     immediate: true,
   }
 )
-const isDirty = computed(
-  () => form.value !== stringify(map.map((vObj) => vObj.types).value)
-)
+const isDirty = computed(() => form.value !== stringify(map.value?.types))
 useFormDirtyCheck(isDirty, SHOW_JSON_TYPES)
 
 const onSave = () => {
-  map.map(async (vMap) => {
-    vMap.types = merge(vMap.types, JSON.parse(form.value))
-    await nextTick()
-    location.reload()
-  })
+  if (map.value) {
+    map.value.types = merge(map.value.types, JSON.parse(form.value))
+    nextTick().then(() => {
+      location.reload()
+    })
+  }
 }
 
 const { close } = useSharedOverlay()

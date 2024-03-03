@@ -17,9 +17,9 @@ const close = () => {
   tryToClose.value = props.name as string
 }
 watch(overlayName, () => {
-  overlayName.map((vModal) => {
-    isOpened.value = vModal === props.name
-  })
+  if (overlayName.value) {
+    isOpened.value = overlayName.value === props.name
+  }
 })
 const { current } = useMagicKeys()
 watch(current, () => {

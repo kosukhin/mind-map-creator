@@ -2,14 +2,14 @@ import { createSharedComposable } from '@vueuse/core'
 import { useCanvas, useLayerListeners, useSharedMap } from '~/composables'
 import { CANVAS_DOM_ID } from '~/constants'
 import { Layer, MapLayerObjects, Stage } from '~/entities'
-import { setValue, shallowReMaybe } from '~/utils'
+import { setValue } from '~/utils'
 
 import { createLayer } from '~/utils/konva'
 
 export const useSharedLayer = createSharedComposable(() => {
   const { canvas } = useCanvas()
-  const layer = shallowReMaybe<Layer>()
-  const stage = shallowReMaybe<Stage>()
+  const layer = shallowRef<Layer>()
+  const stage = shallowRef<Stage>()
   const layerObjects: MapLayerObjects = new Map()
   const { firstMapLoad } = useSharedMap()
 
@@ -17,7 +17,7 @@ export const useSharedLayer = createSharedComposable(() => {
     setTimeout(() => {
       firstMapLoad.value = false
       const wrapper = findById(CANVAS_DOM_ID)
-      canvas.value = wrapper
+      canvas.value = wrapper ?? undefined
       useLayerListeners()
 
       if (wrapper) {
