@@ -1,22 +1,24 @@
 import { watch } from '@vue/runtime-core'
-import { useSharedLayerEvents, useSharedLayer } from '~/composables'
-import { all } from '~/utils'
+import { useSharedLayer, useSharedLayerEvents } from '~/composables'
 
 export function useLayerListenerMouse() {
   const { stage } = useSharedLayer()
   const { mouseenter, mouseleave } = useSharedLayerEvents()
 
   watch(mouseenter, () => {
-    all([stage, mouseenter] as const).map(([vStage, e]) => {
-      if (e.target.attrs.image || e.target.attrs.text) {
-        vStage.container().style.cursor = 'pointer'
+    if (stage.value && mouseenter.value) {
+      if (
+        mouseenter.value.target.attrs.image ||
+        mouseenter.value.target.attrs.text
+      ) {
+        stage.value.container().style.cursor = 'pointer'
       }
-    })
+    }
   })
 
   watch(mouseleave, () => {
-    all([stage, mouseleave] as const).map((args) => {
-      args[0].container().style.cursor = 'default'
-    })
+    if (stage.value && mouseleave.value) {
+      stage.value.container().style.cursor = 'default'
+    }
   })
 }

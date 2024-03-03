@@ -31,7 +31,7 @@ export const miniMapRedrawHandler = ([
     previewStage.add(previewLayer)
   }, 100)
 
-  const calculateMiniScreen = () => {
+  const calculateMiniScreen = (): [HTMLElement, number, number] => {
     const miniScreenX = vStage.x() * scale * -1
     const miniScreenY = vStage.y() * scale * -1
     setElementPosition(vMiniMapScreen, [miniScreenY, miniScreenX])

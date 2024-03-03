@@ -11,7 +11,7 @@ import {
   useSharedLocks,
   useSharedMap,
 } from '~/composables'
-import { all, applyArrowPoints, debug, setProperty } from '~/utils'
+import { applyArrowPoints, debug, setProperty } from '~/utils'
 
 export function useLayerListenerDrag() {
   const { canvasSize } = useCanvas()
@@ -79,10 +79,20 @@ export function useLayerListenerDrag() {
     if (dragmove.value && map.value) {
       const { text, arrows, relatedArrows, additionalText } =
         layerDragObjectHandler(layerObjects)([dragmove.value, map.value])
-      text.map(([text, position]) => text.position(position))
-      arrows.map(applyArrowPoints)
-      relatedArrows.map(applyArrowPoints)
-      additionalText.map(([text, position]) => text.position(position))
+      if (text) {
+        const [vText, position] = text
+        vText.position(position)
+      }
+      if (arrows) {
+        applyArrowPoints(arrows)
+      }
+      if (relatedArrows) {
+        applyArrowPoints(relatedArrows)
+      }
+      if (additionalText) {
+        const [vText, position] = additionalText
+        vText.position(position)
+      }
     }
   })
 
@@ -104,8 +114,8 @@ export function useLayerListenerDrag() {
   )
 
   watch(firstMapLoad, () => {
-    stage.map((vStage) => {
-      vStage.dragBoundFunc(restrictBoundaries)
-    })
+    if (stage.value) {
+      stage.value.dragBoundFunc(restrictBoundaries)
+    }
   })
 }

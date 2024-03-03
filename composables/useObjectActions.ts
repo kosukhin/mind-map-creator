@@ -1,11 +1,10 @@
 import { useI18n } from 'vue-i18n'
-import { all } from '~/utils'
 import { findRelationsToRemove } from '~/application'
-import { removeObjectOnLayer, updateObjectOnLayer } from '~/utils/konva'
 import { useSharedLayer } from '~/composables/useSharedLayer'
 import { useSharedMap } from '~/composables/useSharedMap'
 import { useSharedMapObject } from '~/composables/useSharedMapObject'
 import { useSharedOverlay } from '~/composables/useSharedOverlay'
+import { removeObjectOnLayer, updateObjectOnLayer } from '~/utils/konva'
 
 export function useObjectActions(needConfirm = true) {
   const i18n = useI18n()
@@ -23,23 +22,31 @@ export function useObjectActions(needConfirm = true) {
     }
 
     close()
-    all([currentObject, map, layer] as const).map(([vObj, vMap, vLayer]) => {
-      findRelationsToRemove(vObj, vMap).map((relations) => {
-        relations.forEach((relation) => {
-          relation.indexes.forEach((indexToRemove) => {
-            vMap.objects[relation.objectId].arrows.splice(indexToRemove, 1)
+    if (currentObject.value && map.value && layer.value) {
+      findRelationsToRemove(currentObject.value, map.value).map(
+        (relations: any) => {
+          relations.forEach((relation: any) => {
+            relation.indexes.forEach((indexToRemove: any) => {
+              map.value?.objects[relation.objectId].arrows.splice(
+                indexToRemove,
+                1
+              )
+            })
+
+            if (map.value && layer.value) {
+              updateObjectOnLayer(
+                layerObjects,
+                layer.value,
+                map.value.objects[relation.objectId],
+                map.value
+              )
+            }
           })
-          updateObjectOnLayer(
-            layerObjects,
-            vLayer,
-            vMap.objects[relation.objectId],
-            vMap
-          )
-        })
-      })
-      delete vMap.objects[vObj.id]
-      removeObjectOnLayer(layerObjects, vObj)
-    })
+        }
+      )
+      delete map.value.objects[currentObject.value.id]
+      removeObjectOnLayer(layerObjects, currentObject.value)
+    }
   }
 
   return {

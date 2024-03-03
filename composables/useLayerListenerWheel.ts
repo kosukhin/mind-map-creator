@@ -1,11 +1,10 @@
 import { watch } from '@vue/runtime-core'
+import { layerWheelHandler } from '~/application'
 import {
+  useCanvasBoundaries,
   useSharedLayer,
   useSharedLayerEvents,
-  useCanvasBoundaries,
 } from '~/composables'
-import { all } from '~/utils'
-import { layerWheelHandler } from '~/application'
 
 export function useLayerListenerWheel() {
   const { stage } = useSharedLayer()
@@ -13,10 +12,9 @@ export function useLayerListenerWheel() {
   const { restrictBoundaries } = useCanvasBoundaries()
 
   watch(wheel, () => {
-    all([stage, wheel] as const)
-      .map(layerWheelHandler)
-      .map(([vStage, vector]) => {
-        vStage.position(restrictBoundaries(vector))
-      })
+    if (stage.value && wheel.value) {
+      const [vStage, vector] = layerWheelHandler([stage.value, wheel.value])
+      vStage.position(restrictBoundaries(vector))
+    }
   })
 }

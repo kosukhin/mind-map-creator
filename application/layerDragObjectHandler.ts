@@ -1,4 +1,5 @@
 import { KonvaEventObject } from 'konva/lib/Node'
+import { Nullable } from './../entities/Nullable';
 import {
   Arrow,
   MapLayerObjects,
@@ -11,10 +12,10 @@ import {
 import { debug, maxNewLineLength, Maybe, newLineCount } from '~/utils'
 
 interface Result {
-  text: MaybeInst<[Text, Vector2d]>
-  additionalText: MaybeInst<[Text, Vector2d]>
-  arrows: MaybeInst<[Arrow, number[]][]>
-  relatedArrows: MaybeInst<[Arrow, number[]][]>
+  text: Nullable<[Text, Vector2d]>
+  additionalText: Nullable<[Text, Vector2d]>
+  arrows: Nullable<[Arrow, number[]][]>
+  relatedArrows: Nullable<[Arrow, number[]][]>
 }
 
 type Params = [KonvaEventObject<DragEvent>, MapStructure]
@@ -51,10 +52,10 @@ export const layerDragObjectHandler =
   ([dragEvent, vMap]: Params): Result => {
     debug('dragmove fired', 'dragmove')
     const result = {
-      text: Maybe<[Text, Vector2d]>(),
-      additionalText: Maybe<[Text, Vector2d]>(),
-      arrows: Maybe<[Arrow, number[]][]>(),
-      relatedArrows: Maybe<[Arrow, number[]][]>(),
+      text: null,
+      additionalText: null,
+      arrows: null,
+      relatedArrows: null,
     }
     if (!dragEvent.target.attrs.image) {
       debug('not image object', 'dragmove')
