@@ -4,10 +4,8 @@ import { useSharedOverlay } from '~/composables'
 export function useOverlayAutoClose(formName: string) {
   const { tryToClose, close } = useSharedOverlay()
   watch(tryToClose, () => {
-    tryToClose.map((vClose) => {
-      if (vClose === formName) {
-        close()
-      }
-    })
+    if (tryToClose.value && tryToClose.value === formName) {
+      close()
+    }
   })
 }

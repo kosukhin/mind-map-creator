@@ -17,20 +17,20 @@ export const useSharedLayerEvents = createSharedComposable(() => {
   const dragmove = shallowRef<KonvaEventObject<DragEvent>>()
 
   watch(layer, () => {
-    layer.map((vLayer) => {
-      vLayer.on('dragend', setValue(dragend))
-      vLayer.on('dragstart', setValue(dragstart))
-      vLayer.on('click', setValue(click))
-      vLayer.on('tap', setValue(tap))
-      vLayer.on('mouseenter', setValue(mouseenter))
-      vLayer.on('mouseleave', setValue(mouseleave))
-    })
-    stage.map((vStage) => {
-      vStage.on('wheel', setValue(wheel))
-      vStage.on('dragmove', setValue(dragmove))
-      vStage.on('click', setValue(stageClick))
-      vStage.on('tap', setValue(stageClick))
-    })
+    if (layer.value) {
+      layer.value.on('dragend', setValue(dragend))
+      layer.value.on('dragstart', setValue(dragstart))
+      layer.value.on('click', setValue(click))
+      layer.value.on('tap', setValue(tap))
+      layer.value.on('mouseenter', setValue(mouseenter))
+      layer.value.on('mouseleave', setValue(mouseleave))
+    }
+    if (stage.value) {
+      stage.value.on('wheel', setValue(wheel))
+      stage.value.on('dragmove', setValue(dragmove))
+      stage.value.on('click', setValue(stageClick))
+      stage.value.on('tap', setValue(stageClick))
+    }
   })
 
   return {

@@ -1,12 +1,12 @@
 import { KonvaEventObject } from 'konva/lib/Node'
-import { MapObject, MapStructure, MaybeInst } from '~/entities'
-import { Maybe } from '~/utils'
+import { Nullable } from './../entities/Nullable'
 import { SHOW_OBJECT } from '~/constants'
+import { MapObject, MapStructure } from '~/entities'
 
 interface Result {
-  currentObjectId: MaybeInst<number>
-  openUrlByObject: MaybeInst<MapObject>
-  overlayName: MaybeInst<string>
+  currentObjectId: Nullable<number>
+  openUrlByObject: Nullable<MapObject>
+  overlayName: Nullable<string>
 }
 
 type Params = [KonvaEventObject<MouseEvent | PointerEvent>, MapStructure]
@@ -14,23 +14,25 @@ type Params = [KonvaEventObject<MouseEvent | PointerEvent>, MapStructure]
 export const mapObjectClick =
   (isLocked: boolean) =>
   ([e, vMap]: Params): Result => {
-    const groupResult = {
-      currentObjectId: Maybe<number>(),
-      openUrlByObject: Maybe<MapObject>(),
-      overlayName: Maybe<string>(),
+    const groupResult: Result = {
+      currentObjectId: null,
+      openUrlByObject: null,
+      overlayName: null,
     }
     const objectId = e.target.attrs.objectId
 
     if (e.target.attrs.text && objectId) {
       const object = vMap.objects[objectId]
       if (object.linked) {
-        groupResult.openUrlByObject.value = object
+        groupResult.openUrlByObject = object
         return groupResult
       }
     }
-    groupResult.currentObjectId.value = objectId
+    groupResult.currentObjectId = objectId
+
     if (!isLocked) {
-      groupResult.overlayName.value = SHOW_OBJECT
+      groupResult.overlayName = SHOW_OBJECT
     }
+
     return groupResult
   }
