@@ -6,11 +6,11 @@ import { setValue } from '~/utils'
 export const useSharedNotify = createSharedComposable(() => {
   const message = ref<[string, string]>()
   watch(message, () => {
-    message.map(() => {
+    if (message.value) {
       setTimeout(() => {
         setValue(message, null)
       }, NOTIFY_DELAY)
-    })
+    }
   })
 
   return {

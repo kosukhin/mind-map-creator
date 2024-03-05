@@ -1,22 +1,23 @@
-import { useRoute } from 'vue-router'
-import { createSharedComposable } from '@vueuse/core'
-import { reactive, ref } from '@vue/reactivity'
+import { ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
-import { MapStructure, MapType } from '~/entities'
+import { createSharedComposable } from '@vueuse/core'
+import { useRoute } from 'vue-router'
+import { mapNormalizeBeforeSave } from '~/application'
 import {
-  useSharedNotify,
   useRequestGetMap,
   useRequestSaveMap,
+  useSharedNotify,
 } from '~/composables'
 import { MAP_UPDATED, NOTIFY_ERROR, NOTIFY_SUCCESS } from '~/constants'
-import { setError, setValue, setValues, MaybeError } from '~/utils'
-import { mapNormalizeBeforeSave } from '~/application'
+import { MapStructure, MapType } from '~/entities'
+import { setError, setValue, setValues } from '~/utils'
 
 export const useSharedMap = createSharedComposable(() => {
   const { message } = useSharedNotify()
   const firstMapLoad = ref(false)
   const parentTypes = ref<MapType[]>([])
   const map = ref<MapStructure>()
+  const mapError = ref({ error: null })
   const route = useRoute()
   const mapName = ref(route.path.replace('/', ''))
   const { getMap } = useRequestGetMap()
@@ -25,17 +26,17 @@ export const useSharedMap = createSharedComposable(() => {
   watch(
     map,
     () => {
-      map.map((vMap) => {
-        const normalMap = mapNormalizeBeforeSave(vMap, location.pathname)
+      if (map.value) {
+        const normalMap = mapNormalizeBeforeSave(map.value, location.pathname)
         saveMap(normalMap, mapName.value)
           .then(() => {
             setValue(message, [MAP_UPDATED, NOTIFY_SUCCESS])
           })
           .catch((e) => {
-            setError(map, String(e))
-            setValue(message, [map.error, NOTIFY_ERROR])
+            setError(mapError.value, String(e))
+            setValue(message, [mapError.value.error, NOTIFY_ERROR])
           })
-      })
+      }
     },
     {
       deep: true,
@@ -60,7 +61,7 @@ export const useSharedMap = createSharedComposable(() => {
             [firstMapLoad, true],
           ])
         })
-        .catch(setError(map))
+        .catch(setError(mapError.value))
     },
     {
       immediate: true,

@@ -10,7 +10,7 @@ import {
   useSharedOverlay,
   useSharedSideBar,
 } from '~/composables'
-import { all, openUrlByObject, setValue } from '~/utils'
+import { openUrlByObject } from '~/utils'
 
 export const useSharedLayerListenerClick = createSharedComposable(() => {
   const { click, tap, stageClick } = useSharedLayerEvents()
@@ -49,18 +49,21 @@ export const useSharedLayerListenerClick = createSharedComposable(() => {
   )
 
   watch(tap, () => {
-    all([tap, map] as const)
-      .map(mapObjectClick(isClickLocked.value))
-      .map((result) => {
-        all([result.currentObjectId, map] as const).map(([objectId, vMap]) => {
-          if (vMap.objects[objectId]) {
-            vMap.objects[objectId].lastClick = Date.now()
-            vMap.position = vMap.objects[objectId].position
-          }
-        })
-        result.currentObjectId.map(setValue(currentObjectId))
-        result.overlayName.map(setValue(overlayName))
-        result.openUrlByObject.map(openUrlByObject)
-      })
+    if (tap.value && map.value) {
+      const result = mapObjectClick(isClickLocked.value)([tap.value, map.value])
+
+      if (result.currentObjectId) {
+        if (map.value.objects[result.currentObjectId]) {
+          map.value.objects[result.currentObjectId].lastClick = Date.now()
+          map.value.position =
+            map.value.objects[result.currentObjectId].position
+        }
+      }
+      result.currentObjectId = currentObjectId.value ?? null
+      result.overlayName = overlayName.value ?? null
+      if (result.openUrlByObject) {
+        openUrlByObject(result.openUrlByObject)
+      }
+    }
   })
 })

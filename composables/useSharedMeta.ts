@@ -12,9 +12,9 @@ export const useSharedMeta = createSharedComposable(() => {
 
   const { firstMapLoad, map } = useSharedMap()
   watch(firstMapLoad, () => {
-    map.map((vMap) => {
-      head.title = vMap.settings.title
-    })
+    if (map.value) {
+      head.title = map.value.settings.title
+    }
   })
 
   return {

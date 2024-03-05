@@ -6,8 +6,8 @@ import { canvasCreateColorsHash } from '~/application'
 
 export const useSharedMapColors = createSharedComposable(() => {
   const { map } = useSharedMap()
-  const colorsHash = computed<Dictionary<string>>(
-    () => map.map(canvasCreateColorsHash).value as Dictionary<string>
+  const colorsHash = computed<Dictionary<string>>(() =>
+    canvasCreateColorsHash(map.value)
   )
 
   return {
