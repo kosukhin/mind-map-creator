@@ -6,7 +6,7 @@ import { useSharedMapColors } from '~/composables'
 import { maxNewLineLength, newLineCount } from '~/utils/common'
 
 export async function addObjectToLayer(
-  layer: InstanceType<typeof Layer>,
+  layer: Layer,
   object: MapObject,
   map: MapStructure,
   clickLocked = false

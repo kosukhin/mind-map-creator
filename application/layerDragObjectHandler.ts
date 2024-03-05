@@ -1,15 +1,14 @@
 import { KonvaEventObject } from 'konva/lib/Node'
-import { Nullable } from './../entities/Nullable';
+import { Nullable } from './../entities/Nullable'
 import {
   Arrow,
   MapLayerObjects,
   MapStructure,
-  MaybeInst,
   Stage,
   Text,
   Vector2d,
 } from '~/entities'
-import { debug, maxNewLineLength, Maybe, newLineCount } from '~/utils'
+import { debug, maxNewLineLength, newLineCount } from '~/utils'
 
 interface Result {
   text: Nullable<[Text, Vector2d]>

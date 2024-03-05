@@ -1,4 +1,3 @@
-import { all, map } from '~/utils'
 import { renderVisibleMapObjects } from '~/application/renderVisibleMapObjects'
 import { useSharedLayer, useSharedMap } from '~/composables'
 
@@ -7,7 +6,14 @@ export function useMapPartialRenderer() {
   const { map: sharedMap } = useSharedMap()
 
   const triggerPartialRendering = () => {
-    map(renderVisibleMapObjects(layerObjects))(all([stage, sharedMap, layer]))
+    if (stage.value && sharedMap.value && layer.value) {
+      renderVisibleMapObjects(
+        layerObjects,
+        stage.value,
+        sharedMap.value,
+        layer.value
+      )
+    }
   }
 
   return {

@@ -5,14 +5,8 @@ const { message } = useSharedNotify()
 </script>
 
 <template>
-  <div
-    v-if="!message.isNothing"
-    :class="[
-      'BaseNotify',
-      `BaseNotify_theme_${message.value && message.value[1]}`,
-    ]"
-  >
-    {{ message.value && message.value[0] }}
+  <div v-if="message" :class="['BaseNotify', `BaseNotify_theme_${message[1]}`]">
+    {{ message[0] }}
   </div>
 </template>
 

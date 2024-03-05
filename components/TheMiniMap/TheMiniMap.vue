@@ -1,23 +1,21 @@
 <script lang="ts" setup>
 import { useMiniMap } from '~/composables'
 
-const miniMap = ref<HTMLDivElement>()
-const setMiniMap = (vMiniMap) => {
-  miniMap.value = vMiniMap
-}
+const miniMap = ref()
 
-const miniMapScreen = ref<HTMLDivElement>()
-const setMiniMapScreen = (vMiniMapScreen) => {
-  miniMapScreen.value = vMiniMapScreen
-}
+const miniMapScreen = ref()
 
-useMiniMap(miniMap, miniMapScreen)
+onMounted(() => {
+  if (miniMap.value && miniMapScreen.value) {
+    useMiniMap(miniMap.value, miniMapScreen.value)
+  }
+})
 </script>
 
 <template>
   <div class="TheMiniMap-Wrapper">
-    <div :ref="setMiniMap" class="TheMiniMap"></div>
-    <div :ref="setMiniMapScreen" class="TheMiniMap-Screen"></div>
+    <div :ref="miniMap" class="TheMiniMap"></div>
+    <div :ref="miniMapScreen" class="TheMiniMap-Screen"></div>
   </div>
 </template>
 

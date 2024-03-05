@@ -4,7 +4,7 @@ import trim from 'lodash/trim.js'
 import { BASE_HOST, MAP_PARAM_NAME } from '~/constants'
 
 export const documentNormalize = (document: string | null) => {
-  document = trim(document, '/')
+  document = trim(String(document), '/')
   if (document && document.includes('/')) {
     document = '_' + document.replaceAll('/', '_')
   }

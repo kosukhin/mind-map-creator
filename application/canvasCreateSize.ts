@@ -1,11 +1,8 @@
-import flow from 'lodash/flow'
-import { argsToArray, constant, dc, getOrNull } from '~/utils/fp'
+import { Size } from '~/entities'
 
-export const canvasCreateSize = flow(
-  dc(
-    argsToArray,
-    dc(argsToArray, constant('w'), getOrNull('clientWidth')),
-    dc(argsToArray, constant('h'), getOrNull('clientHeight'))
-  ),
-  Object.fromEntries
-)
+export const canvasCreateSize = (canvasElement: HTMLElement): Size => {
+  return {
+    w: canvasElement.clientWidth,
+    h: canvasElement.clientHeight,
+  }
+}
