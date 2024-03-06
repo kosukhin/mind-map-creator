@@ -54,6 +54,16 @@
 					"label": "Events common listners"
 				}
 			]
+		},
+		{
+			"path": "composables/useMapRenderer.ts",
+			"bookmarks": [
+				{
+					"line": 17,
+					"column": 9,
+					"label": "Map render objects"
+				}
+			]
 		}
 	]
 }

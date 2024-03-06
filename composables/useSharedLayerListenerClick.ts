@@ -39,8 +39,8 @@ export const useSharedLayerListenerClick = createSharedComposable(() => {
               map.value.objects[result.currentObjectId].position
           }
         }
-        result.currentObjectId = currentObjectId.value ?? null
-        result.overlayName = overlayName.value ?? null
+        currentObjectId.value = result.currentObjectId ?? undefined
+        overlayName.value = result.overlayName ?? undefined
         if (result.openUrlByObject) {
           openUrlByObject(result.openUrlByObject)
         }
@@ -59,8 +59,8 @@ export const useSharedLayerListenerClick = createSharedComposable(() => {
             map.value.objects[result.currentObjectId].position
         }
       }
-      result.currentObjectId = currentObjectId.value ?? null
-      result.overlayName = overlayName.value ?? null
+      currentObjectId.value = result.currentObjectId ?? undefined
+      overlayName.value = result.overlayName ?? undefined
       if (result.openUrlByObject) {
         openUrlByObject(result.openUrlByObject)
       }

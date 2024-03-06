@@ -15,11 +15,11 @@ export function useMapRenderer() {
   const allInit = computed(() => !!layer.value && !!map.value)
 
   watch([layer, map], () => {
-    if (layer.value && map.value && maybeDragLocked.value) {
+    if (layer.value && map.value && !maybeDragLocked.value) {
       const dispatch = renderMapObjects([
         layer.value,
         map.value,
-        maybeDragLocked.value,
+        !!maybeDragLocked.value,
       ])
       dispatch((vObjects) => {
         vObjects.forEach(([objectId, objects]) => {
