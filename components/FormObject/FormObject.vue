@@ -2,6 +2,7 @@
 import { computed, ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import { useClipboard } from '@vueuse/core'
+import { omit } from 'lodash'
 import cloneDeep from 'lodash/cloneDeep'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseCheckbox from '~/components/BaseCheckbox/BaseCheckbox.vue'
@@ -74,7 +75,9 @@ watch(
   }
 )
 const isDirty = computed(
-  () => stringify(form.value) !== stringify(currentObject.value)
+  () =>
+    stringify(omit(form.value, ['lastClick'])) !==
+    stringify(omit(currentObject.value, ['lastClick']))
 )
 useFormDirtyCheck(isDirty, SHOW_OBJECT)
 

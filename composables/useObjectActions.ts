@@ -23,27 +23,26 @@ export function useObjectActions(needConfirm = true) {
 
     close()
     if (currentObject.value && map.value && layer.value) {
-      findRelationsToRemove(currentObject.value, map.value).map(
-        (relations: any) => {
-          relations.forEach((relation: any) => {
-            relation.indexes.forEach((indexToRemove: any) => {
-              map.value?.objects[relation.objectId].arrows.splice(
-                indexToRemove,
-                1
-              )
-            })
-
-            if (map.value && layer.value) {
-              updateObjectOnLayer(
-                layerObjects,
-                layer.value,
-                map.value.objects[relation.objectId],
-                map.value
-              )
-            }
+      const relations = findRelationsToRemove(currentObject.value, map.value)
+      relations?.map((relations: any) => {
+        relations.forEach((relation: any) => {
+          relation.indexes.forEach((indexToRemove: any) => {
+            map.value?.objects[relation.objectId].arrows.splice(
+              indexToRemove,
+              1
+            )
           })
-        }
-      )
+
+          if (map.value && layer.value) {
+            updateObjectOnLayer(
+              layerObjects,
+              layer.value,
+              map.value.objects[relation.objectId],
+              map.value
+            )
+          }
+        })
+      })
       delete map.value.objects[currentObject.value.id]
       removeObjectOnLayer(layerObjects, currentObject.value)
     }

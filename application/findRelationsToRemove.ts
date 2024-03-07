@@ -5,7 +5,7 @@ type RelativeObject = { objectId: string; indexes: string[] }
 export const findRelationsToRemove = (
   vObject: MapObject,
   vMap: MapStructure
-) => {
+): any => {
   let relations: any[] | null = null
   Object.values(vMap.objects).forEach((currentObject) => {
     const result: RelativeObject = { objectId: currentObject.id, indexes: [] }

@@ -8,12 +8,17 @@ import { setValue } from '~/utils'
 export function useFormDirtyCheck(isDirty: Ref<boolean>, formName: string) {
   const { tryToClose, close } = useSharedOverlay()
   watch(tryToClose, () => {
-    if (tryToClose.value) {
+    if (tryToClose.value === formName) {
       const needConfirm = formDirtyCheck(
         isDirty.value,
         formName,
         tryToClose.value
       )
+
+      if (!needConfirm) {
+        setValue(tryToClose, OVERLAY_CLOSE)
+        close()
+      }
 
       if (needConfirm) {
         setValue(tryToClose, OVERLAY_CLOSE)

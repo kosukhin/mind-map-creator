@@ -6,6 +6,15 @@
   border: solid 1px var(--borderColor);
   border-radius: var(--defaultRadius);
 
+  &-Point {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 5px;
+    background: #f00;
+  }
+
   &-Wrapper {
     position: relative;
     overflow: hidden;

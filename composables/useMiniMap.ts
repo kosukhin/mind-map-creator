@@ -21,23 +21,6 @@ export const useMiniMap = (
   const { dragmove, wheel } = useSharedLayerEvents()
 
   watchOnce(firstMapLoad, () => {
-    if (
-      layer.value &&
-      stage.value &&
-      miniMap &&
-      miniMapScreen &&
-      canvasSize.value
-    ) {
-      const { redrawPreviewLayer } = miniMapRedrawHandler([
-        layer.value,
-        stage.value,
-        miniMap,
-        miniMapScreen,
-        canvasSize.value,
-      ])
-      setTimeout(redrawPreviewLayer)
-    }
-
     if (canvasSize.value) {
       const [miniMapSizes, miniMapScreenSizes] = miniMapCalculateSizes([
         canvasSize.value,

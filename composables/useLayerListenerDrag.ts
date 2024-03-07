@@ -35,6 +35,27 @@ export function useLayerListenerDrag() {
 
   watch(dragmove, () => {
     if (isDragLocked.value) return
+
+    if (dragmove.value && map.value) {
+      const { text, arrows, relatedArrows, additionalText } =
+        layerDragObjectHandler(layerObjects)([dragmove.value, map.value])
+
+      if (text) {
+        const [vText, position] = text
+        vText.position(position)
+      }
+      if (arrows) {
+        applyArrowPoints(arrows)
+      }
+      if (relatedArrows) {
+        applyArrowPoints(relatedArrows)
+      }
+      if (additionalText) {
+        const [vText, position] = additionalText
+        vText.position(position)
+      }
+    }
+
     if (stage.value && dragmove.value && canvasSize.value) {
       if (
         dragmove.value.evt instanceof PointerEvent ||
@@ -73,25 +94,6 @@ export function useLayerListenerDrag() {
             )
           }
         }, 30)
-      }
-    }
-
-    if (dragmove.value && map.value) {
-      const { text, arrows, relatedArrows, additionalText } =
-        layerDragObjectHandler(layerObjects)([dragmove.value, map.value])
-      if (text) {
-        const [vText, position] = text
-        vText.position(position)
-      }
-      if (arrows) {
-        applyArrowPoints(arrows)
-      }
-      if (relatedArrows) {
-        applyArrowPoints(relatedArrows)
-      }
-      if (additionalText) {
-        const [vText, position] = additionalText
-        vText.position(position)
       }
     }
   })

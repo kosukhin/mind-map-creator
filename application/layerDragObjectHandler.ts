@@ -51,10 +51,10 @@ export const layerDragObjectHandler =
   ([dragEvent, vMap]: Params): Result => {
     debug('dragmove fired', 'dragmove')
     const result = {
-      text: null,
-      additionalText: null,
-      arrows: null,
-      relatedArrows: null,
+      text: null as any,
+      additionalText: null as any,
+      arrows: null as any,
+      relatedArrows: null as any,
     }
     if (!dragEvent.target.attrs.image) {
       debug('not image object', 'dragmove')
@@ -70,7 +70,7 @@ export const layerDragObjectHandler =
     if (additionalText) {
       const labelWidth = maxNewLineLength(object.additionalName) * 7
       const labelHeight = newLineCount(object.additionalName) * 11
-      result.additionalText.value = [
+      result.additionalText = [
         additionalText,
         {
           x: dragEvent.target.attrs.x + type.width / 2 - labelWidth / 2,
@@ -78,7 +78,7 @@ export const layerDragObjectHandler =
         },
       ]
     }
-    result.text.value = [
+    result.text = [
       text,
       {
         x: dragEvent.target.attrs.x + type.width / 2 - labelWidth / 2,
@@ -92,7 +92,7 @@ export const layerDragObjectHandler =
       points[1] = dragEvent.target.attrs.y + type.height / 2
       resultArrows.push([arrow, points])
     })
-    result.arrows.value = resultArrows
+    result.arrows = resultArrows
     const relatedArrows: Arrow[] = []
     Object.values(vMap.objects).forEach((relObject) => {
       if (!relObject.arrows) return
@@ -116,6 +116,6 @@ export const layerDragObjectHandler =
       points[3] = dragEvent.target.attrs.y + type.height / 2
       resultRelatedArrows.push([relArrow, points])
     })
-    result.relatedArrows.value = resultRelatedArrows
+    result.relatedArrows = resultRelatedArrows
     return result
   }

@@ -64,6 +64,16 @@
 					"label": "Map render objects"
 				}
 			]
+		},
+		{
+			"path": "application/formDirtyCheck.ts",
+			"bookmarks": [
+				{
+					"line": 0,
+					"column": 9,
+					"label": "Dirty check"
+				}
+			]
 		}
 	]
 }
