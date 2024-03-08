@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NuxtPwaManifest />
+    <NuxtPwaAssets />
     <NuxtPage />
   </div>
 </template>

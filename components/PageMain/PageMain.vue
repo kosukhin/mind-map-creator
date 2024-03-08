@@ -11,6 +11,7 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
+// TODO Проверить создание новых файлов, там проблемы
 // TODO подумать как сохранять пути к проектам открытым ранее
 // TODO поисковый индекс нужно исправить, сохранять индекс в проекте
 // TODO сделать шаблоны внутри SVG чтобы писать текст внутри картинок

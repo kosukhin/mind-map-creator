@@ -11,7 +11,27 @@ export default defineNuxtConfig({
     '@/assets/styles/transitions.scss',
   ],
   modules: ['@nuxtjs/i18n', '@vite-pwa/nuxt'],
-  pwa: {},
+  pwa: {
+    mode: 'production',
+    disable: false,
+    scope: '/',
+    srcDir: './service-worker',
+    filename: 'sw.ts',
+    strategies: 'injectManifest',
+    injectRegister: false,
+    includeManifestIcons: false,
+    manifest: false,
+    injectManifest: {
+      globPatterns: [
+        '**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf,wasm}',
+      ],
+      globIgnores: ['emojis/**', 'manifest**.webmanifest'],
+    },
+    devOptions: {
+      enabled: false,
+      type: 'module',
+    },
+  },
   i18n: {
     vueI18n: './i18n.config.ts',
   },
