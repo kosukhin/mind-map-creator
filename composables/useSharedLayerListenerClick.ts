@@ -1,6 +1,6 @@
 import { watch } from '@vue/runtime-core'
 import { createSharedComposable } from '@vueuse/core'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import { mapObjectClick } from '~/application'
 import {
   useSharedLayerEvents,
@@ -24,46 +24,41 @@ export const useSharedLayerListenerClick = createSharedComposable(() => {
     isSidebarOpen.value = false
   })
 
-  watch(
-    click,
-    debounce(() => {
-      if (click.value && map.value) {
-        const result = mapObjectClick(isClickLocked.value)([
-          click.value,
-          map.value,
-        ])
-        if (result.currentObjectId && map.value) {
-          if (map.value.objects[result.currentObjectId]) {
-            map.value.objects[result.currentObjectId].lastClick = Date.now()
-            map.value.position =
-              map.value.objects[result.currentObjectId].position
-          }
-        }
-        currentObjectId.value = result.currentObjectId ?? undefined
-        overlayName.value = result.overlayName ?? undefined
-        if (result.openUrlByObject) {
-          openUrlByObject(result.openUrlByObject)
-        }
-      }
-    }, 200)
-  )
-
-  watch(tap, () => {
-    if (tap.value && map.value) {
-      const result = mapObjectClick(isClickLocked.value)([tap.value, map.value])
-
-      if (result.currentObjectId) {
+  const onClick = (eventRef: Ref<any>) => {
+    if (eventRef.value && map.value) {
+      const result = mapObjectClick(isClickLocked.value)([
+        eventRef.value,
+        map.value,
+      ])
+      if (result.currentObjectId && map.value) {
         if (map.value.objects[result.currentObjectId]) {
           map.value.objects[result.currentObjectId].lastClick = Date.now()
           map.value.position =
             map.value.objects[result.currentObjectId].position
         }
       }
-      currentObjectId.value = result.currentObjectId ?? undefined
-      overlayName.value = result.overlayName ?? undefined
       if (result.openUrlByObject) {
         openUrlByObject(result.openUrlByObject)
       }
+      if (
+        result.currentObjectId &&
+        !result.openUrlByObject &&
+        map.value.objects[result.currentObjectId]
+      ) {
+        currentObjectId.value = result.currentObjectId ?? undefined
+        overlayName.value = result.overlayName ?? undefined
+      }
     }
+  }
+
+  watch(
+    click,
+    debounce(() => {
+      onClick(click)
+    }, 200)
+  )
+
+  watch(tap, () => {
+    onClick(tap)
   })
 })

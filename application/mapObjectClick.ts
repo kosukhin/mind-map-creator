@@ -23,7 +23,7 @@ export const mapObjectClick =
 
     if (e.target.attrs.text && objectId) {
       const object = vMap.objects[objectId]
-      if (object.linked) {
+      if (object?.linked) {
         groupResult.openUrlByObject = object
         return groupResult
       }

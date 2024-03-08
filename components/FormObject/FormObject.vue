@@ -172,7 +172,7 @@ const { removeCurrentObject } = useObjectActions()
           }}
         </div>
       </div>
-      <div v-else class="FormObject-Inner" @change="isDirty = true">
+      <div v-else class="FormObject-Inner">
         <div class="FormObject-Row">
           <BaseCheckbox
             v-model="form.linked"
