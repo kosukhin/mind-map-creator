@@ -12,24 +12,12 @@ export default defineNuxtConfig({
   ],
   modules: ['@nuxtjs/i18n', '@vite-pwa/nuxt'],
   pwa: {
-    mode: 'production',
-    disable: false,
-    scope: '/',
-    srcDir: './service-worker',
-    filename: 'sw.ts',
-    strategies: 'injectManifest',
-    injectRegister: false,
-    includeManifestIcons: false,
-    manifest: false,
-    injectManifest: {
-      globPatterns: [
-        '**/*.{js,json,css,html,txt,svg,png,ico,webp,woff,woff2,ttf,eot,otf,wasm}',
-      ],
-      globIgnores: ['emojis/**', 'manifest**.webmanifest'],
-    },
-    devOptions: {
-      enabled: false,
-      type: 'module',
+    devOptions: { enabled: true },
+    manifest: {
+      name: 'Mind Map Creator',
+      short_name: 'MMC',
+      description: 'Editor to create mind maps',
+      theme_color: '#fff',
     },
   },
   i18n: {

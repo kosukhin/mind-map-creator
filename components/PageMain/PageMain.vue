@@ -11,6 +11,7 @@ import { useRequestCreateMap, useRequestSearch } from '~/composables'
 import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
+// TODO Сделать открытие файла, тк на мобиле не работает открытие папки
 // TODO Проверить создание новых файлов, там проблемы
 // TODO подумать как сохранять пути к проектам открытым ранее
 // TODO поисковый индекс нужно исправить, сохранять индекс в проекте
