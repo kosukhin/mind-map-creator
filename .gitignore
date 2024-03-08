@@ -13,4 +13,3 @@ search-index/*.json
 deploy.sh
 public/maps
 public/search-index
-sw.*
