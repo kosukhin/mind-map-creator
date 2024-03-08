@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useHead({
-  link: [{ rel: 'manifest', href: '/manifest.webmanifest' }],
+  link: [{ rel: 'manifest', href: '/manifest.json' }],
 })
 </script>
 
