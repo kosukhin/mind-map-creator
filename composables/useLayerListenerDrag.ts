@@ -1,5 +1,6 @@
 import { watch } from '@vue/runtime-core'
 import Konva from 'konva'
+import throttle from 'lodash/throttle'
 import debounce from 'lodash/debounce'
 import { layerDragHandler, layerDragObjectHandler } from '~/application'
 import {
@@ -98,11 +99,11 @@ export function useLayerListenerDrag() {
     }
   })
 
-  const partialRenderingDelay = 100
+  const partialRenderingDelay = 250
   watch(
     dragmove,
-    debounce((e) => {
-      if (e.value?.target && e.value.target instanceof Konva.Stage) {
+    throttle((e) => {
+      if (e.target && e.target instanceof Konva.Stage) {
         triggerPartialRendering()
       }
     }, partialRenderingDelay)

@@ -74,6 +74,16 @@
 					"label": "Dirty check"
 				}
 			]
+		},
+		{
+			"path": "application/renderVisibleMapObjects.ts",
+			"bookmarks": [
+				{
+					"line": 4,
+					"column": 9,
+					"label": "Render visible objects"
+				}
+			]
 		}
 	]
 }
