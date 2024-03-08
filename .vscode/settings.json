@@ -1,5 +1,6 @@
 {
     "npm-scripts.showStartNotification": false,
     "typescript.tsdk": "node_modules/typescript/lib",
+    "gitlens.currentLine.enabled": false,
     "inline-bookmarks.view.showVisibleFilesOnly": true
 }

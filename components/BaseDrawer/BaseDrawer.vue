@@ -23,8 +23,6 @@ const classes = computed(() => ({
 
 const { overlayName, tryToClose } = useSharedOverlay()
 const close = () => {
-  console.log('close')
-
   tryToClose.value = props.name as string
 }
 const isOpened = ref(false)

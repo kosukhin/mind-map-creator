@@ -11,8 +11,6 @@ export const miniMapRedrawHandler = ([vStage, vMiniMapScreen]: Params) => {
     const miniScreenX = vStage.x() * scale * -1
     const miniScreenY = vStage.y() * scale * -1
 
-    console.log('minscreen', vMiniMapScreen)
-
     setElementPosition(vMiniMapScreen, [miniScreenY, miniScreenX])
     return [vMiniMapScreen, miniScreenX, miniScreenY]
   }

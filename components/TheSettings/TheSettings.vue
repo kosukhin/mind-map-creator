@@ -2,6 +2,7 @@
 import { computed, ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import { useI18n } from 'vue-i18n'
+import { omit } from 'lodash'
 import {
   SHOW_SETTINGS,
   SHOW_JSON,
@@ -63,7 +64,9 @@ watch(ctrlSFired, () => {
 })
 
 const isDirty = computed(
-  () => stringify(form.value) !== stringify(map.value?.settings)
+  () =>
+    stringify(omit(form.value, ['prevFavoriteGroup'])) !==
+    stringify(omit(map.value?.settings, ['prevFavoriteGroup']))
 )
 useFormDirtyCheck(isDirty, SHOW_SETTINGS)
 </script>

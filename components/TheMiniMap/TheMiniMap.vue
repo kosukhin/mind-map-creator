@@ -17,8 +17,8 @@ const scaledPos = (pos: number) => (pos * MINIMAP_SCALE).toFixed(2) + 'px'
 
 <template>
   <div class="TheMiniMap-Wrapper">
-    <div :ref="miniMap" class="TheMiniMap"></div>
-    <div :ref="miniMapScreen" class="TheMiniMap-Screen"></div>
+    <div ref="miniMap" class="TheMiniMap"></div>
+    <div ref="miniMapScreen" class="TheMiniMap-Screen"></div>
     <div v-if="map">
       <div
         v-for="obj in map.objects"

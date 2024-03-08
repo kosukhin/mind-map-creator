@@ -21,18 +21,20 @@ export const useMiniMap = (
   const { dragmove, wheel } = useSharedLayerEvents()
 
   watchOnce(firstMapLoad, () => {
-    if (canvasSize.value) {
-      const [miniMapSizes, miniMapScreenSizes] = miniMapCalculateSizes([
-        canvasSize.value,
-      ])
+    setTimeout(() => {
+      if (canvasSize.value) {
+        const [miniMapSizes, miniMapScreenSizes] = miniMapCalculateSizes([
+          canvasSize.value,
+        ])
 
-      if (miniMap && miniMapScreen) {
-        miniMap.style.width = miniMapSizes.w + 'px'
-        miniMap.style.height = miniMapSizes.h + 'px'
-        miniMapScreen.style.width = miniMapScreenSizes.w + 'px'
-        miniMapScreen.style.height = miniMapScreenSizes.h + 'px'
+        if (miniMap && miniMapScreen) {
+          miniMap.style.width = miniMapSizes.w + 'px'
+          miniMap.style.height = miniMapSizes.h + 'px'
+          miniMapScreen.style.width = miniMapScreenSizes.w + 'px'
+          miniMapScreen.style.height = miniMapScreenSizes.h + 'px'
+        }
       }
-    }
+    })
   })
 
   watch(
@@ -47,11 +49,8 @@ export const useMiniMap = (
           canvasSize.value
         ) {
           const { calculateMiniScreen } = miniMapRedrawHandler([
-            layer.value,
             stage.value,
-            miniMap,
             miniMapScreen,
-            canvasSize.value,
           ])
           const [vMiniMapScreen, miniScreenX, miniScreenY] =
             calculateMiniScreen()
