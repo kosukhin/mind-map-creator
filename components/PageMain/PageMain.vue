@@ -12,7 +12,7 @@ import { setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
 // TODO подумать как сохранять пути к проектам открытым ранее
-// TODO поисковый индекс нужно исправить
+// TODO поисковый индекс нужно исправить, сохранять индекс в проекте
 // TODO сделать шаблоны внутри SVG чтобы писать текст внутри картинок
 
 const i18n = useI18n()
@@ -51,6 +51,7 @@ watch(
 const { getMap } = useRequestGetMap()
 const topMapsWithNames = ref<any>([])
 const favorites = ref<any>({})
+const favoriteGroups = ref<string[]>([])
 
 watch(
   topMaps,
@@ -66,23 +67,28 @@ watch(
       favorite: f[0].settings.favoriteGroup,
     }))
 
-    favorites.value = files.reduce((acc: any, f) => {
-      const group = String(f[0].settings.favoriteGroup)
-      if (!group) {
-        return acc
-      }
-
-      if (!acc[group]) {
-        acc[group] = []
-      }
-
-      acc[group].push({
-        title: f[0].settings.title,
-        url: f[0].url,
+    favorites.value = files
+      .sort((a: any, b: any) => {
+        return String(a[0].settings.title) > String(b[0].settings.title) ? a : b
       })
+      .reduce((acc: any, f) => {
+        const group = String(f[0].settings.favoriteGroup)
+        if (!group || group === 'undefined') {
+          return acc
+        }
 
-      return acc
-    }, {})
+        if (!acc[group]) {
+          acc[group] = []
+        }
+
+        acc[group].push({
+          title: f[0].settings.title,
+          url: f[0].url,
+        })
+
+        return acc
+      }, {})
+    favoriteGroups.value = Object.keys(favorites.value).sort()
   },
   {
     immediate: true,
@@ -121,12 +127,12 @@ const onOpenFiles = async () => {
         <a :href="result.url">{{ result.name }}</a>
         [{{ result.url }}]
       </div>
-      <h3 class="PageMain-SubTitle">Избранное</h3>
+      <h3 class="PageMain-SubTitle">{{ $t('general.favorites') }}</h3>
       <div>
-        <div v-for="(links, group) in favorites" :key="group">
+        <div v-for="group in favoriteGroups" :key="group">
           <b>{{ group }}</b
           >:
-          <span v-for="favorite in links" :key="favorite.url">
+          <span v-for="favorite in favorites[group]" :key="favorite.url">
             <NuxtLink :to="favorite.url">{{ favorite.title }}</NuxtLink>
             &nbsp;
           </span>

@@ -69,6 +69,7 @@
     "githubRepo": "GitHub repository",
     "newType": "New type",
     "progressStatistic": "Progress statistic",
+    "favorites": "Favorites",
     "notifications": {
       "sureDelete": "Are you sure to remove?",
       "sharingDontSupported": "Share is not supported",

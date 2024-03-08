@@ -1,6 +1,3 @@
-import path from 'path'
-import { viteStaticCopy } from 'vite-plugin-static-copy'
-
 const packageJson = require('./package.json')
 const lastArg = process.argv[process.argv.length - 1]
 
@@ -13,7 +10,8 @@ export default defineNuxtConfig({
     '@/assets/styles/reset.scss',
     '@/assets/styles/transitions.scss',
   ],
-  modules: ['@nuxtjs/i18n'],
+  modules: ['@nuxtjs/i18n', '@vite-pwa/nuxt'],
+  pwa: {},
   i18n: {
     vueI18n: './i18n.config.ts',
   },
@@ -24,27 +22,6 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [
-      viteStaticCopy({
-        targets: [
-          {
-            src: path.resolve(
-              __dirname,
-              './node_modules/svgedit/dist/editor/images/*.svg'
-            ),
-            dest: path.resolve(__dirname, './public/images'),
-          },
-          {
-            src: path.resolve(__dirname, './maps/*.json'),
-            dest: path.resolve(__dirname, './public/maps'),
-          },
-          {
-            src: path.resolve(__dirname, './search-index/*'),
-            dest: path.resolve(__dirname, './public/search-index'),
-          },
-        ],
-      }),
-    ],
     css: {
       preprocessorOptions: {
         scss: {

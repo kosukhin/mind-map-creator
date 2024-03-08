@@ -11,6 +11,6 @@ dist
 maps/*.json
 search-index/*.json
 deploy.sh
-public/images
 public/maps
 public/search-index
+sw.*

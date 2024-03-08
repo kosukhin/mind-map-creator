@@ -34,8 +34,8 @@ export const calculateVisibleObjects = (vMap: MapStructure, vStage: Stage) => {
       -objectY > stageEndY
     )
   }
-  const visible = []
-  const invisible = []
+  const visible: any[] = []
+  const invisible: any[] = []
   Object.values(objects).forEach((object) => {
     if (isInBoundings(object.position)) {
       visible.push(object)
