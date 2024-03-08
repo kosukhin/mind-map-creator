@@ -1,5 +1,10 @@
+<script setup lang="ts">
+useHead({
+  link: [{ rel: 'manifest', href: '/manifest.webmanifest' }],
+})
+</script>
+
 <template>
-  <VitePwaManifest />
   <div>
     <NuxtPage />
   </div>

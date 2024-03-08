@@ -11,15 +11,6 @@ export default defineNuxtConfig({
     '@/assets/styles/transitions.scss',
   ],
   modules: ['@nuxtjs/i18n', '@vite-pwa/nuxt'],
-  pwa: {
-    devOptions: { enabled: true },
-    manifest: {
-      name: 'Mind Map Creator',
-      short_name: 'MMC',
-      description: 'Editor to create mind maps',
-      theme_color: '#fff',
-    },
-  },
   i18n: {
     vueI18n: './i18n.config.ts',
   },
