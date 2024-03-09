@@ -10,8 +10,9 @@
     "file_handlers": [{
       "action": "/",
       "accept": {
-        "application/json": [".json"]
-      }
+        "text/json": [".json"]
+      },
+      "launch_type": "single-client"
     }],
     "icons": [
         {
