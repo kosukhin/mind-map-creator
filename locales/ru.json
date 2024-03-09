@@ -72,6 +72,8 @@
     "newType": "Новый тип",
     "progressStatistic": "Статистика прогресса",
     "favorites": "Избранное",
+    "openProject": "Открыть проект",
+    "openFile": "Открыть файл",
     "notifications": {
       "sureDelete": "Вы уверены что нужно удалить?",
       "sharingDontSupported": "Шаринг не поддерживается",

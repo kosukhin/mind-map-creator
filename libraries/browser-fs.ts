@@ -13,6 +13,13 @@ export const topMaps = computed(() => {
   return maps.files.filter((map) => map.name[0] !== '_')
 })
 
+export const onMapsChanged = (fn: Function) => {
+  const handler = watch(maps, () => {
+    fn(maps)
+    handler()
+  })
+}
+
 export const openDirectory = () => {}
 
 export const setFiles = (blobs: File[]) => {

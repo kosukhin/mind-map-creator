@@ -2,16 +2,15 @@
 import { ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import { useSeoMeta } from '@vueuse/head'
-import { directoryOpen } from 'browser-fs-access'
+import { directoryOpen, fileOpen } from 'browser-fs-access'
 import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import { useRequestCreateMap, useRequestSearch } from '~/composables'
-import { setFiles, topMaps } from '~/libraries/browser-fs'
+import { onMapsChanged, setFiles, topMaps } from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
-// TODO Сделать открытие файла, тк на мобиле не работает открытие папки
 // TODO Проверить создание новых файлов, там проблемы
 // TODO подумать как сохранять пути к проектам открытым ранее
 // TODO поисковый индекс нужно исправить, сохранять индекс в проекте
@@ -110,12 +109,35 @@ const onOpenFiles = async () => {
   })
   setFiles(blobs as File[])
 }
+
+const router = useRouter()
+const onOpenOneFile = async () => {
+  const blob = await fileOpen()
+
+  onMapsChanged(async (maps: any) => {
+    const lastIndex = maps.files.length - 1
+    const mapObject = await getMap(maps.files[lastIndex].url)
+    router.push(mapObject[0].url)
+  })
+
+  setFiles([blob])
+}
 </script>
 
 <template>
   <div class="PageMain scrollable">
-    <h2 class="PageMain-Title">Mind-Map-Creator</h2>
-    <BaseButton @click="onOpenFiles">Открыть проект</BaseButton>
+    <h2 class="PageMain-Title">
+      <img src="/icon-192x192.png" width="100" height="100" alt="mmc" />
+      Mind Map Creator
+    </h2>
+    <div class="PageMain-ButtonGroup">
+      <BaseButton @click="onOpenFiles">
+        {{ $t('general.openProject') }}
+      </BaseButton>
+      <BaseButton @click="onOpenOneFile">
+        {{ $t('general.openFile') }}
+      </BaseButton>
+    </div>
     <template v-if="topMaps.length">
       <br />
       <div v-if="lastSearchDate" class="PageMain-Row">

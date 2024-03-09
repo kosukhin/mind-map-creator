@@ -19,6 +19,12 @@
     margin-bottom: var(--mbExMd);
   }
 
+  &-Title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   &-Files {
     display: flex;
     flex-direction: row;
@@ -28,6 +34,11 @@
 
   &-Button {
     max-width: 200px;
+  }
+
+  &-ButtonGroup {
+    display: flex;
+    gap: 16px;
   }
 
   &-NewMap {
