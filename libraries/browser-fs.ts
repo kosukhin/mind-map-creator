@@ -10,7 +10,7 @@ export const maps: GetMapsResponse = reactive({
   files: [],
 })
 export const topMaps = computed(() => {
-  return maps.files.filter((map) => map.name[0] !== '_')
+  return maps.files.filter((map: any) => map.name[0] !== '_' || map.persistent)
 })
 
 export const onMapsChanged = (fn: Function) => {
@@ -29,10 +29,13 @@ export const setFiles = (blobs: File[]) => {
   blobs.forEach((blob) => {
     files[blob.name] = blob
   })
-  maps.files = getFileNames().map((name) => ({
-    name,
-    url: name.replace('.json', ''),
-  }))
+  maps.files = Object.entries(files).map(([name, file]) => {
+    return {
+      name,
+      url: name.replace('.json', ''),
+      persistent: (file as any).persistent,
+    }
+  })
 }
 
 export const getDirectoryHandler = () => directoryHandler

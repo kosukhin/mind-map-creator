@@ -49,6 +49,7 @@
     "browser-fs-access": "^0.35.0",
     "canvg": "^4.0.1",
     "color-blend": "^4.0.0",
+    "dexie": "^3.2.6",
     "fp-ts": "^2.13.1",
     "konva": "^8.4.2",
     "lodash": "^4.17.21",

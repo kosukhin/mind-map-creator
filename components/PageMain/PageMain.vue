@@ -122,6 +122,18 @@ const onOpenOneFile = async () => {
 
   setFiles([blob])
 }
+
+useIdbGetMap()
+  .getMaps()
+  .then((v: any) => {
+    const files = v.map((item: any) => {
+      const file = new File([item.content], item.name) as any
+      file.persistent = true
+      return file
+    })
+
+    setFiles(files)
+  })
 </script>
 
 <template>
