@@ -7,6 +7,12 @@
     "name": "Mind Map Creator",
     "short_name": "MMC",
     "description": "Mind map editor",
+    "file_handlers": [{
+      "action": "/",
+      "accept": {
+        "application/json": [".json"]
+      }
+    }],
     "icons": [
         {
             "src": "/icon-192x192.png",
