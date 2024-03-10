@@ -69,11 +69,20 @@ const isDirty = computed(
     stringify(omit(map.value?.settings, ['prevFavoriteGroup']))
 )
 useFormDirtyCheck(isDirty, SHOW_SETTINGS)
+
+const onDownloadMap = () => {
+  if (map.value) {
+    downloadFile(createMapFileNameFromUrl(map.value), JSON.stringify(map.value))
+  }
+}
 </script>
 
 <template>
   <div class="TheSettings">
     <div class="TheSettings-Content">
+      <a href="#" class="PageEditor-Download" @click.prevent="onDownloadMap">
+        Скачать карту
+      </a>
       <div class="TheSettings-Row">
         <div class="TheSettings-ButtonGroup">
           <BaseButton

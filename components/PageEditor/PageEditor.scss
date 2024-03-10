@@ -36,6 +36,11 @@
     }
   }
 
+  &-Download {
+    display: block;
+    margin-top: 8px;
+  }
+
   &-SelectionLocker {
     visibility: hidden;
     display: flex;

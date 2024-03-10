@@ -5,6 +5,7 @@ import {
   Arrow,
   KonvaLayerObject,
   Layer,
+  Map,
   MapObject,
   MapStructure,
   Nullable,
@@ -69,6 +70,16 @@ export function createMapObjectUrl(object: MapObject) {
       )
   link = urlTrim(link)
   return link
+}
+
+export const createMapFileNameFromUrl = (object: MapStructure) => {
+  const url = object.url
+  let docName = url.replaceAll('/', '_') + '.json'
+  const underscores = docName.match(/_/g)
+  if (underscores && underscores.length === 1) {
+    docName = docName.slice(1)
+  }
+  return slugify(docName)
 }
 
 const openExternalLink = debounce((link: string) => {

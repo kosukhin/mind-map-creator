@@ -1,7 +1,8 @@
+import { ref } from '@vue/reactivity'
 import { GetMapsResponse } from '~/entities'
 import { documentNormalize } from '~/utils'
 
-let directoryHandler: FileSystemDirectoryHandle | null = null
+export const directoryHandler = ref<FileSystemDirectoryHandle | null>(null)
 const files: Record<string, File> = {}
 export const maps: GetMapsResponse = reactive({
   ok: true,
@@ -22,9 +23,22 @@ export const onMapsChanged = (fn: Function) => {
 
 export const openDirectory = () => {}
 
+export const addFiles = (blobs: File[]) => {
+  blobs.forEach((blob) => {
+    files[blob.name] = blob
+  })
+  maps.files = Object.entries(files).map(([name, file]) => {
+    return {
+      name,
+      url: name.replace('.json', ''),
+      persistent: (file as any).persistent,
+    }
+  })
+}
+
 export const setFiles = (blobs: File[]) => {
   if (blobs[0]) {
-    directoryHandler = (blobs[0] as any).directoryHandle
+    directoryHandler.value = (blobs[0] as any).directoryHandle
   }
   blobs.forEach((blob) => {
     files[blob.name] = blob
@@ -38,7 +52,7 @@ export const setFiles = (blobs: File[]) => {
   })
 }
 
-export const getDirectoryHandler = () => directoryHandler
+export const getDirectoryHandler = () => directoryHandler.value
 
 const filesContents = new WeakMap()
 export const readFile = async (blob: File) => {

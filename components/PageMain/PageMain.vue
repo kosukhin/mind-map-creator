@@ -8,13 +8,19 @@ import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import { useRequestCreateMap, useRequestSearch } from '~/composables'
-import { onMapsChanged, setFiles, topMaps } from '~/libraries/browser-fs'
+import {
+  directoryHandler,
+  onMapsChanged,
+  setFiles,
+  topMaps,
+} from '~/libraries/browser-fs'
 import { urlTrim } from '~/utils'
 
-// TODO Проверить создание новых файлов, там проблемы
-// TODO подумать как сохранять пути к проектам открытым ранее
+// TODO Поправить удаление файлов
 // TODO поисковый индекс нужно исправить, сохранять индекс в проекте
+// TODO подумать как сохранять пути к проектам открытым ранее
 // TODO сделать шаблоны внутри SVG чтобы писать текст внутри картинок
+// TODO открытие json  файлов с помощью PWA приложения
 
 const i18n = useI18n()
 useSeoMeta({
@@ -150,6 +156,15 @@ useIdbGetMap()
         {{ $t('general.openFile') }}
       </BaseButton>
     </div>
+    <div v-if="directoryHandler" class="PageMain-NewMap">
+      <BaseInput
+        v-model="newMapName"
+        :placeholder="$t('pageMain.specifyNewCardName')"
+      />
+      <BaseButton class="PageMain-Button" type="primary" @click="onCreateMap">
+        {{ $t('pageMain.create') }}
+      </BaseButton>
+    </div>
     <template v-if="topMaps.length">
       <br />
       <div v-if="lastSearchDate" class="PageMain-Row">
@@ -188,15 +203,6 @@ useIdbGetMap()
       <br />
       <hr />
       <br />
-      <div class="PageMain-NewMap">
-        <BaseInput
-          v-model="newMapName"
-          :placeholder="$t('pageMain.specifyNewCardName')"
-        />
-        <BaseButton class="PageMain-Button" type="primary" @click="onCreateMap">
-          {{ $t('pageMain.create') }}
-        </BaseButton>
-      </div>
     </template>
   </div>
 </template>
