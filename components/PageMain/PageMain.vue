@@ -7,7 +7,12 @@ import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
-import { useRequestCreateMap, useRequestSearch } from '~/composables'
+import {
+  useRequestCreateMap,
+  useRequestSearch,
+  useIdbGetProject,
+  useIdbSaveProject,
+} from '~/composables'
 import {
   directoryHandler,
   onMapsChanged,
@@ -108,12 +113,24 @@ const onCreateMap = async () => {
   await createMap(newMapName.value)
 }
 
+const { getByName } = useIdbGetProject()
+getByName('first').then((v) => {
+  if (v.length) {
+    setFiles(v[0].blobs)
+  }
+})
+
 const onOpenFiles = async () => {
   const blobs = await directoryOpen({
     recursive: true,
     mode: 'readwrite',
   })
   setFiles(blobs as File[])
+
+  const project = await getByName('first')
+  if (!project.length) {
+    useIdbSaveProject('first', blobs)
+  }
 }
 
 const router = useRouter()
