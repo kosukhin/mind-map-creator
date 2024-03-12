@@ -5,6 +5,8 @@ import { useSeoMeta } from '@vueuse/head'
 import { directoryOpen, fileOpen } from 'browser-fs-access'
 import debounce from 'lodash/debounce'
 import { useI18n } from 'vue-i18n'
+import { dbGetCurrent } from '~/application/dbGetCurrent'
+import { windowReload } from '~/application/windowReload'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import {
@@ -19,6 +21,7 @@ import {
   setFiles,
   topMaps,
 } from '~/libraries/browser-fs'
+import { DEFAULT_PROJECT_NAME } from '~/providers/project'
 import { urlTrim } from '~/utils'
 
 // TODO Поправить удаление файлов
@@ -114,8 +117,10 @@ const onCreateMap = async () => {
 }
 
 const { getByName } = useIdbGetProject()
-getByName('first').then((v) => {
+const isProjectOpened = ref(false)
+getByName(DEFAULT_PROJECT_NAME).then((v) => {
   if (v.length) {
+    isProjectOpened.value = true
     setFiles(v[0].blobs)
   }
 })
@@ -127,9 +132,10 @@ const onOpenFiles = async () => {
   })
   setFiles(blobs as File[])
 
-  const project = await getByName('first')
+  const project = await getByName(DEFAULT_PROJECT_NAME)
   if (!project.length) {
-    useIdbSaveProject('first', blobs)
+    isProjectOpened.value = true
+    useIdbSaveProject(DEFAULT_PROJECT_NAME, blobs)
   }
 }
 
@@ -144,6 +150,10 @@ const onOpenOneFile = async () => {
   })
 
   setFiles([blob])
+}
+
+const onCloseProject = () => {
+  dbGetCurrent().delete().then(windowReload)
 }
 
 useIdbGetMap()
@@ -165,13 +175,16 @@ useIdbGetMap()
       <img src="/icon-192x192.png" width="100" height="100" alt="mmc" />
       Mind Map Creator
     </h2>
-    <div class="PageMain-ButtonGroup">
+    <div v-if="!isProjectOpened" class="PageMain-ButtonGroup">
       <BaseButton @click="onOpenFiles">
         {{ $t('general.openProject') }}
       </BaseButton>
       <BaseButton @click="onOpenOneFile">
         {{ $t('general.openFile') }}
       </BaseButton>
+    </div>
+    <div v-if="isProjectOpened" class="PageMain-ButtonGroup">
+      <BaseButton @click="onCloseProject"> Закрыть проект </BaseButton>
     </div>
     <div v-if="directoryHandler" class="PageMain-NewMap">
       <BaseInput

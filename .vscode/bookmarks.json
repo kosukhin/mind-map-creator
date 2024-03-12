@@ -34,12 +34,12 @@
 			"path": "components/PageMain/PageMain.vue",
 			"bookmarks": [
 				{
-					"line": 112,
+					"line": 115,
 					"column": 9,
 					"label": "Map create"
 				},
 				{
-					"line": 122,
+					"line": 127,
 					"column": 8,
 					"label": "Files directory read"
 				}
