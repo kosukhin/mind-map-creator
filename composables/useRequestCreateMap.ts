@@ -28,7 +28,7 @@ export function useRequestCreateMap() {
         if (v[0]) {
           useIdbSaveProject(
             DEFAULT_PROJECT_NAME,
-            [...v[0].blobs, file],
+            [...v[0].blobs, fileHandle],
             getDirectoryHandler(),
             v[0].id
           )

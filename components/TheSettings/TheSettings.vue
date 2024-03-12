@@ -43,7 +43,6 @@ const { removeMap } = useRequestRemoveMap()
 const onRemove = async () => {
   if (confirm(i18n.t('theSettings.notifications.thisWillTotallyRemoveMap'))) {
     await removeMap(mapName.value)
-    location.href = '/'
   }
 }
 
