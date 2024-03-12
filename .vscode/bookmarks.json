@@ -34,12 +34,12 @@
 			"path": "components/PageMain/PageMain.vue",
 			"bookmarks": [
 				{
-					"line": 115,
+					"line": 117,
 					"column": 9,
 					"label": "Map create"
 				},
 				{
-					"line": 135,
+					"line": 138,
 					"column": 8,
 					"label": "Files directory read"
 				}
@@ -89,7 +89,7 @@
 			"path": "composables/useRequestCreateMap.ts",
 			"bookmarks": [
 				{
-					"line": 3,
+					"line": 6,
 					"column": 23,
 					"label": "Create new map"
 				}

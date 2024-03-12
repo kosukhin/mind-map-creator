@@ -36,10 +36,19 @@ export const addFiles = (blobs: File[]) => {
   })
 }
 
-export const setFiles = (blobs: File[]) => {
-  if (blobs[0]) {
-    directoryHandler.value = (blobs[0] as any).directoryHandle
+export const setDeirectoryHandle = (handle: any) => {
+  directoryHandler.value = handle
+}
+
+export const setDirectoryHandleFromBlobs = (blobs: File[]) => {
+  const handler = (blobs?.[0] as any)?.directoryHandle
+  if (handler) {
+    setDeirectoryHandle(handler)
   }
+}
+
+export const setFiles = (blobs: File[]) => {
+  setDirectoryHandleFromBlobs(blobs)
   blobs.forEach((blob) => {
     files[blob.name] = blob
   })

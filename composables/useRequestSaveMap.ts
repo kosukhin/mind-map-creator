@@ -22,6 +22,9 @@ export function useRequestSaveMap() {
             useIdbSaveMap(fileBlob.name, content)
           }
         })
+    } else {
+      const { createMap } = useRequestCreateMap()
+      createMap(mapName, false)
     }
   }
 

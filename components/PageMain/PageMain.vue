@@ -17,7 +17,9 @@ import {
 } from '~/composables'
 import {
   directoryHandler,
+  getDirectoryHandler,
   onMapsChanged,
+  setDeirectoryHandle,
   setFiles,
   topMaps,
 } from '~/libraries/browser-fs'
@@ -120,6 +122,7 @@ const { getByName } = useIdbGetProject()
 const isProjectOpened = ref(false)
 getByName(DEFAULT_PROJECT_NAME).then((v) => {
   if (v.length) {
+    setDeirectoryHandle(v[0].directoryHandle)
     isProjectOpened.value = true
     Promise.all(
       v[0].blobs.map(async (blobHandle: FileSystemFileHandle) => {
@@ -145,7 +148,8 @@ const onOpenFiles = async () => {
     isProjectOpened.value = true
     useIdbSaveProject(
       DEFAULT_PROJECT_NAME,
-      blobs.map((blob: any) => blob.handle)
+      blobs.map((blob: any) => blob.handle),
+      getDirectoryHandler()
     )
   }
 }
