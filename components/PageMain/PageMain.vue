@@ -121,7 +121,15 @@ const isProjectOpened = ref(false)
 getByName(DEFAULT_PROJECT_NAME).then((v) => {
   if (v.length) {
     isProjectOpened.value = true
-    setFiles(v[0].blobs)
+    Promise.all(
+      v[0].blobs.map(async (blobHandle: FileSystemFileHandle) => {
+        const file = (await blobHandle.getFile()) as any
+        file.handle = blobHandle
+        return file
+      })
+    ).then((files) => {
+      setFiles(files)
+    })
   }
 })
 
@@ -135,7 +143,10 @@ const onOpenFiles = async () => {
   const project = await getByName(DEFAULT_PROJECT_NAME)
   if (!project.length) {
     isProjectOpened.value = true
-    useIdbSaveProject(DEFAULT_PROJECT_NAME, blobs)
+    useIdbSaveProject(
+      DEFAULT_PROJECT_NAME,
+      blobs.map((blob: any) => blob.handle)
+    )
   }
 }
 
