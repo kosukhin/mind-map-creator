@@ -1,6 +1,6 @@
 import { computed } from '@vue/reactivity'
 import { debounce } from 'lodash'
-import { renderMapObjects } from '~/application'
+import { canvasRestrictBoundaries, renderMapObjects } from '~/application'
 import {
   useMapPartialRenderer,
   useSharedLayer,
@@ -23,7 +23,9 @@ export function useMapRenderer() {
         const [x, y] = map.value.position
         const halfWidth = canvasSize.value.w / 2
         const halfHeight = canvasSize.value.h / 2
-        stage.value.position({ x: -x + halfWidth, y: -y + halfHeight })
+        const savedPos = { x: -x + halfWidth, y: -y + halfHeight }
+        const pos = canvasRestrictBoundaries(savedPos)(canvasSize.value)
+        stage.value.position(pos)
       }
 
       if (layer.value && map.value && !maybeDragLocked.value) {
