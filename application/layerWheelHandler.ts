@@ -9,5 +9,5 @@ export const layerWheelHandler = ([vStage, e]: Params) => {
   const dy = e.evt.deltaY
   const x = vStage.x() - dx
   const y = vStage.y() - dy
-  return [vStage, { x, y }]
+  return [vStage, { x, y }] as const
 }

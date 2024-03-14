@@ -6,4 +6,6 @@ db.version(1).stores({
   projects: '++id,name,directoryHandle,blobs',
 })
 
-export const useIdb = () => ({ db })
+type DB = Dexie & { maps: any; projects: any }
+
+export const useIdb = () => ({ db } as { db: DB })

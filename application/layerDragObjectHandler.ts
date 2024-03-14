@@ -64,12 +64,15 @@ export const layerDragObjectHandler =
     const object = vMap.objects[objectId]
     const labelWidth = maxNewLineLength(object.name) * 7
     const type = vMap.types[object.type]
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [img, text, arrows, additionalObjects] = layerObjects.get(objectId)
-    const additionalText = additionalObjects[0]
+    const konvaObjects = layerObjects.get(objectId)
+    if (!konvaObjects) {
+      return result
+    }
+    const [, text, arrows, additionalObjects] = konvaObjects
+    const additionalText = (additionalObjects as any)[0]
     if (additionalText) {
-      const labelWidth = maxNewLineLength(object.additionalName) * 7
-      const labelHeight = newLineCount(object.additionalName) * 11
+      const labelWidth = maxNewLineLength(String(object.additionalName)) * 7
+      const labelHeight = newLineCount(String(object.additionalName)) * 11
       result.additionalText = [
         additionalText,
         {
@@ -86,7 +89,7 @@ export const layerDragObjectHandler =
       },
     ]
     const resultArrows: [Arrow, number[]][] = []
-    ;(arrows as Arrow[]).forEach((arrow) => {
+    ;(arrows as any).forEach((arrow: any) => {
       const points = arrow.points()
       points[0] = dragEvent.target.attrs.x + type.width / 2
       points[1] = dragEvent.target.attrs.y + type.height / 2
@@ -100,9 +103,12 @@ export const layerDragObjectHandler =
         (relArrow) => relArrow.id === object.id
       )
       if (hasRelation && layerObjects.has(relObject.id)) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [img, text, arrows] = layerObjects.get(relObject.id)
-        ;(arrows as any[]).forEach((arrow) => {
+        const relatedObjectsList = layerObjects.get(relObject.id)
+        if (!relatedObjectsList) {
+          return
+        }
+        const [, , arrows] = relatedObjectsList
+        ;(arrows as any).forEach((arrow: any) => {
           if (arrow.attrs.toObjectId === object.id) {
             relatedArrows.push(arrow)
           }

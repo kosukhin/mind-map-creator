@@ -1,5 +1,5 @@
 import { computed } from '@vue/reactivity'
-import { debounce } from 'lodash'
+import debounce from 'lodash/debounce'
 import { canvasRestrictBoundaries, renderMapObjects } from '~/application'
 import {
   useMapPartialRenderer,

@@ -32,5 +32,5 @@ export const requestNormalizeGetMap = (
       id: objectId,
     }
   }
-  return [result as MapStructure, response.parentTypes as MapType[]]
+  return [result as MapStructure, response.parentTypes as MapType[]] as const
 }

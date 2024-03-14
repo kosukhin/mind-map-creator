@@ -11,5 +11,5 @@ export const layerDragHandler = ([vDrag, vMap]: Params) => {
       x: vDrag.target.attrs.x,
       y: vDrag.target.attrs.y,
     },
-  ]
+  ] as const
 }
