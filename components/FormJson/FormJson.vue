@@ -2,8 +2,8 @@
 import { computed, ref } from '@vue/reactivity'
 import { nextTick, watch } from '@vue/runtime-core'
 import {
-  useSharedMap,
-  useSharedOverlay,
+  useMap,
+  useOverlay,
   useFormDirtyCheck,
 } from '~/composables'
 import { SHOW_JSON, SHOW_JSON_TYPES } from '~/constants'
@@ -15,7 +15,7 @@ import FormJsonTypes from '~/components/FormJson/FormJsonTypes.vue'
 const { stringify } = JSON
 
 const form = ref('')
-const { map } = useSharedMap()
+const { map } = useMap()
 watch(
   map,
   () => {
@@ -35,7 +35,7 @@ const onSave = async () => {
 const isDirty = computed(() => form.value !== stringify(map.value))
 useFormDirtyCheck(isDirty, SHOW_JSON)
 
-const { close, overlayName } = useSharedOverlay()
+const { close, overlayName } = useOverlay()
 const openTypes = () => {
   overlayName.value = SHOW_JSON_TYPES
 }

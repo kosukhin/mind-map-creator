@@ -14,12 +14,12 @@ import {
   useFormDirtyCheck,
   useObjectActions,
   useSettings,
-  useSharedKeybindings,
-  useSharedLayer,
-  useSharedMap,
-  useSharedMapObject,
-  useSharedNotify,
-  useSharedOverlay,
+  useKeybindings,
+  useLayer,
+  useMap,
+  useMapObject,
+  useNotify,
+  useOverlay,
 } from '~/composables'
 import {
   COPIED,
@@ -35,7 +35,7 @@ import { updateObjectOnLayer } from '~/utils/konva'
 
 const { stringify } = JSON
 
-const { map } = useSharedMap()
+const { map } = useMap()
 const mapTypes = computed(() => {
   const result: { id: string; name: string }[] = []
 
@@ -51,8 +51,8 @@ const mapTypes = computed(() => {
   return result
 })
 
-const { close, isOpened, open } = useSharedOverlay()
-const { ctrlSFired } = useSharedKeybindings()
+const { close, isOpened, open } = useOverlay()
+const { ctrlSFired } = useKeybindings()
 watch(ctrlSFired, () => {
   if (!isOpened(SHOW_OBJECT)) {
     return
@@ -61,7 +61,7 @@ watch(ctrlSFired, () => {
 })
 
 const form = ref<any>({})
-const { currentObject } = useSharedMapObject()
+const { currentObject } = useMapObject()
 watch(
   currentObject,
   () => {
@@ -90,7 +90,7 @@ const objectUrl = computed({
   },
 })
 
-const { layer, layerObjects } = useSharedLayer()
+const { layer, layerObjects } = useLayer()
 const save = async () => {
   close()
   if (currentObject.value && map.value && layer.value) {
@@ -131,7 +131,7 @@ const clone = async () => {
   }
 }
 
-const { message } = useSharedNotify()
+const { message } = useNotify()
 const { copy, isSupported } = useClipboard()
 function onCopyUrl() {
   if (!isSupported) {

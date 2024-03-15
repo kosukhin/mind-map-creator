@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router'
 import { watch } from '@vue/runtime-core'
 import { HISTORY_STORAGE_KEY, SHOW_HISTORY_MAPS } from '~/constants'
 import BaseDrawer from '~/components/BaseDrawer/BaseDrawer.vue'
-import { useOverlayAutoClose, useSharedMeta } from '~/composables'
+import { useOverlayAutoClose, useMeta } from '~/composables'
 
 useOverlayAutoClose(SHOW_HISTORY_MAPS)
 
@@ -14,7 +14,7 @@ const mapsHistory = useStorage<{ url: string; title: string }[]>(
   []
 )
 const route = useRoute()
-const { head } = useSharedMeta()
+const { head } = useMeta()
 watch(head, () => {
   const currentMapIndex = mapsHistory.value.findIndex(
     (item) => item.url === route.path

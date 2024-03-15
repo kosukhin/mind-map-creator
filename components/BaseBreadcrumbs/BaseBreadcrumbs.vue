@@ -1,9 +1,9 @@
 <script lang="ts" setup>
 import { computed } from '@vue/reactivity'
 import uniqueId from 'lodash/uniqueId'
-import { useSharedMap } from '~/composables'
+import { useMap } from '~/composables'
 
-const { mapName, map } = useSharedMap()
+const { mapName, map } = useMap()
 
 const mapHistory = computed(() => {
   const link: any = []

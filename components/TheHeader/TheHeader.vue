@@ -2,7 +2,7 @@
 import BaseBreadcrumbs from '@/components/BaseBreadcrumbs/BaseBreadcrumbs.vue'
 import BaseButton from '@/components/BaseButton/BaseButton.vue'
 import BaseIcon from '~/components/BaseIcon/BaseIcon.vue'
-import { useSharedOverlay } from '~/composables'
+import { useOverlay } from '~/composables'
 import {
   SHOW_HISTORY_MAPS,
   SHOW_OBJECT_MENU,
@@ -10,7 +10,7 @@ import {
   SHOW_TEXT,
 } from '~/constants'
 
-const { overlayName } = useSharedOverlay()
+const { overlayName } = useOverlay()
 </script>
 
 <template>

@@ -5,8 +5,8 @@ import merge from 'lodash/merge'
 import { SHOW_JSON_TYPES } from '~/constants'
 import {
   useFormDirtyCheck,
-  useSharedMap,
-  useSharedOverlay,
+  useMap,
+  useOverlay,
 } from '~/composables'
 import BaseModal from '~/components/BaseModal/BaseModal.vue'
 import BaseTextarea from '~/components/BaseTextarea/BaseTextarea.vue'
@@ -14,7 +14,7 @@ import BaseButton from '~/components/BaseButton/BaseButton.vue'
 
 const { stringify } = JSON
 
-const { map } = useSharedMap()
+const { map } = useMap()
 const form = ref('')
 watch(
   map,
@@ -39,7 +39,7 @@ const onSave = () => {
   }
 }
 
-const { close } = useSharedOverlay()
+const { close } = useOverlay()
 </script>
 
 <template>

@@ -6,23 +6,23 @@ import flattenDeep from 'lodash/flattenDeep'
 import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import {
-  useSharedLayer,
-  useSharedLocks,
-  useSharedMap,
-  useSharedMapObject,
+  useLayer,
+  useLocks,
+  useMap,
+  useMapObject,
 } from '~/composables'
 import { MapStructure } from '~/entities'
 import { cloneObject } from '~/utils'
 
-const { layer, layerObjects } = useSharedLayer()
+const { layer, layerObjects } = useLayer()
 const i18n = useI18n()
 const title = ref(i18n.t('theGrouper.group'))
 const type = ref('default')
 const isGrouping = computed(() => type.value === 'danger')
-const { map } = useSharedMap()
-const { currentObjectId } = useSharedMapObject()
+const { map } = useMap()
+const { currentObjectId } = useMapObject()
 let stopNextObjectWatcher: Function | null = null
-const { isClickLocked } = useSharedLocks()
+const { isClickLocked } = useLocks()
 const groups = new Set()
 let transformer = new Konva.Group({})
 

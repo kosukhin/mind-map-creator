@@ -7,18 +7,18 @@ import BaseInput from '~/components/BaseInput/BaseInput.vue'
 import BaseModal from '~/components/BaseModal/BaseModal.vue'
 import {
   useFormDirtyCheck,
-  useSharedKeybindings,
-  useSharedMap,
-  useSharedMapType,
-  useSharedOverlay,
+  useKeybindings,
+  useMap,
+  useMapType,
+  useOverlay,
 } from '~/composables'
 import { SHOW_TYPE } from '~/constants'
 
 const { stringify } = JSON
 
 const form = ref<any>({})
-const { currentTypeId, currentType } = useSharedMapType()
-const { map } = useSharedMap()
+const { currentTypeId, currentType } = useMapType()
+const { map } = useMap()
 watch(
   currentType,
   () => {
@@ -48,8 +48,8 @@ const save = () => {
   }
 }
 
-const { close, isOpened } = useSharedOverlay()
-const { ctrlSFired } = useSharedKeybindings()
+const { close, isOpened } = useOverlay()
+const { ctrlSFired } = useKeybindings()
 watch(ctrlSFired, () => {
   if (!isOpened(SHOW_TYPE)) {
     return

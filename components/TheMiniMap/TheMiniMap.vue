@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { useMiniMap, useSharedMap } from '~/composables'
+import { useMiniMap, useMap } from '~/composables'
 import { MINIMAP_SCALE } from '~/constants'
 
 const miniMap = ref()
 const miniMapScreen = ref()
-const { map } = useSharedMap()
+const { map } = useMap()
 
 onMounted(() => {
   if (miniMap.value && miniMapScreen.value) {

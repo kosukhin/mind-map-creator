@@ -1,8 +1,8 @@
 import { watch } from '@vue/runtime-core'
-import { useSharedOverlay } from '~/composables'
+import { useOverlay } from '~/composables'
 
 export function useOverlayAutoClose(formName: string) {
-  const { tryToClose, close } = useSharedOverlay()
+  const { tryToClose, close } = useOverlay()
   watch(tryToClose, () => {
     if (tryToClose.value && tryToClose.value === formName) {
       close()

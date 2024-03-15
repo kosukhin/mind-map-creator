@@ -2,9 +2,9 @@
 import { ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import {
-  useSharedMap,
+  useMap,
   useMoveToObject,
-  useSharedOverlay,
+  useOverlay,
   useOverlayAutoClose,
 } from '~/composables'
 import { SHOW_OBJECT_MENU } from '~/constants'
@@ -12,7 +12,7 @@ import { MapObject } from '~/entities'
 
 useOverlayAutoClose(SHOW_OBJECT_MENU)
 
-const { firstMapLoad, map } = useSharedMap()
+const { firstMapLoad, map } = useMap()
 const menuItems = ref<MapObject[]>([])
 watch(
   firstMapLoad,
@@ -30,7 +30,7 @@ watch(
   }
 )
 
-const { close } = useSharedOverlay()
+const { close } = useOverlay()
 const { scrollToObject } = useMoveToObject()
 const selectMenuItem = (id: string) => {
   scrollToObject(id)

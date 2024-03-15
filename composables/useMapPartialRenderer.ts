@@ -1,21 +1,21 @@
 import { renderVisibleMapObjects } from '~/application/renderVisibleMapObjects'
-import { useSharedLayer, useSharedMap } from '~/composables'
+import { useLayer, useMap } from '~/composables'
+
+const { layer, stage, layerObjects } = useLayer()
+const { map: sharedMap } = useMap()
+
+const triggerPartialRendering = () => {
+  if (stage.value && sharedMap.value && layer.value) {
+    renderVisibleMapObjects(
+      layerObjects,
+      stage.value,
+      sharedMap.value,
+      layer.value
+    )
+  }
+}
 
 export function useMapPartialRenderer() {
-  const { layer, stage, layerObjects } = useSharedLayer()
-  const { map: sharedMap } = useSharedMap()
-
-  const triggerPartialRendering = () => {
-    if (stage.value && sharedMap.value && layer.value) {
-      renderVisibleMapObjects(
-        layerObjects,
-        stage.value,
-        sharedMap.value,
-        layer.value
-      )
-    }
-  }
-
   return {
     triggerPartialRendering,
   }

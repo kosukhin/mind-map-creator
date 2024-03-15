@@ -2,7 +2,7 @@
 import { watch } from '@vue/runtime-core'
 import { ref } from '@vue/reactivity'
 import { useMagicKeys } from '@vueuse/core'
-import { useSharedOverlay } from '~/composables'
+import { useOverlay } from '~/composables'
 
 const props = defineProps({
   name: {
@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const isOpened = ref(false)
-const { overlayName, tryToClose, history } = useSharedOverlay()
+const { overlayName, tryToClose, history } = useOverlay()
 const close = () => {
   tryToClose.value = props.name as string
 }

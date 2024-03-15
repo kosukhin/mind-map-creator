@@ -4,17 +4,17 @@ import { watch } from '@vue/runtime-core'
 import { useI18n } from 'vue-i18n'
 import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import {
-  useSharedLayer,
-  useSharedLocks,
-  useSharedMap,
-  useSharedMapObject,
+  useLayer,
+  useLocks,
+  useMap,
+  useMapObject,
 } from '~/composables'
 import { updateObjectOnLayer } from '~/utils/konva'
 
-const { layer, layerObjects } = useSharedLayer()
-const { map } = useSharedMap()
-const { currentObjectId } = useSharedMapObject()
-const { isClickLocked } = useSharedLocks()
+const { layer, layerObjects } = useLayer()
+const { map } = useMap()
+const { currentObjectId } = useMapObject()
+const { isClickLocked } = useLocks()
 const i18n = useI18n()
 const title = ref(i18n.t('theLinker.makeRelation'))
 const type = ref('default')

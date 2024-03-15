@@ -21,16 +21,6 @@
 			]
 		},
 		{
-			"path": "composables/useSharedLayer.ts",
-			"bookmarks": [
-				{
-					"line": 18,
-					"column": 15,
-					"label": "Canvas html element"
-				}
-			]
-		},
-		{
 			"path": "components/PageMain/PageMain.vue",
 			"bookmarks": [
 				{
@@ -52,16 +42,6 @@
 					"line": 7,
 					"column": 23,
 					"label": "Events common listners"
-				}
-			]
-		},
-		{
-			"path": "composables/useMapRenderer.ts",
-			"bookmarks": [
-				{
-					"line": 32,
-					"column": 9,
-					"label": "Map render objects"
 				}
 			]
 		},

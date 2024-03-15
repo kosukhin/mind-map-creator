@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { computed, ref } from '@vue/reactivity'
 import {
-  useSharedMap,
-  useSharedOverlay,
+  useMap,
+  useOverlay,
   useOverlayAutoClose,
   useMoveToObject,
 } from '~/composables'
@@ -13,7 +13,7 @@ import BaseInput from '~/components/BaseInput/BaseInput.vue'
 useOverlayAutoClose(SHOW_SEARCH)
 
 const query = ref('')
-const { map } = useSharedMap()
+const { map } = useMap()
 const searchResults = computed(() => {
   if (!map.value) {
     return []
@@ -34,7 +34,7 @@ const searchResults = computed(() => {
   return []
 })
 
-const { close } = useSharedOverlay()
+const { close } = useOverlay()
 const { scrollToObject } = useMoveToObject()
 const moveToObject = (object: MapObject) => {
   close()

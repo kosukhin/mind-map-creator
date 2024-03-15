@@ -3,23 +3,18 @@ import { watchOnce } from '@vueuse/core'
 import debounce from 'lodash/debounce'
 import { Nullable } from './../entities/Nullable'
 import { miniMapCalculateSizes, miniMapRedrawHandler } from '~/application'
-import {
-  useCanvas,
-  useSharedLayer,
-  useSharedLayerEvents,
-  useSharedMap,
-} from '~/composables'
+import { useCanvas, useLayer, useLayerEvents, useMap } from '~/composables'
 import { MINI_MAP_UPDATE_FREQ } from '~/constants'
+
+const { firstMapLoad } = useMap()
+const { layer, stage } = useLayer()
+const { canvasSize } = useCanvas()
+const { dragmove, wheel } = useLayerEvents()
 
 export const useMiniMap = (
   miniMap: Nullable<HTMLDivElement>,
   miniMapScreen: Nullable<HTMLDivElement>
 ) => {
-  const { firstMapLoad } = useSharedMap()
-  const { layer, stage } = useSharedLayer()
-  const { canvasSize } = useCanvas()
-  const { dragmove, wheel } = useSharedLayerEvents()
-
   watchOnce(firstMapLoad, () => {
     setTimeout(() => {
       if (canvasSize.value) {

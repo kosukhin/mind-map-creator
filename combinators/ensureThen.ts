@@ -15,6 +15,11 @@ export const ensureTemplate =
     }
   }
 
+export const later =
+  (fn: Function, ...args: any[]) =>
+  () => {
+    return fn(...args)
+  }
 export const fnify = (v: any) => () => v
 export const ensureThen = (fn: Function) => ensureEveryThen(fn)
 export const ensureEveryThen = ensureTemplate('every')

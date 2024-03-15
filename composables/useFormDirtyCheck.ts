@@ -2,11 +2,11 @@ import { Ref } from '@vue/reactivity'
 import { watch } from '@vue/runtime-core'
 import partial from 'lodash/partial'
 import { ensureThen, fnify } from '~/combinators/ensureThen'
-import { useSharedOverlay } from '~/composables'
+import { useOverlay } from '~/composables'
 import { OVERLAY_CLOSE, OVERLAY_CLOSE_ALERT } from '~/constants'
 import { setValue } from '~/utils'
 
-const { tryToClose, close } = useSharedOverlay()
+const { tryToClose, close } = useOverlay()
 
 type Subscriber = {
   isDirty: Ref<boolean>

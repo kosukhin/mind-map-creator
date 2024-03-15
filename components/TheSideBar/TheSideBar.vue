@@ -7,11 +7,11 @@ import BaseIcon from '~/components/BaseIcon/BaseIcon.vue'
 import TheGrouper from '~/components/TheGrouper/TheGrouper.vue'
 import TheLinker from '~/components/TheLinker/TheLinker.vue'
 import {
-  useSharedLayer,
-  useSharedMap,
-  useSharedMapType,
-  useSharedOverlay,
-  useSharedSideBar,
+  useLayer,
+  useMap,
+  useMapType,
+  useOverlay,
+  useSideBar,
 } from '~/composables'
 import {
   DEFAULT_SVG,
@@ -24,15 +24,15 @@ import { KonvaLayerObject, MapObject } from '~/entities'
 import { createObject } from '~/utils'
 import { addObjectToLayer } from '~/utils/konva'
 
-const { overlayName } = useSharedOverlay()
-const { currentTypeId } = useSharedMapType()
+const { overlayName } = useOverlay()
+const { currentTypeId } = useMapType()
 const selectType = (name: string) => {
   overlayName.value = SHOW_TYPE
   currentTypeId.value = name
 }
 
 const i18n = useI18n()
-const { map } = useSharedMap()
+const { map } = useMap()
 const addType = () => {
   if (map.value) {
     const newTypeId = Date.now().toString()
@@ -65,8 +65,8 @@ const removeType = (typeId: string) => {
   }
 }
 
-const { isSidebarOpen } = useSharedSideBar()
-const { layer, stage, layerObjects } = useSharedLayer()
+const { isSidebarOpen } = useSideBar()
+const { layer, stage, layerObjects } = useLayer()
 const addToCanvas = async (
   e: DragEvent,
   type: string,

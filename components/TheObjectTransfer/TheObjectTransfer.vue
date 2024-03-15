@@ -5,9 +5,9 @@ import BaseButton from '~/components/BaseButton/BaseButton.vue'
 import {
   useObjectActions,
   useOverlayAutoClose,
-  useSharedMap,
-  useSharedMapObject,
-  useSharedOverlay,
+  useMap,
+  useMapObject,
+  useOverlay,
 } from '~/composables'
 import { useRequestTransfer } from '~/composables/useRequestTransfer'
 import { HISTORY_STORAGE_KEY, SHOW_TRANSFER } from '~/constants'
@@ -15,8 +15,8 @@ import { MapObject } from '~/entities'
 import { createMapObjectUrl } from '~/utils'
 
 useOverlayAutoClose(SHOW_TRANSFER)
-const { currentObject } = useSharedMapObject()
-const { map, firstMapLoad } = useSharedMap()
+const { currentObject } = useMapObject()
+const { map, firstMapLoad } = useMap()
 const linkedObjects = ref<any>([])
 
 watchOnce(firstMapLoad, () => {
@@ -35,7 +35,7 @@ const getObjectLink = (object: MapObject) => {
   return createMapObjectUrl(object)
 }
 
-const { close } = useSharedOverlay()
+const { close } = useOverlay()
 const { removeCurrentObject } = useObjectActions(false)
 const { transferMap } = useRequestTransfer()
 const transfer = (url: string, remove = true) => {

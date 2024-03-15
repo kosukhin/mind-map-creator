@@ -2,7 +2,7 @@ import { Canvg } from 'canvg'
 import Konva from 'konva'
 import { KonvaLayerObject, Arrow, Layer, Stage } from '~/entities/Konva'
 import { MapObject, MapStructure } from '~/entities/Map'
-import { useSharedMapColors } from '~/composables'
+import { useMapColors } from '~/composables'
 import { maxNewLineLength, newLineCount } from '~/utils/common'
 
 export async function addObjectToLayer(
@@ -11,7 +11,7 @@ export async function addObjectToLayer(
   map: MapStructure,
   clickLocked = false
 ) {
-  const { colorsHash } = useSharedMapColors()
+  const { colorsHash } = useMapColors()
   const { types } = map
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
