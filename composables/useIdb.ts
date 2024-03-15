@@ -1,5 +1,6 @@
 import Dexie from 'dexie'
 
+// FIXME в обычную функцию вынести
 const db = new Dexie('MapsDatabase')
 db.version(1).stores({
   maps: '++id,name,map',

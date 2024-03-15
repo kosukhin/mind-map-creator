@@ -1,3 +1,4 @@
+// FIXME одну функцию сделать
 export const useIdbSaveProject = (
   name: string,
   blobs: any,

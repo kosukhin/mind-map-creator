@@ -5,16 +5,16 @@ import { Vector2d } from '~/entities'
 
 const { canvasSize } = useCanvas()
 
-export function useCanvasBoundaries() {
-  const restrictBoundaries = (pos: Vector2d) => {
-    if (!canvasSize.value) {
-      return DEFAULT_BOUNDARIES
-    }
-
-    return canvasRestrictBoundaries(pos)(canvasSize.value)
+const restrictBoundaries = (pos: Vector2d) => {
+  if (!canvasSize.value) {
+    return DEFAULT_BOUNDARIES
   }
 
-  return {
-    restrictBoundaries,
-  }
+  return canvasRestrictBoundaries(pos)(canvasSize.value)
 }
+
+const module = {
+  restrictBoundaries,
+}
+
+export const useCanvasBoundaries = () => module

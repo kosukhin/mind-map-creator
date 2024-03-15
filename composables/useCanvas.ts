@@ -1,5 +1,4 @@
 import { watch } from '@vue/runtime-core'
-import { createSharedComposable } from '@vueuse/core'
 import { Size } from '~/entities'
 
 const canvas = ref<HTMLElement>()
@@ -12,9 +11,9 @@ watch(canvas, () => {
   }
 })
 
-export const useCanvas = createSharedComposable(() => {
-  return {
-    canvas,
-    canvasSize,
-  }
-})
+const module = {
+  canvas,
+  canvasSize,
+}
+
+export const useCanvas = () => module

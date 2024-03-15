@@ -13,6 +13,7 @@ import {
 } from '~/composables'
 import { applyArrowPoints, debug, setProperty } from '~/utils'
 
+// FIXME выделить вотчеры вынуть их из функции
 export function useLayerListenerDrag() {
   const { canvasSize } = useCanvas()
   const { stage, layer, layerObjects } = useSharedLayer()

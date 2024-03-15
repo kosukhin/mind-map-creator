@@ -1,3 +1,4 @@
+// FIXME одну функцию сделать
 export const useIdbSaveMap = (
   name: string,
   content: string,
