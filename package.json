@@ -5,18 +5,11 @@
   "scripts": {
     "serve": "vue-cli-service serve --port=8881",
     "build": "vue-cli-service build",
+    "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "lint-fix": "vue-cli-service lint --fix",
     "cz": "git add . && git cz",
+    "lint-fix": "vue-cli-service lint --fix",
     "release": "standard-version --no-verify"
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-customizable"
-    },
-    "cz-customizable": {
-      "config": "./commitizen.js"
-    }
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
@@ -46,6 +39,7 @@
     "vue-router": "^4.0.3"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.1",
     "@types/lodash": "^4.17.0",
     "@types/ramda": "^0.29.12",
     "@typescript-eslint/eslint-plugin": "^5.6.0",
@@ -55,18 +49,32 @@
     "@vue/cli-plugin-pwa": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
     "@vue/cli-plugin-typescript": "~5.0.0",
+    "@vue/cli-plugin-unit-jest": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "@vue/eslint-config-airbnb": "^6.0.0",
     "@vue/eslint-config-typescript": "^9.1.0",
+    "@vue/test-utils": "^2.0.0-0",
+    "@vue/vue3-jest": "^27.0.0-alpha.1",
     "autoprefixer": "^10.4.19",
+    "babel-jest": "^27.0.6",
     "cz-customizable": "^7.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-vue": "^8.0.3",
     "eslint-plugin-vuejs-accessibility": "^1.1.0",
+    "jest": "^27.0.5",
     "postcss": "^8.4.38",
     "standard-version": "^9.5.0",
     "tailwindcss": "^3.4.3",
+    "ts-jest": "^27.0.4",
     "typescript": "<=5.2.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "./commitizen.js"
+    }
   }
 }
