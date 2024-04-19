@@ -7,14 +7,14 @@ import { useMap } from '@/composables/useMap';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { doWith } from '@/utils/doWith';
 import { watch } from 'vue';
-import { get, set } from 'lodash';
-import partial from 'lodash/partial';
+import { set } from 'lodash';
 import { compose } from 'lodash/fp';
 import { isTruthy } from '@/utils/isTruthy';
 import { ensureThen } from '@/utils/ensureThen';
 import { computedParams } from '@/utils/computedParams';
 import { ref } from '@vue/reactivity';
 import { MapType } from '@/entities/Map';
+import { valueNamePath, valuePath, valueTypesPath } from '@/utils/paths';
 
 useOverlayAutoClose(SHOW_PRESETS);
 
@@ -24,13 +24,10 @@ const withMap = doWith(map);
 const typeToAdd = ref<MapType>();
 const withTypeToAdd = doWith(typeToAdd);
 
-const valuePath = partial(get, partial.placeholder, 'value', {});
-const typesPath = partial(get, partial.placeholder, 'types', []);
-const namePath = partial(get, partial.placeholder, 'name', '');
 const addTypeToMap = computedParams(
   set,
-  withMap(compose(typesPath, valuePath)),
-  withTypeToAdd(compose(namePath, valuePath)),
+  withMap(valueTypesPath),
+  withTypeToAdd(valueNamePath),
   withTypeToAdd(valuePath),
 );
 const forExistedMap = ensureThen(withMap(compose(isTruthy, valuePath)));
