@@ -20,7 +20,7 @@ export function useRequestCreateMap() {
         {
           create: true,
         },
-      );
+      ) as any;
       const writable = await fileHandle.createWritable();
       await writable.write(JSON.stringify(map));
       await writable.close();

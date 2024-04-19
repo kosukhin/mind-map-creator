@@ -6,15 +6,13 @@ import { svgRender } from '@/utils/svgRenderDefault';
 import { useMap } from '@/composables/useMap';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { doWith } from '@/utils/doWith';
-import { unref, watch } from 'vue';
+import { watch } from 'vue';
 import { get, set } from 'lodash';
 import partial from 'lodash/partial';
 import { compose } from 'lodash/fp';
 import { isTruthy } from '@/utils/isTruthy';
-import { ensureThen } from '@/combinators/ensureThen';
+import { ensureThen } from '@/utils/ensureThen';
 import { computedParams } from '@/utils/computedParams';
-import { tap } from 'ramda';
-import { debug } from '@/utils/debug';
 import { ref } from '@vue/reactivity';
 import { MapType } from '@/entities/Map';
 
@@ -26,25 +24,18 @@ const withMap = doWith(map);
 const typeToAdd = ref<MapType>();
 const withTypeToAdd = doWith(typeToAdd);
 
+const valuePath = partial(get, partial.placeholder, 'value', {});
 const typesPath = partial(get, partial.placeholder, 'types', []);
 const namePath = partial(get, partial.placeholder, 'name', '');
-const mapTypes = withMap(compose(typesPath, unref));
-const mapExisted = withMap(compose(isTruthy, unref));
-
-console.log('map existed', mapExisted());
-
-const addType = compose(
-  partial(
-    ensureThen,
-    mapExisted,
-    computedParams(set, mapTypes, withTypeToAdd(namePath)),
-  ),
-  tap(partial(debug, 'имя')),
-  namePath,
+const addTypeToMap = computedParams(
+  set,
+  withMap(compose(typesPath, valuePath)),
+  withTypeToAdd(compose(namePath, valuePath)),
+  withTypeToAdd(valuePath),
 );
+const forExistedMap = ensureThen(withMap(compose(isTruthy, valuePath)));
 
-watch(typeToAdd, addType);
-
+watch(typeToAdd, forExistedMap(addTypeToMap));
 </script>
 
 <template>
