@@ -11,6 +11,7 @@ useOverlayAutoClose(SHOW_OBJECT_MENU);
 
 const { firstMapLoad, map } = useMap();
 const menuItems = ref<MapObject[]>([]);
+
 watch(
   firstMapLoad,
   () => {

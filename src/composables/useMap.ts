@@ -13,6 +13,7 @@ import { createSharedComposable } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { useRoute } from 'vue-router';
 import { AnyFn } from '@/entities/Utils';
+import { doWith } from '@/utils/doWith';
 
 export const useMap = createSharedComposable(() => {
   const { message } = useNotify();
@@ -80,8 +81,11 @@ export const useMap = createSharedComposable(() => {
     },
   );
 
+  const withMap = doWith(map);
+
   return {
     map,
+    withMap,
     firstMapLoad,
     parentTypes,
     mapName,

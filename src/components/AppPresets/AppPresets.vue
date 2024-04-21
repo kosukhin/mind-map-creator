@@ -7,32 +7,32 @@ import { useMap } from '@/composables/useMap';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { doWith } from '@/utils/doWith';
 import { watch } from 'vue';
-import { set } from 'lodash';
-import { compose } from 'lodash/fp';
 import { isTruthy } from '@/utils/isTruthy';
 import { ensureThen } from '@/utils/ensureThen';
-import { computedParams } from '@/utils/computedParams';
 import { ref } from '@vue/reactivity';
 import { MapType } from '@/entities/Map';
-import { valueNamePath, valuePath, valueTypesPath } from '@/utils/paths';
+import {
+  __, assoc, compose, set, view,
+} from 'ramda';
+import { lensValue } from '@/utils/lensValue';
+import { lensName } from '@/utils/lensName';
 
 useOverlayAutoClose(SHOW_PRESETS);
 
-const { map } = useMap();
-const withMap = doWith(map);
+const { withMap } = useMap();
 
 const typeToAdd = ref<MapType>();
 const withTypeToAdd = doWith(typeToAdd);
 
-const addTypeToMap = computedParams(
-  set,
-  withMap(valueTypesPath),
-  withTypeToAdd(valueNamePath),
-  withTypeToAdd(valuePath),
+const addTypeToMap = () => assoc(
+  withTypeToAdd(view(compose(lensName, lensValue))),
+  withTypeToAdd(view(lensValue)),
+  withMap(view(lensValue)),
 );
-const forExistedMap = ensureThen(withMap(compose(isTruthy, valuePath)));
+const forExistedMap = ensureThen(withMap(compose(isTruthy, view(lensValue))));
+const selectTypeToAdd = set(lensValue, __, typeToAdd);
 
-watch(typeToAdd, forExistedMap(addTypeToMap));
+watch(typeToAdd, () => forExistedMap(addTypeToMap));
 </script>
 
 <template>
@@ -54,7 +54,7 @@ watch(typeToAdd, forExistedMap(addTypeToMap));
           class="AppTypesParent-ItemButton"
           type="success"
           size="sm"
-          @click="typeToAdd = item"
+          @click="selectTypeToAdd(item)"
         >
           {{ $t('general.addToMap') }}
         </BaseButton>

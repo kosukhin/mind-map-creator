@@ -1,5 +1,4 @@
 import { computedParams } from '@/utils/computedParams';
-import { compose } from 'lodash/fp';
 
 describe('computedParams', () => {
   it('should calculate params', () => {
