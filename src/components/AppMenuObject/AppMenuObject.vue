@@ -6,7 +6,7 @@ import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_OBJECT_MENU } from '@/constants/overlays';
 import { computed } from 'vue';
 import {
-  compose, filter, prop, sort, view,
+  compose, defaultTo, filter, prop, sort, values, view,
 } from 'ramda';
 import { isTruthy } from '@/utils/isTruthy';
 import { lensValue } from '@/utils/lensValue';
@@ -19,9 +19,11 @@ const { withMap } = useMap();
 const lensValueObjects = compose(lensValue, lensObjects);
 
 const isMenuProp = compose(isTruthy, prop('inMenu'));
+const defaultToObject = defaultTo({});
+const getObjects = compose(defaultToObject, view(lensValueObjects));
 const menuItems = computed(() => sort(diff, filter(
   isMenuProp,
-  Object.values(withMap(view(lensValueObjects)) ?? {}),
+  values(withMap(getObjects)),
 )));
 
 const { close } = useOverlay();
