@@ -4,34 +4,30 @@ import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { useMap } from '@/composables/useMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_OBJECT_MENU } from '@/constants/overlays';
-import { MapObject } from '@/entities/Map';
-import { ref, watch } from 'vue';
+import { computed } from 'vue';
+import {
+  compose, filter, prop, sort, view,
+} from 'ramda';
+import { isTruthy } from '@/utils/isTruthy';
+import { lensValue } from '@/utils/lensValue';
+import { lensObjects } from '@/utils/lensObjects';
+import { diff } from '@/utils/diff';
 
 useOverlayAutoClose(SHOW_OBJECT_MENU);
 
-const { firstMapLoad, map } = useMap();
-const menuItems = ref<MapObject[]>([]);
+const { withMap } = useMap();
+const lensValueObjects = compose(lensValue, lensObjects);
 
-watch(
-  firstMapLoad,
-  () => {
-    if (map.value) {
-      menuItems.value = Object.values(map.value.objects)
-        .filter((object) => object.inMenu)
-        .sort((a, b) => a.menuOrder - b.menuOrder);
-    }
-  },
-  {
-    immediate: true,
-  },
-);
+const isMenuProp = compose(isTruthy, prop('inMenu'));
+const menuItems = computed(() => sort(diff, filter(
+  isMenuProp,
+  Object.values(withMap(view(lensValueObjects)) ?? {}),
+)));
 
 const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();
-const selectMenuItem = (id: string) => {
-  scrollToObject(id);
-  close();
-};
+
+const selectMenuItem = compose(close, scrollToObject);
 </script>
 
 <template>
@@ -45,9 +41,9 @@ const selectMenuItem = (id: string) => {
         :key="item.id"
         class="AppMenuObject-Item"
         href="#"
+        v-html="item.additionalName ? item.additionalName : item.name"
         @click.prevent="selectMenuItem(item.id)"
       >
-        {{ item.additionalName ? item.additionalName : item.name }}
       </a>
     </div>
   </div>
