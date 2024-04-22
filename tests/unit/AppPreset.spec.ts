@@ -1,13 +1,16 @@
 import { MapType } from '@/entities/Map';
 import { createMap } from '@/utils/map';
-import partial from 'lodash/partial';
-import { get, set } from 'lodash';
 import { doWith } from '@/utils/doWith';
-import { ref, unref } from 'vue';
+import { ref } from 'vue';
 import { compose } from 'lodash/fp';
 import { isTruthy } from '@/utils/isTruthy';
-import { computedParams } from '@/utils/computedParams';
 import { ensureThen } from '@/utils/ensureThen';
+import {
+  __, assoc, set, view,
+} from 'ramda';
+import { lensValue } from '@/utils/lensValue';
+import { lensName } from '@/utils/lensName';
+import { lensTypes } from '@/utils/lensTypes';
 
 describe('AppPreset', () => {
   it('add type', () => {
@@ -21,19 +24,30 @@ describe('AppPreset', () => {
     });
     const withTypeToAdd = doWith(typeToAdd);
 
-    const typesPath = partial(get, partial.placeholder, 'types', []);
-    const namePath = partial(get, partial.placeholder, 'name', 'noname');
+    console.log('map existed', withMap(compose(isTruthy, view(lensValue))));
+    const forExistedMap = ensureThen(withMap(compose(isTruthy, view(lensValue))));
+    forExistedMap(() => {
+      console.log('for existed map');
+    });
+    const selectTypeToAdd = set(lensValue, __, typeToAdd);
+    selectTypeToAdd({
+      name: 'changed',
+      height: 100,
+      width: 100,
+      svg: '',
+    });
+    console.log('type to add name', typeToAdd.value.name);
 
-    const mapTypes = withMap(compose(typesPath, unref));
-    console.log('mapTypes', mapTypes());
+    const addTypeToMap = () => {
+      console.log('add type name', withTypeToAdd(compose(view(lensName), view(lensValue))));
+      return assoc(
+        withTypeToAdd(compose(view(lensName), view(lensValue))),
+        withTypeToAdd(view(lensValue)),
+        withMap(compose(view(lensTypes), view(lensValue))),
+      );
+    };
 
-    const mapExisted = withMap(compose(isTruthy, unref));
-    console.log('mapExisted', mapExisted());
-
-    const setTypeToMap = computedParams(set, mapTypes, withTypeToAdd(compose(namePath, unref)), partial(unref, typeToAdd));
-    const forExistedMap = ensureThen(mapExisted);
-    console.log('call setToMap', forExistedMap(setTypeToMap));
-    console.log('map', map.value);
+    console.log('add type to map', addTypeToMap());
 
     expect(true).toBe(true);
   });
