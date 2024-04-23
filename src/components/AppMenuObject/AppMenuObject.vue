@@ -6,25 +6,27 @@ import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_OBJECT_MENU } from '@/constants/overlays';
 import { computed } from 'vue';
 import {
-  compose, defaultTo, filter, prop, sort, values, view,
+  compose, defaultTo, filter, pipe, prop, sort, values, view,
 } from 'ramda';
 import { isTruthy } from '@/utils/isTruthy';
 import { lensValue } from '@/utils/lensValue';
 import { lensObjects } from '@/utils/lensObjects';
-import { diff } from '@/utils/diff';
+import { prt } from '@/utils/prt';
+import { asc } from '@/utils/asc';
 
 useOverlayAutoClose(SHOW_OBJECT_MENU);
 
 const { withMap } = useMap();
 const lensValueObjects = compose(lensValue, lensObjects);
 
-const isMenuProp = compose(isTruthy, prop('inMenu'));
+const byMenuProp = compose(isTruthy, prop('inMenu'));
 const defaultToObject = defaultTo({});
-const getObjects = compose(defaultToObject, view(lensValueObjects));
-const menuItems = computed(() => sort(diff, filter(
-  isMenuProp,
-  values(withMap(getObjects)),
-)));
+const objectsField = compose(defaultToObject, view(lensValueObjects));
+
+const menuItems = computed(prt(
+  withMap,
+  pipe(objectsField, values, filter(byMenuProp), sort(asc)),
+));
 
 const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();
