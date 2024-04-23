@@ -7,13 +7,13 @@ import { NOTIFY_ERROR, NOTIFY_SUCCESS } from '@/constants/system';
 import { MapStructure, MapType } from '@/entities/Map';
 import { setError, setValue, setValues } from '@/utils/common';
 import { mapUrlToName } from '@/utils/mapUrlToName';
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { watch } from '@vue/runtime-core';
 import { createSharedComposable } from '@vueuse/core';
 import { debounce } from 'lodash';
 import { useRoute } from 'vue-router';
 import { AnyFn } from '@/entities/Utils';
-import { doWith } from '@/utils/doWith';
+import { applyTo } from 'ramda';
 
 export const useMap = createSharedComposable(() => {
   const { message } = useNotify();
@@ -81,7 +81,7 @@ export const useMap = createSharedComposable(() => {
     },
   );
 
-  const withMap = doWith(map);
+  const withMap = applyTo(map);
 
   return {
     map,
