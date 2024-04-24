@@ -10,18 +10,39 @@ import { MapObject } from '@/entities/Map';
 import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { clone } from 'lodash';
+import {
+  any,
+  applyTo,
+  converge,
+  defaultTo,
+  identity,
+  includes,
+  prop,
+  toLower,
+  values,
+  view,
+} from 'ramda';
+import { lazy } from '@/utils/lazy';
+import { compose } from '@/utils/cmps';
+import { lensValue } from '@/utils/lensValue';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
-const isFoundInAdditionalFilters = (
-  object: MapObject,
-  searchQuery: string,
-) => object.additionalFields
-  && Object.values(object.additionalFields).some((v) => v.toLowerCase().includes(searchQuery));
-
 const type = ref<string>('');
 const query = ref('');
+const withQuery = applyTo(query);
 const { map } = useMap();
+
+const toLowerSafe = compose(toLower, String, defaultTo(''));
+const queryComparator = converge(includes, [
+  lazy(withQuery, compose(toLowerSafe, view(lensValue))),
+  identity,
+]);
+const isFoundInAdditionalFilters = compose(
+  any(compose(queryComparator, toLowerSafe)),
+  values,
+  prop('additionalFields'),
+);
 
 // TODO убрать дублирование
 const mapTypes = computed(() => {
@@ -55,7 +76,7 @@ const searchResults = computed(() => {
 
     return objects.filter((object) => (
       object.name.toLowerCase().includes(searchQuery)
-        || isFoundInAdditionalFilters(object, searchQuery)
+        || isFoundInAdditionalFilters(object)
         || (object.additionalName
           && object.additionalName.toLowerCase().includes(searchQuery))
     ));

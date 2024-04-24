@@ -83,7 +83,7 @@ export const debug = (tag: string, string: any) => {
   }
 };
 
-export const cDebug = curry(debug);
+export const cDebug: any = curry(debug);
 
 export const tap = (fn: AnyFn) => (v: any) => {
   fn(v);

@@ -10,7 +10,7 @@ import {
 } from 'ramda';
 import { lensValue } from '@/utils/lensValue';
 import { lensObjects } from '@/utils/lensObjects';
-import { prt } from '@/utils/prt';
+import { lazy } from '@/utils/lazy';
 
 useOverlayAutoClose(SHOW_OBJECT_MENU);
 
@@ -22,7 +22,7 @@ const defaultToObject = defaultTo({});
 const objectsField = compose(defaultToObject, view(lensValueObjects));
 const byMenuOrder = ascend(prop('menuOrder') as any);
 
-const menuItems = computed(prt(
+const menuItems = computed(lazy(
   withMap,
   pipe(objectsField, values, filter(byInMenu), sort(byMenuOrder)),
 ));
