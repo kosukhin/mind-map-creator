@@ -12,26 +12,32 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { clone } from 'lodash';
 import {
   any,
+  applySpec,
   applyTo,
+  concat,
   converge,
   defaultTo,
   identity,
   includes,
+  map as rMap,
+  path,
   prop,
   toLower,
+  toPairs,
   values,
   view,
 } from 'ramda';
 import { lazy } from '@/utils/lazy';
 import { compose } from '@/utils/cmps';
 import { lensValue } from '@/utils/lensValue';
+import { lensTypes } from '@/utils/lensTypes';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
 const type = ref<string>('');
 const query = ref('');
 const withQuery = applyTo(query);
-const { map } = useMap();
+const { map, withMap } = useMap();
 
 const toLowerSafe = compose(toLower, String, defaultTo(''));
 const queryComparator = converge(includes, [
@@ -44,21 +50,21 @@ const isFoundInAdditionalFilters = compose(
   prop('additionalFields'),
 );
 
-// TODO убрать дублирование
-const mapTypes = computed(() => {
-  const result: { id: string; name: string }[] = [];
-
-  if (map.value) {
-    Object.entries(map.value.types).forEach(([typeId, mapType]) => {
-      result.push({
-        id: typeId,
-        name: mapType.name,
-      });
-    });
-  }
-
-  return [{ id: null, name: 'Любой тип узла' }, ...result];
-});
+const mapTypes = computed(lazy(
+  withMap,
+  compose(
+    concat([{ id: null, name: 'Любой тип узла' }]),
+    rMap(applySpec({
+      id: prop('0'),
+      name: path(['1', 'name']),
+    })),
+    toPairs,
+    defaultTo({}),
+    view(lensTypes),
+    defaultTo({}),
+    view(lensValue),
+  ),
+));
 
 const searchResults = computed(() => {
   if (!map.value) {
