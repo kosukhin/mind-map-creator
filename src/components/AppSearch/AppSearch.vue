@@ -16,14 +16,14 @@ import {
   applyTo,
   concat,
   converge,
-  defaultTo,
+  defaultTo, equals, filter,
   identity,
   includes,
   map as rMap,
   path,
   prop,
   toLower,
-  toPairs,
+  toPairs, useWith,
   values,
   view,
 } from 'ramda';
@@ -31,10 +31,11 @@ import { lazy } from '@/utils/lazy';
 import { compose } from '@/utils/cmps';
 import { lensValue } from '@/utils/lensValue';
 import { lensTypes } from '@/utils/lensTypes';
+import { lensObjects } from '@/utils/lensObjects';
+import { lensType } from '@/utils/lensType';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
-const type = ref<string>('');
 const query = ref('');
 const withQuery = applyTo(query);
 const { map, withMap } = useMap();
@@ -65,6 +66,22 @@ const mapTypes = computed(lazy(
     view(lensValue),
   ),
 ));
+
+const type = ref<string>('');
+const withType = applyTo(type);
+const mapObjects = lazy(
+  withMap,
+  compose(values, view(compose(lensValue, lensObjects))),
+);
+const typeComparator = withType(compose(equals, view(lensValue)));
+const findByType = useWith(
+  filter(compose(typeComparator, view(lensType))),
+  [mapObjects],
+);
+
+// TODO
+// findByName
+// findByAddtionalName
 
 const searchResults = computed(() => {
   if (!map.value) {

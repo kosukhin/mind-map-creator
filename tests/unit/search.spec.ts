@@ -1,19 +1,24 @@
 import {
   any,
   applyTo,
-  compose,
   converge,
   defaultTo,
   equals,
+  filter,
   identity,
   includes,
   prop,
-  tap,
   toLower,
+  useWith,
   values,
+  view,
 } from 'ramda';
-import { cDebug, debug } from '@/utils/common';
 import { lazy } from '@/utils/lazy';
+import { ref } from '@vue/reactivity';
+import { lensValue } from '@/utils/lensValue';
+import { lensObjects } from '@/utils/lensObjects';
+import { lensType } from '@/utils/lensType';
+import { compose } from '@/utils/cmps';
 
 describe('search', () => {
   it('item', () => {
@@ -34,5 +39,35 @@ describe('search', () => {
     );
 
     console.log('test', isFoundInAdditionalFilters(object));
+  });
+
+  it('search by type', () => {
+    const map = {
+      value: {
+        objects: {
+          test: {
+            type: 'ok',
+          },
+          second: {
+            type: 'second',
+          },
+        },
+        types: {
+          ok: 'ov',
+          tk: 'tv',
+        },
+      },
+    };
+    const withMap = applyTo(map);
+    const type = ref<string>('ok');
+    const withType = applyTo(type);
+    const typeComparator = withType(compose(equals, view(lensValue)));
+    const getObjects = compose(values, view(compose(lensValue, lensObjects)));
+    const findByType = useWith(
+      filter(compose(typeComparator, view(lensType))),
+      [getObjects],
+    );
+
+    console.log('find in map', withMap(findByType));
   });
 });
