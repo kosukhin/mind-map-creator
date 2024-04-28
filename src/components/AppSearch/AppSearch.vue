@@ -60,16 +60,24 @@ const mapTypes = computed(lazy(
   ),
 ));
 
-const type = ref<string>('');
+const type = ref<string>('default');
 const withType = applyTo(type);
 const mapObjects = lazy(
   withMap,
   compose(values, view(compose(lensValue, lensObjects))),
 );
-const typeComparator = withType(compose(equals, view(lensValue)));
+const typeValue = lazy(
+  withType,
+  view(lensValue),
+);
+const typeComparator = converge(equals, [
+  typeValue,
+  view(lensType),
+]);
+const getObjects = compose(values, view(compose(lensValue, lensObjects)));
 const findByType = useWith(
-  filter(compose(typeComparator, view(lensType))),
-  [mapObjects],
+  filter(typeComparator),
+  [getObjects],
 );
 
 const toLowerSafe = compose(toLower, String, defaultTo(''));

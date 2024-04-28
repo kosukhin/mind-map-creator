@@ -7,7 +7,7 @@ import {
   filter,
   identity,
   includes,
-  prop,
+  prop, tap,
   toLower,
   useWith,
   values,
@@ -19,6 +19,7 @@ import { lensValue } from '@/utils/lensValue';
 import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
 import { compose } from '@/utils/cmps';
+import { cDebug } from '@/utils/common';
 
 describe('search', () => {
   it('item', () => {
@@ -59,12 +60,19 @@ describe('search', () => {
       },
     };
     const withMap = applyTo(map);
-    const type = ref<string>('ok');
+    const type = ref<string>('second');
     const withType = applyTo(type);
-    const typeComparator = withType(compose(equals, view(lensValue)));
+    const typeValue = lazy(
+      withType,
+      view(lensValue),
+    );
+    const typeComparator = converge(equals, [
+      typeValue,
+      view(lensType),
+    ]);
     const getObjects = compose(values, view(compose(lensValue, lensObjects)));
     const findByType = useWith(
-      filter(compose(typeComparator, view(lensType))),
+      filter(typeComparator),
       [getObjects],
     );
 
