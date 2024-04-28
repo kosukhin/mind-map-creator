@@ -70,4 +70,23 @@ describe('search', () => {
 
     console.log('find in map', withMap(findByType));
   });
+
+  it('findByName', () => {
+    const query = ref('tes');
+    const withQuery = applyTo(query);
+    const toLowerSafe = compose(toLower, String, defaultTo(''));
+    const queryComparator = converge(includes, [
+      lazy(withQuery, compose(toLowerSafe, view(lensValue))),
+      identity,
+    ]);
+    const findByName = compose(queryComparator, toLowerSafe, prop('name'));
+    const object = {
+      name: 'test',
+    };
+    expect(findByName(object)).toBe(true);
+    const object2 = {
+      name: 'nope',
+    };
+    expect(findByName(object2)).toBe(false);
+  });
 });

@@ -16,14 +16,17 @@ import {
   applyTo,
   concat,
   converge,
-  defaultTo, equals, filter,
+  defaultTo,
+  equals,
+  filter,
   identity,
   includes,
   map as rMap,
   path,
   prop,
   toLower,
-  toPairs, useWith,
+  toPairs,
+  useWith,
   values,
   view,
 } from 'ramda';
@@ -33,23 +36,13 @@ import { lensValue } from '@/utils/lensValue';
 import { lensTypes } from '@/utils/lensTypes';
 import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
+import { list } from '@/utils/list';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
 const query = ref('');
 const withQuery = applyTo(query);
 const { map, withMap } = useMap();
-
-const toLowerSafe = compose(toLower, String, defaultTo(''));
-const queryComparator = converge(includes, [
-  lazy(withQuery, compose(toLowerSafe, view(lensValue))),
-  identity,
-]);
-const isFoundInAdditionalFilters = compose(
-  any(compose(queryComparator, toLowerSafe)),
-  values,
-  prop('additionalFields'),
-);
 
 const mapTypes = computed(lazy(
   withMap,
@@ -79,37 +72,45 @@ const findByType = useWith(
   [mapObjects],
 );
 
-// TODO
-// findByName
-// findByAddtionalName
+const toLowerSafe = compose(toLower, String, defaultTo(''));
+const queryComparator = converge(includes, [
+  lazy(withQuery, compose(toLowerSafe, view(lensValue))),
+  identity,
+]);
+const isFoundInAdditionalFilters = compose(
+  any(compose(queryComparator, toLowerSafe)),
+  values,
+  prop('additionalFields'),
+);
+const findByName = compose(queryComparator, toLowerSafe, prop('name'));
+const findByAdditionalName = compose(queryComparator, toLowerSafe, prop('additionalName'));
+
+const commonSearch = converge(
+  compose(any(equals(true)), list),
+  [
+    isFoundInAdditionalFilters,
+    findByName,
+    findByAdditionalName,
+  ],
+);
 
 const searchResults = computed(() => {
-  if (!map.value) {
-    return [];
-  }
-
-  let objects = Object.values(map.value.objects);
+  let objects = mapObjects();
+  let result = [];
 
   if (type.value) {
-    objects = objects.filter((object) => object.type === type.value);
+    objects = withMap(findByType);
+
+    if (!query.value) {
+      result = objects;
+    }
   }
 
   if (query.value) {
-    const searchQuery = query.value.toLowerCase();
-
-    return objects.filter((object) => (
-      object.name.toLowerCase().includes(searchQuery)
-        || isFoundInAdditionalFilters(object)
-        || (object.additionalName
-          && object.additionalName.toLowerCase().includes(searchQuery))
-    ));
+    result = objects.filter(commonSearch);
   }
 
-  if (type.value) {
-    return objects;
-  }
-
-  return [];
+  return result;
 });
 
 const { close } = useOverlay();
