@@ -79,7 +79,7 @@ export const debug = (tag: string, string: any) => {
   }
   const { log } = console;
   if (log) {
-    log(`['${tag}'] ${string}`);
+    log(`['${tag}'] = '${string}'`);
   }
 };
 

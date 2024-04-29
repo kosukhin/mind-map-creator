@@ -1,13 +1,14 @@
 import {
-  any,
+  __,
+  any, append,
   applyTo,
   converge,
   defaultTo,
   equals,
-  filter,
+  filter, flip,
   identity,
-  includes,
-  prop, tap,
+  includes, lensPath,
+  prop, set, tap,
   toLower,
   useWith,
   values,
@@ -19,6 +20,8 @@ import { lensValue } from '@/utils/lensValue';
 import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
 import { compose } from '@/utils/cmps';
+import { useState } from '@/composables/useState';
+import { clone } from 'lodash';
 import { cDebug } from '@/utils/common';
 
 describe('search', () => {
@@ -96,5 +99,41 @@ describe('search', () => {
       name: 'nope',
     };
     expect(findByName(object2)).toBe(false);
+  });
+
+  it('save named search', () => {
+    const map = ref({
+      objects: { },
+      types: { },
+    });
+    const namedSearchForm = ref({
+      name: 'new name',
+      query: 'new query',
+      type: 'new type',
+    });
+    const withNamedSearchForm = applyTo(namedSearchForm);
+    const appendNamedFormValue = converge(append, [
+      lazy(
+        withNamedSearchForm,
+        compose(clone, view(lensValue)),
+      ),
+      identity,
+    ]);
+    const withMap = applyTo(map);
+    const [, setMap] = useState(map);
+    const lensNamedSearches = compose(lensValue, lensPath(['namedSearches']));
+    const namedSearchSave = lazy(
+      withMap,
+      compose(
+        setMap,
+        view(lensValue),
+        set(lensNamedSearches, __, map),
+        appendNamedFormValue,
+        defaultTo([]),
+        prop('namedSearches'),
+      ),
+    );
+    namedSearchSave();
+    console.log(map.value);
   });
 });

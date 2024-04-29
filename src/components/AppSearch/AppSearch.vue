@@ -6,13 +6,13 @@ import { SHOW_SEARCH } from '@/constants/overlays';
 import { useMap } from '@/composables/useMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { useMoveToObject } from '@/composables/useMoveToObject';
-import { MapObject } from '@/entities/Map';
 import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import { clone } from 'lodash';
 import {
+  __,
   always,
-  any,
+  any, append,
+  clone,
   applySpec,
   applyTo,
   concat,
@@ -20,18 +20,19 @@ import {
   defaultTo,
   equals,
   filter,
+  head,
   identity,
-  includes,
+  includes, lensPath,
   map as rMap,
   not,
   or,
   path,
-  prop,
+  prop, set, tap,
   toLower,
   toPairs,
   values,
   view,
-  when,
+  when, fromPairs,
 } from 'ramda';
 import { lazy } from '@/utils/lazy';
 import { compose } from '@/utils/cmps';
@@ -41,12 +42,16 @@ import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
 import { isTruthy } from '@/utils/isTruthy';
+import { useState } from '@/composables/useState';
+import { cDebug } from '@/utils/common';
+import { delay } from '@/utils/delay';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
 const query = ref('');
 const withQuery = applyTo(query);
 const { map, withMap } = useMap();
+const [, setMap] = useState(map);
 
 const mapTypes = computed(lazy(
   withMap,
@@ -120,34 +125,60 @@ const searchResults = computed(lazy(
 
 const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();
-const moveToObject = (object: MapObject) => {
-  close();
-  scrollToObject(object.id);
-};
 
-const showFirstAdditionalField = (additionalFields: any) => Object
-  .values(additionalFields)
-  .filter(Boolean).shift();
+const moveToObject = compose(close, scrollToObject, prop('id'));
+
+const showFirstAdditionalField = compose(head, filter(Boolean), values);
 
 const namedSearchFormShowed = ref(false);
+const [, setNamedSearchFormShowed] = useState(namedSearchFormShowed);
 const namedSearchForm = ref({
   name: '',
   query: '',
   type: '',
 });
-const namedSearchSave = () => {
-  if (map.value) {
-    if (!map.value.namedSearches) {
-      map.value.namedSearches = [];
-    }
-    map.value?.namedSearches.push(clone(namedSearchForm.value));
-    Object.keys(namedSearchForm.value).forEach((key) => {
-      (namedSearchForm.value as any)[key] = '';
-    });
-    namedSearchFormShowed.value = false;
-  }
-};
+const [, setNamedSearchForm] = useState(namedSearchForm);
+const withNamedSearchForm = applyTo(namedSearchForm);
 
+const lensNamedSearches = compose(lensValue, lensPath(['namedSearches']));
+
+const myClone = compose(JSON.parse, JSON.stringify);
+const appendNamedFormValue = converge(append, [
+  lazy(
+    withNamedSearchForm,
+    compose(myClone, view(lensValue)),
+  ),
+  identity,
+]);
+const namedSearchSave = lazy(
+  withMap,
+  compose(
+    setMap,
+    view(lensValue),
+    set(lensNamedSearches, __, map),
+    appendNamedFormValue,
+    defaultTo([]),
+    prop('namedSearches'),
+  ),
+);
+const namedSearchFormClose = lazy(
+  setNamedSearchFormShowed,
+  false,
+);
+const namedSearchFormReset = lazy(
+  withNamedSearchForm,
+  compose(
+    setNamedSearchForm,
+    fromPairs,
+    rMap(set(lensPath([1]), '')),
+    toPairs,
+  ),
+);
+const namedSearchCommonSave = compose(
+  namedSearchSave,
+  namedSearchFormClose,
+  lazy(delay, namedSearchFormReset),
+);
 const namedSearchApplyIndex = (index: number) => {
   const search = map.value?.namedSearches?.[index];
   if (search) {
@@ -186,7 +217,7 @@ const namedSearchRemoveByIndex = (index: number) => {
           option-id="id"
           option-label="name"
         />
-        <BaseButton type="success" @click="namedSearchSave">
+        <BaseButton type="success" @click="namedSearchCommonSave">
           Сохранить
         </BaseButton>
       </div>
@@ -227,13 +258,10 @@ const namedSearchRemoveByIndex = (index: number) => {
         class="cursor-pointer"
         @click="moveToObject(result)"
       >
-        <b class="AppSearch-ItemName">{{ result.name }}</b>
-        <b v-if="result.additionalName" class="AppSearch-ItemName">
-          &nbsp;
-          {{ result.additionalName }}
+        <b class="AppSearch-ItemName" v-html="result.name"></b>
+        <b v-if="result.additionalName" v-html="result.additionalName" class="AppSearch-ItemName">
         </b>
-        <div v-else>
-          {{ showFirstAdditionalField(result.additionalFields ?? {}) }}
+        <div v-else v-html="showFirstAdditionalField(result.additionalFields ?? {})">
         </div>
       </div>
     </div>

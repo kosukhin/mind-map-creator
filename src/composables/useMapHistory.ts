@@ -2,6 +2,7 @@ import { useMap } from '@/composables/useMap';
 import { createSharedComposable, useRefHistory } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
+import { clone } from 'ramda';
 
 export const useMapHistory = createSharedComposable(() => {
   const { map, afterMapSavedFns } = useMap();
@@ -9,7 +10,7 @@ export const useMapHistory = createSharedComposable(() => {
     history, commit, canUndo, canRedo, undo, redo,
   } = useRefHistory(map, {
     capacity: 10,
-    clone: structuredClone,
+    clone,
     deep: true,
   });
   const { triggerPartialRendering } = useMapPartialRenderer();
