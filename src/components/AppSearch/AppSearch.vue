@@ -11,6 +11,7 @@ import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { clone } from 'lodash';
 import {
+  always,
   any,
   applySpec,
   applyTo,
@@ -22,13 +23,15 @@ import {
   identity,
   includes,
   map as rMap,
+  not,
+  or,
   path,
   prop,
   toLower,
   toPairs,
-  useWith,
   values,
   view,
+  when,
 } from 'ramda';
 import { lazy } from '@/utils/lazy';
 import { compose } from '@/utils/cmps';
@@ -37,6 +40,7 @@ import { lensTypes } from '@/utils/lensTypes';
 import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
+import { isTruthy } from '@/utils/isTruthy';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
@@ -60,12 +64,8 @@ const mapTypes = computed(lazy(
   ),
 ));
 
-const type = ref<string>('default');
+const type = ref<string>('');
 const withType = applyTo(type);
-const mapObjects = lazy(
-  withMap,
-  compose(values, view(compose(lensValue, lensObjects))),
-);
 const typeValue = lazy(
   withType,
   view(lensValue),
@@ -75,10 +75,7 @@ const typeComparator = converge(equals, [
   view(lensType),
 ]);
 const getObjects = compose(values, view(compose(lensValue, lensObjects)));
-const findByType = useWith(
-  filter(typeComparator),
-  [getObjects],
-);
+const findByType = filter(typeComparator);
 
 const toLowerSafe = compose(toLower, String, defaultTo(''));
 const queryComparator = converge(includes, [
@@ -102,24 +99,24 @@ const commonSearch = converge(
   ],
 );
 
-const searchResults = computed(() => {
-  let objects = mapObjects();
-  let result = [];
+const isValueFilled = compose(isTruthy, view(lensValue));
+const typeSelected = lazy(withType, isValueFilled);
+const queryFilled = lazy(withQuery, isValueFilled);
 
-  if (type.value) {
-    objects = withMap(findByType);
+const nothingFilled = converge(compose(not, or), [
+  queryFilled,
+  typeSelected,
+]);
 
-    if (!query.value) {
-      result = objects;
-    }
-  }
-
-  if (query.value) {
-    result = objects.filter(commonSearch);
-  }
-
-  return result;
-});
+const searchResults = computed(lazy(
+  withMap,
+  compose(
+    when(nothingFilled, always([])),
+    when(queryFilled, filter(commonSearch)),
+    when(typeSelected, findByType),
+    getObjects,
+  ),
+));
 
 const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();
