@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from '@vue/reactivity';
+import { computed } from '@vue/reactivity';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_SEARCH } from '@/constants/overlays';
@@ -14,7 +14,8 @@ import {
   any,
   append,
   applySpec,
-  applyTo, clone,
+  applyTo,
+  clone,
   concat,
   converge,
   defaultTo,
@@ -29,7 +30,8 @@ import {
   not,
   or,
   path,
-  prop, remove,
+  prop,
+  remove,
   set,
   toLower,
   toPairs,

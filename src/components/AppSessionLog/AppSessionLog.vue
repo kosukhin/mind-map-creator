@@ -4,7 +4,6 @@ import { SHOW_SESSION_LOG } from '@/constants/overlays';
 import { useSessionLog } from '@/composables/useSessionLog';
 
 useOverlayAutoClose(SHOW_SESSION_LOG);
-
 const { sessionMessages, sessionLog } = useSessionLog();
 
 sessionLog('[AppSessionLog.vue]', 'setup');
