@@ -14,7 +14,7 @@ import {
   any,
   append,
   applySpec,
-  applyTo,
+  applyTo, clone,
   concat,
   converge,
   defaultTo,
@@ -129,26 +129,22 @@ const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();
 
 const moveToObject = compose(close, scrollToObject, prop('id'));
-
 const showFirstAdditionalField = compose(head, filter(Boolean), values);
 
-const namedSearchFormShowed = ref(false);
-const [, setNamedSearchFormShowed] = useState(namedSearchFormShowed);
-const namedSearchForm = ref({
+const [namedSearchFormShowed, setNamedSearchFormShowed] = useState(false);
+const [namedSearchForm, setNamedSearchForm] = useState({
   name: '',
   query: '',
   type: '',
 });
-const [, setNamedSearchForm] = useState(namedSearchForm);
 const withNamedSearchForm = applyTo(namedSearchForm);
 
 const lensNamedSearches = compose(lensValue, lensPath(['namedSearches']));
 
-const myClone = compose(JSON.parse, JSON.stringify);
 const appendNamedFormValue = converge(append, [
   lazy(
     withNamedSearchForm,
-    compose(myClone, view(lensValue)),
+    compose(clone, view(lensValue)),
   ),
   identity,
 ]);
@@ -182,7 +178,7 @@ const namedSearchCommonSave = compose(
   lazy(delay, namedSearchFormReset),
 );
 
-const namedSearch = converge(prop as any, [
+const namedSearchByIndex = converge(prop as any, [
   identity,
   lazy(
     withMap,
@@ -192,7 +188,7 @@ const namedSearch = converge(prop as any, [
 const namedSearchApplyIndex = compose(converge(list, [
   when(isTruthy, compose(setQuery, view(lensPath(['query'])))),
   when(isTruthy, compose(setType, view(lensType))),
-]), namedSearch);
+]), namedSearchByIndex);
 
 const namedSearchRemoveByIndex = converge(compose(
   setMap,
