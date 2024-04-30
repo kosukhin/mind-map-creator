@@ -11,8 +11,8 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import {
   __,
   always,
-  any, append,
-  clone,
+  any,
+  append,
   applySpec,
   applyTo,
   concat,
@@ -20,19 +20,22 @@ import {
   defaultTo,
   equals,
   filter,
+  fromPairs,
   head,
   identity,
-  includes, lensPath,
+  includes,
+  lensPath,
   map as rMap,
   not,
   or,
   path,
-  prop, set, tap,
+  prop, remove,
+  set,
   toLower,
   toPairs,
   values,
   view,
-  when, fromPairs,
+  when,
 } from 'ramda';
 import { lazy } from '@/utils/lazy';
 import { compose } from '@/utils/cmps';
@@ -43,12 +46,11 @@ import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
 import { isTruthy } from '@/utils/isTruthy';
 import { useState } from '@/composables/useState';
-import { cDebug } from '@/utils/common';
 import { delay } from '@/utils/delay';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
-const query = ref('');
+const [query, setQuery] = useState('');
 const withQuery = applyTo(query);
 const { map, withMap } = useMap();
 const [, setMap] = useState(map);
@@ -69,7 +71,7 @@ const mapTypes = computed(lazy(
   ),
 ));
 
-const type = ref<string>('');
+const [type, setType] = useState('');
 const withType = applyTo(type);
 const typeValue = lazy(
   withType,
@@ -158,7 +160,7 @@ const namedSearchSave = lazy(
     set(lensNamedSearches, __, map),
     appendNamedFormValue,
     defaultTo([]),
-    prop('namedSearches'),
+    view(lensNamedSearches),
   ),
 );
 const namedSearchFormClose = lazy(
@@ -179,17 +181,35 @@ const namedSearchCommonSave = compose(
   namedSearchFormClose,
   lazy(delay, namedSearchFormReset),
 );
-const namedSearchApplyIndex = (index: number) => {
-  const search = map.value?.namedSearches?.[index];
-  if (search) {
-    query.value = search.query;
-    type.value = search.type;
-  }
-};
 
-const namedSearchRemoveByIndex = (index: number) => {
-  map.value?.namedSearches?.splice(index, 1);
-};
+const namedSearch = converge(prop as any, [
+  identity,
+  lazy(
+    withMap,
+    view(compose(lensValue, lensPath(['namedSearches']))),
+  ),
+]) as any;
+const namedSearchApplyIndex = compose(converge(list, [
+  when(isTruthy, compose(setQuery, view(lensPath(['query'])))),
+  when(isTruthy, compose(setType, view(lensType))),
+]), namedSearch);
+
+const namedSearchRemoveByIndex = converge(compose(
+  setMap,
+  view(lensValue),
+  set(lensNamedSearches, __, map),
+  remove,
+), [
+  identity,
+  always(1),
+  lazy(
+    withMap,
+    compose(
+      defaultTo([]),
+      view(lensNamedSearches),
+    ),
+  ),
+]);
 </script>
 
 <template>

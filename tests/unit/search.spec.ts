@@ -136,4 +136,20 @@ describe('search', () => {
     namedSearchSave();
     console.log(map.value);
   });
+
+  it('search index', () => {
+    const map = ref({
+      namedSearches: [{ hello: 'worl' }, { buy: 'bu' }],
+    });
+    const withMap = applyTo(map);
+    const namedSearch = converge(prop as any, [
+      identity,
+      lazy(
+        withMap,
+        view(compose(lensValue, lensPath(['namedSearches']))),
+      ),
+    ]) as any;
+
+    console.log(namedSearch(1));
+  });
 });
