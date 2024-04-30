@@ -7,6 +7,10 @@ import {
 } from 'ramda';
 import { lensTypes } from '@/utils/lensTypes';
 import { lensValue } from '@/utils/lensValue';
+import { useMapTypes } from '@/composables/useMapTypes';
+import { useMap } from '@/composables/useMap';
+import { createMap } from '@/utils/map';
+import { ref, unref } from 'vue';
 
 describe('map types', () => {
   it('should build types', () => {
@@ -35,5 +39,15 @@ describe('map types', () => {
       ),
     );
     console.log('map types', mapTypes2());
+  });
+
+  it('add type to map', () => {
+    const map = ref(createMap('test', 'test'));
+    const { mapTypeAdd } = useMapTypes(map);
+    mapTypeAdd({
+      name: 'test',
+    });
+
+    console.log(map.value.types);
   });
 });

@@ -3,36 +3,14 @@ import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_PRESETS } from '@/constants/overlays';
 import { presetsCommon } from '@/constants/presets';
 import { svgRender } from '@/utils/svgRenderDefault';
-import { useMap } from '@/composables/useMap';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import { doWith } from '@/utils/doWith';
-import { watch } from 'vue';
-import { isTruthy } from '@/utils/isTruthy';
-import { ensureThen } from '@/utils/ensureThen';
-import { ref } from '@vue/reactivity';
-import { MapType } from '@/entities/Map';
-import { assocPath, compose, view } from 'ramda';
-import { lensValue } from '@/utils/lensValue';
-import { lensName } from '@/utils/lensName';
-import { useState } from '@/composables/useState';
+import { useMapTypes } from '@/composables/useMapTypes';
+import { useMap } from '@/composables/useMap';
 
 useOverlayAutoClose(SHOW_PRESETS);
 
-const { map, withMap } = useMap();
-const [, setMap] = useState(map);
-
-const [typeToAdd, setTypeToAdd] = useState(ref<MapType>());
-const withTypeToAdd = doWith(typeToAdd);
-const viewValueName = compose(view(lensName), view(lensValue));
-
-const addTypeToMap = () => setMap(assocPath(
-  ['types', withTypeToAdd(viewValueName) as any],
-  withTypeToAdd(view(lensValue)),
-  withMap(view(lensValue)),
-));
-const forExistedMap = ensureThen(withMap(compose(isTruthy, view(lensValue))));
-
-watch(typeToAdd, () => forExistedMap(addTypeToMap));
+const { map } = useMap();
+const { mapTypeAdd } = useMapTypes(map);
 </script>
 
 <template>
@@ -54,7 +32,7 @@ watch(typeToAdd, () => forExistedMap(addTypeToMap));
           class="AppTypesParent-ItemButton"
           type="success"
           size="sm"
-          @click="setTypeToAdd(item)"
+          @click="mapTypeAdd(item)"
         >
           {{ $t('general.addToMap') }}
         </BaseButton>

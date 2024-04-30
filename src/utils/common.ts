@@ -70,20 +70,14 @@ export const nl2br = (str: string, isXhtml = false) => {
 
 export const stripHtml = (string: string) => string.replace(/<\/?[^>]+>/gi, ' ');
 
-export const debug = (tag: string, string: any) => {
-  if (process.env.NODE_ENV === 'production') {
-    return;
-  }
-  if (['dragmove'].includes(tag)) {
-    return;
-  }
+export const debug = (tag: string, ...string: any) => {
   const { log } = console;
   if (log) {
-    log(`['${tag}'] = '${string}'`);
+    log(`['${tag}'] = '${string.join(' | ')}'`);
   }
 };
 
-export const cDebug: any = curry(debug);
+export const cDebug: any = (tag: any) => (...strs: any[]) => console.log(tag, ...strs);
 
 export const tap = (fn: AnyFn) => (v: any) => {
   fn(v);
