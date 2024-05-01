@@ -3,7 +3,6 @@ import {
 } from 'ramda';
 import { compose } from '@/utils/cmps';
 import { lensName } from '@/utils/lensName';
-import { lazy } from '@/utils/lazy';
 import { useState } from '@/composables/useState';
 import { MapStructure } from '@/entities/Map';
 import { Ref } from 'vue';
@@ -20,7 +19,7 @@ export const useMapTypes = (map: Ref<MapStructure | undefined>) => {
     [
       view(lensName),
       identity,
-      lazy(withMap, view(lensValueTypes)),
+      () => withMap(view(lensValueTypes)),
     ],
   ));
 
