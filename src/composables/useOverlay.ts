@@ -4,6 +4,8 @@ import { setValue } from '@/utils/common';
 import { computed, ref } from '@vue/reactivity';
 import { watch } from '@vue/runtime-core';
 import { AnyFn, createSharedComposable } from '@vueuse/core';
+import { applyTo } from 'ramda';
+import { useState } from '@/composables/useState';
 
 export const useOverlay = createSharedComposable(() => {
   const overlayName = ref<string>();
@@ -38,9 +40,14 @@ export const useOverlay = createSharedComposable(() => {
     }
   });
 
+  const withOverlayName = applyTo(overlayName);
+  const [, setTryToClose] = useState(tryToClose);
+
   return {
     overlayName,
+    withOverlayName,
     tryToClose,
+    setTryToClose,
     history,
     isClosed,
     onOpen,

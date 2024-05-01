@@ -1,49 +1,74 @@
-<script setup lang="ts">
+<script lang="ts">
 import { watch } from '@vue/runtime-core';
-import { computed, ref } from '@vue/reactivity';
+import { computed } from '@vue/reactivity';
 import { useMagicKeys } from '@vueuse/core';
 import { useOverlay } from '@/composables/useOverlay';
+import { useState } from '@/composables/useState';
+import { lensName } from '@/utils/lensName';
+import { isTruthy } from '@/utils/isTruthy';
+import { lensValue } from '@/utils/lensValue';
+import { defineComponent } from 'vue';
+import {
+  always, and, applyTo, converge, equals, identity, includes, pipe, view, when,
+} from 'ramda';
 
-const props = defineProps({
-  name: {
-    type: String,
-    required: true,
+const withDirections = applyTo(['ltr', 'rtl', 'ttb', 'btt']);
+export default defineComponent({
+  name: 'BaseDrawer',
+  props: {
+    name: {
+      type: String,
+      required: true,
+    },
+    direction: {
+      type: String,
+      default: 'ltr',
+      validator: (value: string) => withDirections(includes(value)),
+    },
   },
-  direction: {
-    type: String,
-    default: 'ltr',
-    validator: (value: string) => ['ltr', 'rtl', 'ttb', 'btt'].includes(value),
+  setup(props) {
+    const classes = computed(always(['absolute z-10 top-0 left-0 w-full h-full bg-black/50']));
+    const positions = {
+      ltr: 'top-0 left-0 w-[50%] max-w-[900px] ',
+      rtl: 'top-0 right-0 w-[50%] max-w-[900px] ',
+      ttb: 'top-0 right-0 left-0',
+      btt: 'top-auto h-[900px] max-h-[50%] bottom-0 right-0 left-0',
+    };
+
+    const { overlayName, setTryToClose, withOverlayName } = useOverlay();
+    const withProps = applyTo(props);
+
+    const nameProp = view(lensName);
+    const close = () => withProps(pipe(nameProp, setTryToClose));
+
+    const [isOpened, setIsOpened] = useState(false);
+    const withIsOpened = applyTo(isOpened);
+
+    const overlayIsOpenedCalculation = pipe(
+      view(lensValue),
+      when(
+        isTruthy,
+        converge(equals, [() => withProps(nameProp), identity]),
+      ),
+    );
+    watch(overlayName, () => withOverlayName(
+      pipe(overlayIsOpenedCalculation, setIsOpened),
+    ));
+
+    const { current } = useMagicKeys();
+    watch(current, () => withIsOpened(pipe(
+      view(lensValue),
+      when(pipe(isTruthy, and(current.has('escape'))), close),
+    )));
+
+    return {
+      isOpened,
+      classes,
+      positions,
+    };
   },
 });
 
-const classes = computed(() => (['absolute z-10 top-0 left-0 w-full h-full bg-black/50']));
-const positions = {
-  ltr: 'top-0 left-0 w-[50%] max-w-[900px] ',
-  rtl: 'top-0 right-0 w-[50%] max-w-[900px] ',
-  ttb: 'top-0 right-0 left-0',
-  btt: 'top-auto h-[900px] max-h-[50%] bottom-0 right-0 left-0',
-};
-
-const { overlayName, tryToClose } = useOverlay();
-const close = () => {
-  tryToClose.value = props.name as string;
-};
-const isOpened = ref(false);
-watch(overlayName, () => {
-  if (overlayName.value) {
-    isOpened.value = overlayName.value === props.name;
-  }
-});
-const { current } = useMagicKeys();
-watch(current, () => {
-  if (!isOpened.value) {
-    return;
-  }
-
-  if (current.has('escape')) {
-    close();
-  }
-});
 </script>
 
 <template>

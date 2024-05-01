@@ -25,6 +25,7 @@ module.exports = {
     'vuejs-accessibility/form-control-has-label': 'off',
     'vuejs-accessibility/label-has-for': 'off',
     'vuejs-accessibility/click-events-have-key-events': 'off',
+    'vue/valid-define-props': 'off',
     'no-param-reassign': 'off',
     'max-len': 'off',
   },
