@@ -1,3 +1,77 @@
+<script lang="ts" setup>
+import { BubbleMenu, EditorContent, useEditor } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import { onBeforeUnmount, watch } from 'vue';
+import {
+  always,
+  applyTo,
+  bind,
+  call,
+  compose,
+  converge, equals,
+  flip, identity,
+  lensPath, not,
+  pipe,
+  view,
+  when,
+} from 'ramda';
+import { isTruthy } from '@/utils/isTruthy';
+import { lensValue } from '@/utils/lensValue';
+import { lensModelValue } from '@/utils/lensModelValue';
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+});
+const withProps = applyTo(props);
+
+const emit = defineEmits(['update:modelValue']) as any;
+const viewValue = view(lensValue);
+
+const editor = useEditor({
+  content: withProps(view(lensModelValue)),
+  extensions: [
+    StarterKit,
+  ],
+  onUpdate: () => {
+    call(when(pipe(view(lensValue), isTruthy), converge(emit, [
+      always('update:modelValue'),
+      pipe(view(compose(lensValue, lensPath(['getHTML']))), flip(bind)(viewValue(editor)), call),
+    ])), editor);
+  },
+});
+const withEditor = applyTo(editor);
+const getEditorHTML = () => withEditor(pipe(
+  view(compose(lensValue, lensPath(['getHTML']))),
+  flip(bind)(viewValue(editor)),
+  call,
+));
+
+onBeforeUnmount(() => {
+  withEditor(pipe(
+    view(compose(lensValue, lensPath(['destroy']))),
+    when(isTruthy, pipe(flip(bind)(withEditor(viewValue)), call)),
+  ));
+});
+
+const onChangeOutside = when(
+  () => withEditor(
+    pipe(view(lensValue), isTruthy),
+  ),
+  when(
+    converge(compose(not, equals), [
+      getEditorHTML,
+      identity,
+    ]),
+    (value: string) => editor.value?.commands.setContent(value, false),
+  ),
+);
+
+watch(() => withProps(view(lensModelValue)), onChangeOutside);
+</script>
+
 <template>
   <div class="rounded-main p-2 border border-solid border-body-dark">
     <editor-content :editor="editor" />
@@ -20,48 +94,3 @@
     </bubble-menu>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { EditorContent, BubbleMenu, useEditor } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
-import { onBeforeUnmount, watch } from 'vue';
-
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: '',
-  },
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const editor = useEditor({
-  content: props.modelValue,
-  extensions: [
-    StarterKit,
-  ],
-  onUpdate: () => {
-    if (!editor.value) {
-      return;
-    }
-    emit('update:modelValue', editor.value.getHTML());
-  },
-});
-
-onBeforeUnmount(() => {
-  editor.value?.destroy();
-});
-
-watch(() => props.modelValue, (value) => {
-  if (!editor.value) {
-    return;
-  }
-
-  const isSame = editor.value.getHTML() === value;
-  if (isSame) {
-    return;
-  }
-
-  editor.value.commands.setContent(value, false);
-});
-</script>
