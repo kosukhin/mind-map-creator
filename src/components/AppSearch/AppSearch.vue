@@ -13,10 +13,8 @@ import {
   always,
   any,
   append,
-  applySpec,
   applyTo,
   clone,
-  concat,
   converge,
   defaultTo,
   equals,
@@ -24,16 +22,13 @@ import {
   fromPairs,
   head,
   identity,
-  includes,
   lensPath,
   map as rMap,
   not,
   or,
-  path,
   prop,
   remove,
   set,
-  toLower,
   toPairs,
   values,
   view,
@@ -41,13 +36,14 @@ import {
 } from 'ramda';
 import { compose } from '@/utils/cmps';
 import { lensValue } from '@/utils/lensValue';
-import { lensTypes } from '@/utils/lensTypes';
-import { lensObjects } from '@/utils/lensObjects';
 import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
 import { isTruthy } from '@/utils/isTruthy';
 import { useState } from '@/composables/useState';
 import { delay } from '@/utils/delay';
+import { mapObjectsComparatorByType, mapObjectsGet, mapTypesListPure } from '@/domains/map';
+import { searchByField, searchByList } from '@/domains/search';
+import { isValueFilled } from '@/domains/conditions';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
@@ -56,39 +52,33 @@ const withQuery = applyTo(query);
 const { map, withMap } = useMap();
 const [, setMap] = useState(map);
 
-const mapTypes = computed(() => withMap(compose(
-  concat([{ id: null, name: 'Любой тип узла' }]),
-  rMap(applySpec({
-    id: prop('0'),
-    name: path(['1', 'name']),
-  })),
-  toPairs,
-  defaultTo({}),
-  view(compose(lensValue, lensTypes)),
-)));
+const mapTypes = computed(() => withMap(mapTypesListPure));
 
 const [type, setType] = useState('');
 const withType = applyTo(type);
 
-const typeComparator = converge(equals, [
+const typeComparator = converge(mapObjectsComparatorByType, [
   () => withType(view(lensValue)),
-  view(lensType),
-]);
-const getObjects = compose(values, view(compose(lensValue, lensObjects)));
-const findByType = filter(typeComparator);
-
-const toLowerSafe = compose(toLower, String, defaultTo(''));
-const queryComparator = converge(includes, [
-  () => withQuery(compose(toLowerSafe, view(lensValue))),
   identity,
 ]);
-const isFoundInAdditionalFilters = compose(
-  any(compose(queryComparator, toLowerSafe)),
-  values,
-  prop('additionalFields'),
-);
-const findByName = compose(queryComparator, toLowerSafe, prop('name'));
-const findByAdditionalName = compose(queryComparator, toLowerSafe, prop('additionalName'));
+
+const findByType = filter(typeComparator);
+
+const isFoundInAdditionalFilters = converge(searchByList, [
+  always('additionalFields'),
+  () => view(lensValue, query),
+  identity,
+]);
+const findByName = converge(searchByField, [
+  always('name'),
+  () => view(lensValue, query),
+  identity,
+]);
+const findByAdditionalName = converge(searchByField, [
+  always('additionalName'),
+  () => view(lensValue, query),
+  identity,
+]);
 
 const commonSearch = converge(
   compose(any(equals(true)), list),
@@ -99,7 +89,6 @@ const commonSearch = converge(
   ],
 );
 
-const isValueFilled = compose(isTruthy, view(lensValue));
 const typeSelected: any = () => withType(isValueFilled);
 const queryFilled: any = () => withQuery(isValueFilled);
 
@@ -112,7 +101,7 @@ const searchResults = computed(() => withMap(compose(
   when(nothingFilled, always([])),
   when(queryFilled, filter(commonSearch)),
   when(typeSelected, findByType),
-  getObjects,
+  mapObjectsGet,
 )));
 
 const { close } = useOverlay();

@@ -1,5 +1,5 @@
 import {
-  __,
+  __, always,
   any, append,
   applyTo,
   converge,
@@ -23,6 +23,7 @@ import { compose } from '@/utils/cmps';
 import { useState } from '@/composables/useState';
 import { clone } from 'lodash';
 import { cDebug } from '@/utils/common';
+import { searchByField, searchByList } from '@/domains/search';
 
 describe('search', () => {
   it('item', () => {
@@ -151,5 +152,32 @@ describe('search', () => {
     ]) as any;
 
     console.log(namedSearch(1));
+  });
+
+  it('searchByField', () => {
+    const findByName = converge(searchByField, [
+      always('name'),
+      () => 'hel',
+      identity,
+    ]);
+
+    console.log(findByName({
+      name: 'hello',
+    }));
+  });
+
+  it('searchByList', () => {
+    const findByName = converge(searchByList, [
+      always('names'),
+      () => 'tw',
+      identity,
+    ]);
+
+    console.log(findByName({
+      names: {
+        one: 'one',
+        two: 'two',
+      },
+    }));
   });
 });
