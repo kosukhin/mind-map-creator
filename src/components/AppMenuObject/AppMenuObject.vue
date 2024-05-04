@@ -5,25 +5,13 @@ import { useMap } from '@/composables/useMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_OBJECT_MENU } from '@/constants/overlays';
 import { computed } from 'vue';
-import {
-  ascend, compose, defaultTo, equals, filter, pipe, prop, sort, values, view,
-} from 'ramda';
-import { lensValue } from '@/utils/lensValue';
-import { lensObjects } from '@/utils/lensObjects';
+import { compose } from 'ramda';
+import { mapMenuObjects } from '@/domains/map';
 
 useOverlayAutoClose(SHOW_OBJECT_MENU);
 
 const { withMap } = useMap();
-const lensValueObjects = compose(lensValue, lensObjects);
-
-const byInMenu = compose(equals(true), prop('inMenu'));
-const defaultToObject = defaultTo({});
-const objectsField = compose(values, defaultToObject, view(lensValueObjects));
-const byMenuOrder = ascend(prop('menuOrder') as any);
-
-const menuItems = computed(() => withMap(
-  pipe(objectsField, filter(byInMenu), sort(byMenuOrder)),
-));
+const menuItems = computed(() => withMap(mapMenuObjects));
 
 const { close } = useOverlay();
 const { scrollToObject } = useMoveToObject();

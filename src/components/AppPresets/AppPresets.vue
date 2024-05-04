@@ -4,13 +4,20 @@ import { SHOW_PRESETS } from '@/constants/overlays';
 import { presetsCommon } from '@/constants/presets';
 import { svgRender } from '@/utils/svgRenderDefault';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import { useMapTypes } from '@/composables/useMapTypes';
 import { useMap } from '@/composables/useMap';
+import { mapTypeAdd } from '@/domains/map';
+import { setRef } from '@/utils/setRef';
+import { applyTo, pipe, view } from 'ramda';
+import { lensValue } from '@/utils/lensValue';
+import { MapType } from '@/entities/Map';
 
 useOverlayAutoClose(SHOW_PRESETS);
 
-const { map } = useMap();
-const { mapTypeAdd } = useMapTypes(map);
+const { withMap } = useMap();
+const addType = (mapType: MapType) => applyTo(mapType, pipe(
+  withMap(pipe(view(lensValue), mapTypeAdd)),
+  withMap(setRef),
+));
 </script>
 
 <template>
@@ -32,7 +39,7 @@ const { mapTypeAdd } = useMapTypes(map);
           class="AppTypesParent-ItemButton"
           type="success"
           size="sm"
-          @click="mapTypeAdd(item)"
+          @click="addType(item)"
         >
           {{ $t('general.addToMap') }}
         </BaseButton>

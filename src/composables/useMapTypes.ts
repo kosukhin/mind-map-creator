@@ -1,27 +1,30 @@
 import {
-  __, applyTo, assoc, converge, identity, set, view,
+  assoc, converge, identity, pipe, view,
 } from 'ramda';
 import { compose } from '@/utils/cmps';
 import { lensName } from '@/utils/lensName';
-import { useState } from '@/composables/useState';
 import { MapStructure } from '@/entities/Map';
 import { Ref } from 'vue';
 import { lensValue } from '@/utils/lensValue';
 import { lensTypes } from '@/utils/lensTypes';
+import { setRef } from '@/utils/setRef';
+import { setLens } from '@/utils/setLens';
 
 export const useMapTypes = (map: Ref<MapStructure | undefined>) => {
-  const [, setMap] = useState(map);
-  const withMap = applyTo(map);
-
   const lensValueTypes = compose(lensValue, lensTypes);
-  const mapTypeAdd = compose(setMap, view(lensValue), set(lensValueTypes, __, map), converge(
-    assoc,
-    [
-      view(lensName),
-      identity,
-      () => withMap(view(lensValueTypes)),
-    ],
-  ));
+  const mapTypeAdd = pipe(
+    converge(
+      assoc,
+      [
+        view(lensName),
+        identity,
+        () => view(lensValueTypes, map),
+      ],
+    ),
+    setLens(lensValueTypes, map),
+    view(lensValue),
+    setRef(map),
+  );
 
   return {
     mapTypeAdd,
