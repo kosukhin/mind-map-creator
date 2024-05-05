@@ -117,7 +117,6 @@ export function createLayer(editorWrapper: HTMLElement): [Layer, Stage] {
   }
   stage.add(layer);
   layer.draw();
-  console.log('layer created');
   return [layer, stage];
 }
 

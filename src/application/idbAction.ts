@@ -7,7 +7,13 @@ export const idbAction = (
   actionName: string,
   dbName: string,
   payload: any[],
-) => (db as any)[actionName][dbName](...payload);
+) => {
+  try {
+    return (db as any)[actionName][dbName](...payload);
+  } catch (e) {
+    return '';
+  }
+};
 
 const db = idbGet();
 const idbUpdate = partial(idbAction, db, 'update');

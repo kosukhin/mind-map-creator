@@ -135,10 +135,12 @@ if (openedFile.value) {
 </script>
 
 <template>
-  <div class="PageMain scrollable">
-    <h2 class="PageMain-Title">
+  <div class="PageMain scrollable flex justify-center h-dvh items-center text-center">
+    <h2 class="PageMain-Title flex items-center flex-col gap-3">
       <img src="/icon-192x192.png" width="100" height="100" alt="mmc" />
-      Mind Map Creator
+      <div class="text-center">
+        Mind Map Creator
+      </div>
     </h2>
     <div v-if="isProjectOpened" class="PageMain-ButtonGroup">
       <BaseButton @click="onCloseProject"> Закрыть проект </BaseButton>

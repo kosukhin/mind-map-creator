@@ -80,7 +80,6 @@ onUpdated(debounce(() => {
     if (map.value && map.value.objects[objId]) {
       const obj = map.value.objects[objId];
       if (el.clientWidth !== obj.width || el.clientHeight !== obj.height) {
-        console.log('update size', el);
         obj.height = el.clientHeight;
       }
     }

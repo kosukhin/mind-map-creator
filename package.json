@@ -9,6 +9,7 @@
     "lint": "vue-cli-service lint",
     "cz": "git add . && git cz",
     "lint-fix": "vue-cli-service lint --fix",
+    "cy:open": "cypress open",
     "release": "standard-version --no-verify"
   },
   "dependencies": {
