@@ -12,29 +12,24 @@ import {
   __,
   always,
   any,
-  append,
   applyTo,
-  clone,
   converge,
   defaultTo,
   equals,
   filter,
-  fromPairs,
   head,
   identity,
   lensPath,
-  map as rMap,
   not,
   or,
   prop,
   remove,
   set,
-  toPairs,
   values,
   view,
   when,
 } from 'ramda';
-import { compose } from '@/utils/cmps';
+import { compose, pipe } from '@/utils/cmps';
 import { lensValue } from '@/utils/lensValue';
 import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
@@ -42,8 +37,9 @@ import { isTruthy } from '@/utils/isTruthy';
 import { useState } from '@/composables/useState';
 import { delay } from '@/utils/delay';
 import { mapObjectsComparatorByType, mapObjectsGet, mapTypesListPure } from '@/domains/map';
-import { searchByField, searchByList } from '@/domains/search';
+import { searchByField, searchByList, searchNamedSavePure } from '@/domains/search';
 import { isValueFilled } from '@/domains/conditions';
+import { formResetPure } from '@/domains/form';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
@@ -120,24 +116,17 @@ const withNamedSearchForm = applyTo(namedSearchForm);
 
 const lensNamedSearches = compose(lensValue, lensPath(['namedSearches']));
 
-const appendNamedFormValue = converge(append, [
-  () => withNamedSearchForm(compose(clone, view(lensValue))),
-  identity,
-]);
-const namedSearchSave = () => withMap(compose(
+const namedSearchSave = pipe(
+  () => searchNamedSavePure(
+    view(lensValue, namedSearchForm),
+    view(lensValue, map),
+  ),
   setMap,
-  view(lensValue),
-  set(lensNamedSearches, __, map),
-  appendNamedFormValue,
-  defaultTo([]),
-  view(lensNamedSearches),
-));
+);
 const namedSearchFormClose = () => setNamedSearchFormShowed(false);
 const namedSearchFormReset = () => withNamedSearchForm(compose(
   setNamedSearchForm,
-  fromPairs,
-  rMap(set(lensPath([1]), '')),
-  toPairs,
+  formResetPure,
 ));
 const namedSearchCommonSave = compose(
   namedSearchSave,
