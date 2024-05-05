@@ -9,7 +9,6 @@ import { useMoveToObject } from '@/composables/useMoveToObject';
 import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import {
-  __,
   always,
   any,
   applyTo,
@@ -24,7 +23,6 @@ import {
   or,
   prop,
   remove,
-  set,
   values,
   view,
   when,
@@ -34,27 +32,24 @@ import { lensValue } from '@/utils/lensValue';
 import { lensType } from '@/utils/lensType';
 import { list } from '@/utils/list';
 import { isTruthy } from '@/utils/isTruthy';
-import { useState } from '@/composables/useState';
 import { delay } from '@/utils/delay';
 import { mapObjectsComparatorByType, mapObjectsGet, mapTypesListPure } from '@/domains/map';
 import { searchByField, searchByList, searchNamedSavePure } from '@/domains/search';
 import { isValueFilled } from '@/domains/conditions';
 import { formResetPure } from '@/domains/form';
+import { ref } from 'vue';
+import { setRef } from '@/utils/setRef';
+import { setLens } from '@/utils/setLens';
 
 useOverlayAutoClose(SHOW_SEARCH);
 
-const [query, setQuery] = useState('');
-const withQuery = applyTo(query);
-const { map, withMap } = useMap();
-const [, setMap] = useState(map);
-
-const mapTypes = computed(() => withMap(mapTypesListPure));
-
-const [type, setType] = useState('');
-const withType = applyTo(type);
+const query = ref('');
+const { map } = useMap();
+const type = ref('');
+const mapTypes = computed(() => mapTypesListPure(map));
 
 const typeComparator = converge(mapObjectsComparatorByType, [
-  () => withType(view(lensValue)),
+  () => view(lensValue, type),
   identity,
 ]);
 
@@ -85,19 +80,19 @@ const commonSearch = converge(
   ],
 );
 
-const typeSelected: any = () => withType(isValueFilled);
-const queryFilled: any = () => withQuery(isValueFilled);
+const typeSelected: any = () => isValueFilled(type);
+const queryFilled: any = () => isValueFilled(query);
 
 const nothingFilled = converge(compose(not, or), [
   queryFilled,
   typeSelected,
 ]);
 
-const searchResults = computed(() => withMap(compose(
-  when(nothingFilled, always([])),
-  when(queryFilled, filter(commonSearch)),
-  when(typeSelected, findByType),
+const searchResults = computed(() => applyTo(map, pipe(
   mapObjectsGet,
+  when(typeSelected, findByType),
+  when(queryFilled, filter(commonSearch)),
+  when(nothingFilled, always([])),
 )));
 
 const { close } = useOverlay();
@@ -106,14 +101,12 @@ const { scrollToObject } = useMoveToObject();
 const moveToObject = compose(close, scrollToObject, prop('id'));
 const showFirstAdditionalField = compose(head, filter(Boolean), values);
 
-const [namedSearchFormShowed, setNamedSearchFormShowed] = useState(false);
-const [namedSearchForm, setNamedSearchForm] = useState({
+const namedSearchFormShowed = ref(false);
+const namedSearchForm = ref({
   name: '',
   query: '',
   type: '',
 });
-const withNamedSearchForm = applyTo(namedSearchForm);
-
 const lensNamedSearches = compose(lensValue, lensPath(['namedSearches']));
 
 const namedSearchSave = pipe(
@@ -121,11 +114,11 @@ const namedSearchSave = pipe(
     view(lensValue, namedSearchForm),
     view(lensValue, map),
   ),
-  setMap,
+  setRef(map),
 );
-const namedSearchFormClose = () => setNamedSearchFormShowed(false);
-const namedSearchFormReset = () => withNamedSearchForm(compose(
-  setNamedSearchForm,
+const namedSearchFormClose = () => setRef(namedSearchFormShowed, false);
+const namedSearchFormReset = () => applyTo(namedSearchForm, compose(
+  setRef(namedSearchForm),
   formResetPure,
 ));
 const namedSearchCommonSave = compose(
@@ -136,24 +129,24 @@ const namedSearchCommonSave = compose(
 
 const namedSearchByIndex = converge(prop as any, [
   identity,
-  () => withMap(view(compose(lensValue, lensPath(['namedSearches'])))),
+  () => view(compose(lensValue, lensPath(['namedSearches'])), map),
 ]);
 const namedSearchApplyIndex = compose(converge(list, [
-  when(isTruthy, compose(setQuery, view(lensPath(['query'])))),
-  when(isTruthy, compose(setType, view(lensType))),
+  when(isTruthy, compose(setRef(query), view(lensPath(['query'])))),
+  when(isTruthy, compose(setRef(type), view(lensType))),
 ]), namedSearchByIndex);
 
 const namedSearchRemoveByIndex = converge(compose(
-  setMap,
+  setRef(map),
   view(lensValue),
-  set(lensNamedSearches, __, map),
+  setLens(lensNamedSearches, map),
   remove,
 ), [
   identity,
   always(1),
-  () => withMap(compose(
-    defaultTo([]),
+  () => applyTo(map, pipe(
     view(lensNamedSearches),
+    defaultTo([]),
   )),
 ]);
 </script>
