@@ -3,13 +3,13 @@ import { useStorage } from '@vueuse/core';
 import { useRoute } from 'vue-router';
 import { watch } from '@vue/runtime-core';
 import BaseDrawer from '@/components/BaseDrawer/BaseDrawer.vue';
-import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_HISTORY_MAPS } from '@/constants/overlays';
 import { HISTORY_STORAGE_KEY } from '@/constants/system';
 import { useMeta } from '@/composables/useMeta';
 import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import { overlayController } from '@/modulesHigh/overlay/overlayController';
 
-useOverlayAutoClose(SHOW_HISTORY_MAPS);
+overlayController.autoClose(SHOW_HISTORY_MAPS);
 
 const MAX_HISTORY_ITEMS = 20;
 const mapsHistory = useStorage<{ url: string; title: string }[]>(

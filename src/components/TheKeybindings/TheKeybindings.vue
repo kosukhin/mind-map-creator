@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_KEYBINDINGS } from '@/constants/overlays';
+import { overlayController } from '@/modulesHigh/overlay/overlayController';
 
-useOverlayAutoClose(SHOW_KEYBINDINGS);
+overlayController.autoClose(SHOW_KEYBINDINGS);
 </script>
 
 <template>

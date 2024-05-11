@@ -8,7 +8,6 @@ import BaseCheckbox from '@/components/BaseCheckbox/BaseCheckbox.vue';
 import BaseDrawer from '@/components/BaseDrawer/BaseDrawer.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
-import BaseTextarea from '@/components/BaseTextarea/BaseTextarea.vue';
 import { updateObjectOnLayer } from '@/utils/konva';
 import { useMap } from '@/composables/useMap';
 import { useOverlay } from '@/composables/useOverlay';
@@ -25,10 +24,10 @@ import { NOTIFY_ERROR, NOTIFY_SUCCESS } from '@/constants/system';
 import { getLocation } from '@/utils/globals';
 import { useSettings } from '@/composables/useSettings';
 import { useObjectActions } from '@/composables/useObjectActions';
-import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import BaseInputTitle from '@/components/BaseInputTitle/BaseInputTitle.vue';
 import BaseInputRow from '@/components/BaseInput/BaseInputRow.vue';
 import BaseEditor from '@/components/BaseEditor/BaseEditor.vue';
+import { overlayController } from '@/modulesHigh/overlay/overlayController';
 
 const { map } = useMap();
 const mapTypes = computed(() => {
@@ -64,7 +63,7 @@ watch(
   },
 );
 
-useOverlayAutoClose(SHOW_OBJECT);
+overlayController.autoClose(SHOW_OBJECT);
 
 const objectUrl = computed({
   get() {

@@ -2,7 +2,6 @@
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import { useObjectActions } from '@/composables/useObjectActions';
-import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { useRequestTransfer } from '@/composables/useRequestTransfer';
 import { useMap } from '@/composables/useMap';
 import { useMapObject } from '@/composables/useMapObject';
@@ -14,8 +13,9 @@ import { createMapObjectUrl } from '@/utils/map';
 import { ref } from '@vue/reactivity';
 import { useStorage, watchOnce } from '@vueuse/core';
 import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import { overlayController } from '@/modulesHigh/overlay/overlayController';
 
-useOverlayAutoClose(SHOW_TRANSFER);
+overlayController.autoClose(SHOW_TRANSFER);
 const { currentObject } = useMapObject();
 const { map, firstMapLoad } = useMap();
 const linkedObjects = ref<any>([]);
