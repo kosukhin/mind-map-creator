@@ -1,5 +1,9 @@
-import { MapObject, MapStructure } from '@/entities/Map';
+import { MapObject, MapStructure, MapType } from '@/entities/Map';
 import { ListItem } from '@/modules/types/ListItem';
+import { compose, property } from 'lodash/fp';
+import { isNotNullish } from '@/utils/isNotNullish';
+
+const isTypesNotNullish = compose(isNotNullish, property('types'));
 
 export const mapTransformer = {
   // Elements of map what can be displayed in menu
@@ -18,5 +22,11 @@ export const mapTransformer = {
   // Array of map's objects
   getObjects(map: MapStructure): MapObject[] {
     return Object.values(map.objects);
+  },
+  parentTypes(parentsData: MapStructure[]) {
+    return parentsData
+      .filter(isTypesNotNullish)
+      .map((parent) => Object.values(parent.types) as MapType[])
+      .flat();
   },
 };

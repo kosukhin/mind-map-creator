@@ -8,6 +8,7 @@ import { iterateeHash } from '@/utils/iterateeHash';
 import { jsonParse } from '@/utils/jsonParse';
 import { createMap } from '@/utils/map';
 import { compose, property } from 'lodash/fp';
+import { modelsPoolSet } from '@/modulesHigh/models/modelsPool';
 
 const isTypesNotNullish = compose(isNotNullish, property('types'));
 const { forceFile } = useOpenFile();
@@ -22,6 +23,7 @@ export function useRequestGetMap() {
     try {
       if (forceFile.value) {
         allMaps = jsonParse(String(await readFile(forceFile.value))) as MapStructure;
+        modelsPoolSet('allMaps', allMaps);
       }
       data = allMaps[mapName] ?? createMap('', mapName);
     } catch (e) {

@@ -4,8 +4,10 @@ import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import { get, set } from 'lodash';
 import { FileWithHandle } from '@/types/fileWithHandle';
+import { Dictionary } from '@/entities/Dictionary';
 
 export const modelsPool = reactive({
+  allMaps: ref<Dictionary<MapStructure>>({}),
   map: ref<MapStructure>(),
   layer: shallowRef<Layer>(),
   stage: shallowRef<Stage>(),

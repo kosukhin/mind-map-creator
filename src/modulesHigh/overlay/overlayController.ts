@@ -1,6 +1,7 @@
 import { modelsPoolGet, modelsPoolSet } from '@/modulesHigh/models/modelsPool';
 import { OVERLAY_CLOSE } from '@/constants/overlays';
 import { watch } from '@vue/runtime-core';
+import { onBeforeUnmount, onMounted, WatchStopHandle } from 'vue';
 
 export const overlayController = {
   close() {
@@ -9,13 +10,22 @@ export const overlayController = {
   },
 
   autoClose(formName: string) {
-    watch(
-      () => modelsPoolGet<string>('overlayNameToClose'),
-      (nameToClose) => {
-        if (nameToClose && nameToClose === formName) {
-          overlayController.close();
-        }
-      },
-    );
+    let watcherUnsubscribe: WatchStopHandle | undefined;
+    onMounted(() => {
+      watcherUnsubscribe = watch(
+        () => modelsPoolGet<string>('overlayNameToClose'),
+        (nameToClose) => {
+          if (nameToClose && nameToClose === formName) {
+            overlayController.close();
+          }
+        },
+      );
+    });
+
+    onBeforeUnmount(() => {
+      if (watcherUnsubscribe) {
+        watcherUnsubscribe();
+      }
+    });
   },
 };

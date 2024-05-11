@@ -4,10 +4,10 @@ import { presetsCommon } from '@/constants/presets';
 import { svgRender } from '@/utils/svgRenderDefault';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { overlayController } from '@/modulesHigh/overlay/overlayController';
-import { useMapPresets } from '@/app/useMapPresets';
+import { useMapTypes } from '@/app/useMapTypes';
 
 overlayController.autoClose(SHOW_PRESETS);
-const { addType } = useMapPresets();
+const { addType } = useMapTypes();
 </script>
 
 <template>
