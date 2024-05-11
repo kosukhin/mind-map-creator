@@ -45,7 +45,7 @@ const {
         type="success"
         size="sm"
         title="Показать лог сессии"
-        class="w-7 block"
+        class="w-7 block e2e-session-open"
         @click="overlayName = SHOW_SESSION_LOG"
       >
         <BaseIcon icon="fa-file-text" />

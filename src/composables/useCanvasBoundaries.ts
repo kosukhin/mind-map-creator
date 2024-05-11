@@ -5,7 +5,7 @@ import { Size } from '@/entities/Size';
 import { Vector2d } from '@/entities/Konva';
 import { canvasRestrictBoundaries } from '@/application/canvasRestrictBoundaries';
 import { DEFAULT_BOUNDARIES } from '@/constants/system';
-import { useSessionLog } from '@/composables/useSessionLog';
+import { useSessionLog } from '@/app/useSessionLog';
 
 const { canvasSize } = useCanvas();
 const { sessionLog } = useSessionLog();

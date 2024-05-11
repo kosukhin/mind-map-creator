@@ -1,6 +1,6 @@
 import { Size } from '@/entities/Size';
 import { ref, watch } from 'vue';
-import { useSessionLog } from '@/composables/useSessionLog';
+import { useSessionLog } from '@/app/useSessionLog';
 
 const canvas = ref<HTMLElement>();
 const canvasSize = ref<Size>();

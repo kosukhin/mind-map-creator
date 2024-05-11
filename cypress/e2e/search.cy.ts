@@ -1,5 +1,5 @@
-describe('Поиск', () => {
-  it('Основной функционал', () => {
+describe('Search', () => {
+  it('common search', () => {
     cy.visit('http://localhost:8881/?view=/e2e/map.json');
     cy.get('.e2e-search').click();
     cy.get('.e2e-query-input').type('Акт');
@@ -10,7 +10,7 @@ describe('Поиск', () => {
     cy.get('.e2e-type-input').select(0);
   });
 
-  it('Именованный поиск', () => {
+  it('named search', () => {
     cy.visit('http://localhost:8881/?view=/e2e/map.json');
     cy.get('.e2e-search').click();
     cy.contains('444');

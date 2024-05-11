@@ -6,7 +6,7 @@ const sessionLog = (...sessionMessage: string[]) => {
   sessionMessages.value.unshift(sessionMessage.join(' '));
 };
 
-// Системный журнал, храниться только в памяти, только для отладки текущей сессии
+// System journal for debugging
 export const useSessionLog = () => ({
   sessionMessages,
   sessionLog,

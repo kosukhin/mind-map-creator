@@ -4,7 +4,7 @@ import { OVERLAY_CLOSE } from '@/constants/overlays';
 import { setValue } from '@/utils/common';
 import { watch, nextTick, Ref } from 'vue';
 import partial from 'lodash/partial';
-import { useSessionLog } from '@/composables/useSessionLog';
+import { useSessionLog } from '@/app/useSessionLog';
 
 const { tryToClose, close } = useOverlay();
 

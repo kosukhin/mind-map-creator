@@ -3,7 +3,7 @@ import { useRouter } from '@/composables/useRouter';
 import { jsonStringify } from '@/utils/jsonStringify';
 import { onErrorCaptured, onMounted } from 'vue';
 import { useRouter as useRealRouter } from 'vue-router';
-import { useSessionLog } from '@/composables/useSessionLog';
+import { useSessionLog } from '@/app/useSessionLog';
 import { useMapFromURL } from '@/app/useMapFromURL';
 
 const { sessionLog } = useSessionLog();
