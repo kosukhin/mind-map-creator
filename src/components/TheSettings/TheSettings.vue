@@ -105,7 +105,7 @@ const onDownloadMap = () => {
           <BaseButton
             v-if="parentTypes.length"
             type="primary"
-            class="text-white"
+            class="text-white e2e-open-parent-types"
             @click="overlayName = SHOW_PARENT_TYPES"
           >
             {{ $t('general.parentTypes') }}

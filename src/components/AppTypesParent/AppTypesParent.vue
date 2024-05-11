@@ -26,7 +26,7 @@ const { addType, parentTypes } = useMapTypes();
             :style="`width:${item.width}px;height:${item.height}px`"
           ></div>
           <BaseButton
-            class="AppTypesParent-ItemButton e2e-add-preset-type"
+            class="AppTypesParent-ItemButton e2e-add-parent-type"
             type="success"
             size="sm"
             @click="addType(item)"
