@@ -12,10 +12,10 @@ const props = defineProps({
   },
 });
 
-// Классы bg-standard bg-primary bg-success bg-danger
-// Классы hover:bg-standard-second hover:bg-primary-second hover:bg-success-second hover:bg-danger-second
-// Размеры p-sm p-md p-lg
-// Тексты text-sm text-md text-lg
+// Classes bg-standard bg-primary bg-success bg-danger
+// Classes hover:bg-standard-second hover:bg-primary-second hover:bg-success-second hover:bg-danger-second
+// Sizes p-sm p-md p-lg
+// Texts text-sm text-md text-lg
 const classes = ['rounded-main', `text-${props.size}`, `p-${props.size}`, `bg-${props.type} hover:bg-${props.type}-second`];
 
 classes.push('border border-solid border-body-dark box-border');
