@@ -1,3 +1,58 @@
+<script lang="ts" setup>
+import {
+  EditorContent, BubbleMenu, useEditor, Editor,
+} from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+import { onBeforeUnmount, Ref, watch } from 'vue';
+import { branchCombinator } from '@/modules/combinators/branchCombinator';
+import { AnyFn } from '@vueuse/core';
+
+const props = defineProps({
+  modelValue: {
+    type: String,
+    default: '',
+  },
+});
+
+const emit = defineEmits(['update:modelValue']);
+const { when } = branchCombinator;
+// eslint-disable-next-line no-use-before-define
+const whenEditor = (cb: AnyFn) => when(editor.value, cb);
+
+const editor = useEditor({
+  content: props.modelValue,
+  extensions: [
+    StarterKit,
+  ],
+  onUpdate: () => {
+    whenEditor(
+      () => {
+        emit('update:modelValue', editor.value.getHTML());
+      },
+    );
+  },
+}) as Ref<Editor>;
+
+onBeforeUnmount(() => {
+  whenEditor(
+    () => {
+      editor.value.destroy();
+    },
+  );
+});
+
+watch(() => props.modelValue, (value) => {
+  whenEditor(() => {
+    when(
+      editor.value.getHTML() !== value,
+      () => {
+        editor.value.commands.setContent(value, false);
+      },
+    );
+  });
+});
+</script>
+
 <template>
   <div class="rounded-main p-2 border border-solid border-body-dark">
     <editor-content :editor="editor" />
@@ -20,48 +75,3 @@
     </bubble-menu>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { EditorContent, BubbleMenu, useEditor } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
-import { onBeforeUnmount, watch } from 'vue';
-
-const props = defineProps({
-  modelValue: {
-    type: String,
-    default: '',
-  },
-});
-
-const emit = defineEmits(['update:modelValue']);
-
-const editor = useEditor({
-  content: props.modelValue,
-  extensions: [
-    StarterKit,
-  ],
-  onUpdate: () => {
-    if (!editor.value) {
-      return;
-    }
-    emit('update:modelValue', editor.value.getHTML());
-  },
-});
-
-onBeforeUnmount(() => {
-  editor.value?.destroy();
-});
-
-watch(() => props.modelValue, (value) => {
-  if (!editor.value) {
-    return;
-  }
-
-  const isSame = editor.value.getHTML() === value;
-  if (isSame) {
-    return;
-  }
-
-  editor.value.commands.setContent(value, false);
-});
-</script>
