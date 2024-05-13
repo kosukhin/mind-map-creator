@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { watch } from '@vue/runtime-core';
-import { ref } from '@vue/reactivity';
-import { useMagicKeys } from '@vueuse/core';
-import { useOverlay } from '@/composables/useOverlay';
+import { useOverlay } from '@/app/useOverlay';
 
 const props = defineProps({
   name: {
@@ -11,30 +8,9 @@ const props = defineProps({
   },
 });
 
-const isOpened = ref(false);
-const { overlayName, tryToClose, history } = useOverlay();
-const close = () => {
-  tryToClose.value = props.name as string;
-};
-watch(overlayName, () => {
-  if (overlayName.value) {
-    isOpened.value = overlayName.value === props.name;
-  }
-});
-const { current } = useMagicKeys();
-watch(current, () => {
-  if (!isOpened.value) {
-    return;
-  }
-
-  if (current.has('escape')) {
-    close();
-  }
-});
-const back = () => {
-  history.value.pop();
-  overlayName.value = String(history.value.pop());
-};
+const {
+  isOpened, close, back, isBackPossible,
+} = useOverlay(props.name);
 </script>
 
 <template>
@@ -42,7 +18,7 @@ const back = () => {
     <div v-if="isOpened" class="absolute rounded-main overflow-y-auto flex justify-center items-center top-0 left-0 bg-black/10 z-20 h-full w-full" @click="close">
       <div class="w-full relative flex flex-col max-w-[800px] max-h-[90%] bg-white p-3" @click.stop>
         <div
-          v-if="history.length > 1"
+          v-if="isBackPossible"
           title="Назад"
           class="absolute text-white left-0 top-0 -ml-5 flex justify-center items-center bg-primary/70 hover:bg-primary-second/70 cursor-pointer w-5"
           @click="back"

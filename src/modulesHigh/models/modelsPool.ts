@@ -13,6 +13,7 @@ export const modelsPool = reactive({
   stage: shallowRef<Stage>(),
   overlayName: ref<string>(),
   overlayNameToClose: ref<string>(),
+  overlayHistory: ref<string[]>([]),
   openedFile: ref<FileSystemFileHandle>(),
   forceFile: ref<FileWithHandle>(),
 } as const);

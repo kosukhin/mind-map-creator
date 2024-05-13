@@ -1,8 +1,11 @@
 <script lang="ts" setup>
-import { defineEmits, defineProps, watch } from '@vue/runtime-core';
+import { defineEmits, defineProps } from '@vue/runtime-core';
 import { useVModel } from '@vueuse/core';
 import { ref } from '@vue/reactivity';
-import debounce from 'lodash/debounce';
+import { branchCombinator } from '@/modules/combinators/branchCombinator';
+import partial from 'lodash/partial';
+import { forms } from '@/modulesHigh/browser/forms';
+import { onMounted } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -17,14 +20,12 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue']);
 
 const input = ref<HTMLInputElement | null>(null);
-watch(
-  input,
-  debounce(() => {
-    if (props.autofocus) {
-      (input.value as HTMLInputElement).focus();
-    }
-  }, 500),
-);
+onMounted(() => {
+  branchCombinator.when(
+    props.autofocus,
+    partial(forms.focus, input.value as HTMLElement),
+  );
+});
 
 const data = useVModel(props, 'modelValue', emit);
 </script>

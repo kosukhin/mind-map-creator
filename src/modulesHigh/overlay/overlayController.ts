@@ -1,9 +1,17 @@
 import { modelsPoolGet, modelsPoolSet } from '@/modulesHigh/models/modelsPool';
 import { OVERLAY_CLOSE } from '@/constants/overlays';
 import { watch } from '@vue/runtime-core';
-import { onBeforeUnmount, onMounted, WatchStopHandle } from 'vue';
+import {
+  onBeforeUnmount, onMounted, WatchStopHandle, ref,
+} from 'vue';
 
 export const overlayController = {
+  history: ref<string[]>([]),
+
+  tryToClose(name: string) {
+    modelsPoolSet('overlayNameToClose', name);
+  },
+
   close() {
     modelsPoolSet('overlayName', OVERLAY_CLOSE);
     modelsPoolSet('overlayNameToClose', OVERLAY_CLOSE);
