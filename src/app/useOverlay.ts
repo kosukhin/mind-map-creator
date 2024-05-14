@@ -21,14 +21,16 @@ export const useOverlay = (overlayName: string) => {
   };
   const close = () => {
     modelsPoolSet('overlayNameToClose', overlayName);
+    modelsPoolSet('overlayHistory', []);
   };
 
   watch(
     () => modelsPoolGet<string>('overlayName'),
     (watchedOverlayName) => {
       isOpened.value = watchedOverlayName === overlayName;
+      const lastName = arrayHelper.last(history.value);
       branchCombinator.when(
-        isOpened.value,
+        isOpened.value && watchedOverlayName !== lastName,
         () => {
           modelsPoolSet(
             'overlayHistory',
@@ -42,7 +44,7 @@ export const useOverlay = (overlayName: string) => {
   const { current } = useMagicKeys();
   watch(current, () => {
     branchCombinator.when(
-      isOpened.value,
+      isOpened.value && current.has('escape'),
       close,
     );
   });

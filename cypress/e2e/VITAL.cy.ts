@@ -3,3 +3,4 @@ import './preset.cy';
 import './search.cy';
 import './sessionLog.cy';
 import './parentTypes.cy';
+import './modals.cy';

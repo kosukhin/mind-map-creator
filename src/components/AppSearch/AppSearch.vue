@@ -11,7 +11,6 @@ import { useSearchNamed } from '@/app/useSearchNamed';
 import { branchCombinator } from '@/modules/combinators/branchCombinator';
 import { MapStructure, NamedSearch } from '@/entities/Map';
 import { modelsPoolGet } from '@/modulesHigh/models/modelsPool';
-import { get } from 'lodash';
 
 overlayController.autoClose(SHOW_SEARCH);
 
@@ -34,7 +33,7 @@ const { firstAdditionalField } = mapObjectTransformer;
 
 const namedSearchApplyIndex = (index: number) => {
   const map = modelsPoolGet<MapStructure>('map');
-  const search = get(map, ['namedSearch', index]) as NamedSearch;
+  const search = map?.namedSearches?.[index] as NamedSearch;
   branchCombinator.when(search, () => {
     queryField.value = search.query;
     typeField.value = search.type;
@@ -48,7 +47,7 @@ const namedSearchApplyIndex = (index: number) => {
       <h4 class="text-md font-bold mb-1">{{ $t('general.savedSearches') }}</h4>
       <BaseButton
         class="max-w-[150px] e2e-named-search-create"
-        @click="namedSearchFormShowed=!namedSearchFormShowed"
+        @click.exact="namedSearchFormShowed=!namedSearchFormShowed"
       >
         {{ $t('general.create') }}
       </BaseButton>
