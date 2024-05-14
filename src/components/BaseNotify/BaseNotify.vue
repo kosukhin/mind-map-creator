@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { useNotify } from '@/composables/useNotify';
+import { useNotify } from '@/app/useNotify';
 
 const { message } = useNotify();
 </script>

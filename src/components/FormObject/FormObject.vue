@@ -17,7 +17,7 @@ import { useMapObject } from '@/composables/useMapObject';
 import { createMapObjectUrl } from '@/utils/map';
 import { useLayer } from '@/composables/useLayer';
 import { MapObject } from '@/entities/Map';
-import { useNotify } from '@/composables/useNotify';
+import { useNotify } from '@/app/useNotify';
 import { setValue } from '@/utils/common';
 import { COPIED, NOT_SUPPOERTED } from '@/constants/messages';
 import { NOTIFY_ERROR, NOTIFY_SUCCESS } from '@/constants/system';

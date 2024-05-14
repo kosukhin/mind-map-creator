@@ -1,7 +1,7 @@
 import { mapNormalizeBeforeSave } from '@/application/mapNormalizeBeforeSave';
 import { useRequestGetMap } from '@/composables/useRequestGetMap';
 import { useRequestSaveMap } from '@/composables/useRequestSaveMap';
-import { useNotify } from '@/composables/useNotify';
+import { useNotify } from '@/app/useNotify';
 import { MAP_UPDATED } from '@/constants/messages';
 import { NOTIFY_ERROR, NOTIFY_SUCCESS } from '@/constants/system';
 import { MapStructure, MapType } from '@/entities/Map';
