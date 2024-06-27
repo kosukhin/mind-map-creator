@@ -5,7 +5,6 @@ import { useCanvas } from '@/composables/useCanvas';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
 import { MapLayerObjects } from '@/entities/MapLayerObjects';
-import { useMap } from '@/composables/useMap';
 import { findById } from '@/utils/dom';
 import { CANVAS_DOM_ID } from '@/constants/system';
 import { setValue } from '@/utils/common';
@@ -18,11 +17,9 @@ export const useLayer = createSharedComposable(() => {
   modelsPoolSet('layer', layer);
   modelsPoolSet('stage', stage);
   const layerObjects: MapLayerObjects = new Map();
-  const { firstMapLoad } = useMap();
 
   const doCreateLayer = (afterCreatedCb: AnyFn) => {
     setTimeout(() => {
-      firstMapLoad.value = false;
       const wrapper = findById(CANVAS_DOM_ID);
       canvas.value = wrapper ?? undefined;
 
@@ -33,9 +30,6 @@ export const useLayer = createSharedComposable(() => {
       }
 
       afterCreatedCb();
-      setTimeout(() => {
-        firstMapLoad.value = true;
-      }, 500);
     }, 0);
   };
 

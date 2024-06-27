@@ -2,17 +2,17 @@ import { Ref, watch } from 'vue';
 import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { useLayerEvents } from '@/composables/useLayerEvents';
-import { useMap } from '@/composables/useMap';
 import { useSideBar } from '@/composables/useSideBar';
 import { useMapObject } from '@/composables/useMapObject';
 import { useOverlay } from '@/composables/useOverlay';
 import { useLocks } from '@/composables/useLocks';
 import { mapObjectClick } from '@/application/mapObjectClick';
 import { openUrlByObject } from '@/utils/map';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useLayerListenerClick = createSharedComposable(() => {
   const { click, tap, stageClick } = useLayerEvents();
-  const { map } = useMap();
+  const map = mapOpened;
   const { isSidebarOpen } = useSideBar();
   const { currentObjectId, fastPreviewObjectId, fastPreviewIsLocked } = useMapObject();
   const { overlayName } = useOverlay();

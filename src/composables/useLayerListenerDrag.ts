@@ -6,13 +6,13 @@ import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
 import { useLayer } from '@/composables/useLayer';
 import { useLayerEvents } from '@/composables/useLayerEvents';
 import { useLocks } from '@/composables/useLocks';
-import { useMap } from '@/composables/useMap';
 import { setProperty } from '@/utils/common';
 import { applyArrowPoints } from '@/utils/map';
 import { watch } from '@vue/runtime-core';
 import { createSharedComposable } from '@vueuse/core';
 import Konva from 'konva';
 import { debounce, throttle } from 'lodash';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 // FIXME выделить вотчеры вынуть их из функции
 export const useLayerListenerDrag = createSharedComposable(() => {
@@ -22,17 +22,9 @@ export const useLayerListenerDrag = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
   let dragMoveInterval: any = null;
 
-  const { firstMapLoad, map } = useMap();
+  const map = mapOpened;
   const { restrictBoundaries } = useCanvasBoundaries();
   const { stage, layer, layerObjects } = useLayer();
-
-  watch(firstMapLoad, () => {
-    setTimeout(() => {
-      if (stage.value) {
-        stage.value.dragBoundFunc(restrictBoundaries);
-      }
-    }, 100);
-  });
 
   watch(dragend, () => {
     if (isDragLocked.value) return;
