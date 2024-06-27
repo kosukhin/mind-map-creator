@@ -8,7 +8,6 @@ import TheLinker from '@/components/TheLinker/TheLinker.vue';
 import { useOverlay } from '@/composables/useOverlay';
 import { useMapType } from '@/composables/useMapType';
 import { SHOW_SETTINGS, SHOW_TYPE } from '@/constants/overlays';
-import { useMap } from '@/composables/useMap';
 import { DEFAULT_SVG } from '@/constants/svg';
 import { useSideBar } from '@/composables/useSideBar';
 import { useLayer } from '@/composables/useLayer';
@@ -17,6 +16,7 @@ import { createObject } from '@/utils/map';
 import { MapObject } from '@/entities/Map';
 import { svgRenderDefault } from '@/utils/svgRenderDefault';
 import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 const { overlayName } = useOverlay();
 const { currentTypeId } = useMapType();
@@ -26,7 +26,7 @@ const selectType = (name: string) => {
 };
 
 const i18n = useI18n();
-const { map } = useMap();
+const map = mapOpened;
 const addType = () => {
   if (map.value) {
     const newTypeId = Date.now().toString();

@@ -5,7 +5,6 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import { useMapType } from '@/composables/useMapType';
-import { useMap } from '@/composables/useMap';
 import { SHOW_TYPE } from '@/constants/overlays';
 import { useFormDirtyCheck } from '@/composables/useFormDirtyCheck';
 import { useOverlay } from '@/composables/useOverlay';
@@ -13,12 +12,14 @@ import { useKeybindings } from '@/composables/useKeybindings';
 import BaseTextarea from '@/components/BaseTextarea/BaseTextarea.vue';
 import BaseInputTitle from '@/components/BaseInputTitle/BaseInputTitle.vue';
 import BaseInputRow from '@/components/BaseInput/BaseInputRow.vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 const { stringify } = JSON;
 
 const form = ref<any>({});
 const { currentTypeId, currentType } = useMapType();
-const { map } = useMap();
+const map = mapOpened;
+
 watch(
   currentType,
   () => {

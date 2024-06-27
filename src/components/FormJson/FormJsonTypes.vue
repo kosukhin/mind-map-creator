@@ -5,16 +5,16 @@ import merge from 'lodash/merge';
 import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import BaseTextarea from '@/components/BaseTextarea/BaseTextarea.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import { useMap } from '@/composables/useMap';
 import { useFormDirtyCheck } from '@/composables/useFormDirtyCheck';
 import { SHOW_JSON_TYPES } from '@/constants/overlays';
 import { getLocation } from '@/utils/globals';
 import { useOverlay } from '@/composables/useOverlay';
 import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 const { stringify } = JSON;
 
-const { map } = useMap();
+const map = mapOpened;
 const form = ref('');
 watch(
   map,

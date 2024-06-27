@@ -8,9 +8,7 @@ import BaseCheckbox from '@/components/BaseCheckbox/BaseCheckbox.vue';
 import BaseDrawer from '@/components/BaseDrawer/BaseDrawer.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import BaseSelect from '@/components/BaseSelect/BaseSelect.vue';
-import BaseTextarea from '@/components/BaseTextarea/BaseTextarea.vue';
 import { updateObjectOnLayer } from '@/utils/konva';
-import { useMap } from '@/composables/useMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { useKeybindings } from '@/composables/useKeybindings';
 import { SHOW_OBJECT, SHOW_TRANSFER } from '@/constants/overlays';
@@ -29,8 +27,9 @@ import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import BaseInputTitle from '@/components/BaseInputTitle/BaseInputTitle.vue';
 import BaseInputRow from '@/components/BaseInput/BaseInputRow.vue';
 import BaseEditor from '@/components/BaseEditor/BaseEditor.vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
-const { map } = useMap();
+const map = mapOpened;
 const mapTypes = computed(() => {
   const result: { id: string; name: string }[] = [];
 

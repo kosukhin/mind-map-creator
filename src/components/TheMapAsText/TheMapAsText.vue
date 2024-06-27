@@ -6,13 +6,13 @@ import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_TEXT } from '@/constants/overlays';
-import { useMap } from '@/composables/useMap';
 import { nl2br, stripHtml } from '@/utils/common';
 import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 useOverlayAutoClose(SHOW_TEXT);
 
-const { map } = useMap();
+const map = mapOpened;
 const mapAsString = computed(() => (
   (map.value
       && Object.values(map.value.objects)

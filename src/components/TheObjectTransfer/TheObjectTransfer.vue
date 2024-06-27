@@ -4,7 +4,6 @@ import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import { useObjectActions } from '@/composables/useObjectActions';
 import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { useRequestTransfer } from '@/composables/useRequestTransfer';
-import { useMap } from '@/composables/useMap';
 import { useMapObject } from '@/composables/useMapObject';
 import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_TRANSFER } from '@/constants/overlays';
@@ -12,21 +11,14 @@ import { HISTORY_STORAGE_KEY } from '@/constants/system';
 import { MapObject } from '@/entities/Map';
 import { createMapObjectUrl } from '@/utils/map';
 import { ref } from '@vue/reactivity';
-import { useStorage, watchOnce } from '@vueuse/core';
+import { useStorage } from '@vueuse/core';
 import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 useOverlayAutoClose(SHOW_TRANSFER);
 const { currentObject } = useMapObject();
-const { map, firstMapLoad } = useMap();
+const map = mapOpened;
 const linkedObjects = ref<any>([]);
-
-watchOnce(firstMapLoad, () => {
-  if (map.value) {
-    linkedObjects.value = Object.values(map.value.objects).filter(
-      (item) => item.linked,
-    );
-  }
-});
 
 const getObjectLink = (object: MapObject) => {
   if (object.outlink) {

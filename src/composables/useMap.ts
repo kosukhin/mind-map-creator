@@ -14,10 +14,11 @@ import { mapOpened } from '@/domains/data/mapOpened';
 import { mapParentTypes } from '@/domains/data/mapParentTypes';
 
 export const useMap = createSharedComposable(() => {
-  const { message } = useNotify();
-  const firstMapLoad = ref(false);
   const parentTypes = mapParentTypes;
   const map = mapOpened;
+
+  const { message } = useNotify();
+  const firstMapLoad = ref(false);
   modelsPoolSet('map', map);
   const mapName = ref('current');
   const mapError = ref({ error: null });
@@ -47,22 +48,12 @@ export const useMap = createSharedComposable(() => {
   );
 
   const isLoading = ref(false);
-  const openMapOfCurrentUrl = (mapValue: MapStructure, parentsTypes: MapType[]) => {
-    // Записать текущие модели карты
-    map.value = mapValue;
-    // Записать текущие модели карты
-
-    // Записать текущие модели типов карт
-    parentTypes.value = parentsTypes;
-    // Записать текущие модели типов карт
-  };
 
   return {
     map,
     firstMapLoad,
     parentTypes,
     mapName,
-    openMapOfCurrentUrl,
     isLoading,
     afterMapSavedFns,
   };

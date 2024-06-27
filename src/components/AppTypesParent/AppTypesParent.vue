@@ -3,13 +3,15 @@ import svg64 from 'svg64';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import { useOverlayAutoClose } from '@/composables/useOverlayAutoclose';
 import { SHOW_PARENT_TYPES } from '@/constants/overlays';
-import { useMap } from '@/composables/useMap';
 import { MapType } from '@/entities/Map';
 import { svgRender } from '@/utils/svgRenderDefault';
+import { mapOpened } from '@/domains/data/mapOpened';
+import { mapParentTypes } from '@/domains/data/mapParentTypes';
 
 useOverlayAutoClose(SHOW_PARENT_TYPES);
 
-const { map, parentTypes } = useMap();
+const map = mapOpened;
+const parentTypes = mapParentTypes;
 const addType = (type: MapType) => {
   if (map.value) {
     map.value.types[type.name] = type;

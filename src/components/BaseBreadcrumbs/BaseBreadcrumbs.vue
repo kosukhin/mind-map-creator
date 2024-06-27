@@ -1,8 +1,8 @@
 <script lang="ts" setup>
-import { useMap } from '@/composables/useMap';
 import uniqueId from 'lodash/uniqueId';
+import { mapOpened } from '@/domains/data/mapOpened';
 
-const { map } = useMap();
+const map = mapOpened;
 </script>
 
 <template>

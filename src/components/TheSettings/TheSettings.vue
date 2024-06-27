@@ -7,38 +7,29 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseCheckbox from '@/components/BaseCheckbox/BaseCheckbox.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import { MapSettings } from '@/entities/Map';
-import { useMap } from '@/composables/useMap';
 import { useRequestRemoveMap } from '@/composables/useRequestRemoveMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { useKeybindings } from '@/composables/useKeybindings';
 import {
   SHOW_JSON,
   SHOW_KEYBINDINGS,
-  SHOW_PARENT_TYPES, SHOW_PRESETS,
+  SHOW_PARENT_TYPES,
+  SHOW_PRESETS,
   SHOW_SETTINGS,
 } from '@/constants/overlays';
 import { useFormDirtyCheck } from '@/composables/useFormDirtyCheck';
 import { downloadFile } from '@/utils/dom';
 import { createMapFileNameFromUrl } from '@/utils/map';
+import { mapOpened } from '@/domains/data/mapOpened';
+import { mapParentTypes } from '@/domains/data/mapParentTypes';
+import { useMapFeatures } from '@/domains/composables/useMapFeatures';
 
 const { stringify } = JSON;
 
 const form = ref<Partial<MapSettings>>({});
-const {
-  map, mapName, firstMapLoad, parentTypes,
-} = useMap();
-watch(
-  firstMapLoad,
-  () => {
-    if (map.value) {
-      form.value = { ...map.value.settings };
-      form.value.prevFavoriteGroup = form.value.favoriteGroup;
-    }
-  },
-  {
-    immediate: true,
-  },
-);
+const map = mapOpened;
+const parentTypes = mapParentTypes;
+const { mapName } = useMapFeatures();
 
 const { close, overlayName, isOpened } = useOverlay();
 

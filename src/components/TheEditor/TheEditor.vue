@@ -6,7 +6,6 @@ import { CANVAS_DOM_ID } from '@/constants/system';
 import {
   onMounted, onUpdated, ref, watch,
 } from 'vue';
-import { useMap } from '@/composables/useMap';
 import { calculateVisibleObjects } from '@/application/layerDragObjectHandler';
 import { MapObject } from '@/entities/Map';
 import { useLayerEvents } from '@/composables/useLayerEvents';
@@ -14,6 +13,7 @@ import { renderSvgTemplate } from '@/utils/svgRenderDefault';
 import { useFps } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { openUrlByObject } from '@/utils/map';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 useMapRenderer();
 const counter = ref(0);
@@ -32,7 +32,7 @@ onMounted(() => {
 });
 
 const objectsRendered = ref<any>([]);
-const { map } = useMap();
+const map = mapOpened;
 const { dragmove, dragend, wheel } = useLayerEvents();
 
 const recalcObjectsRendered = () => {

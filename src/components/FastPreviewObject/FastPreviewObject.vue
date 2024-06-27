@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { useMapObject } from '@/composables/useMapObject';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import { useMap } from '@/composables/useMap';
 import { useLayer } from '@/composables/useLayer';
 import Konva from 'konva';
 import { nextTick } from '@vue/runtime-core';
@@ -13,8 +12,9 @@ import { useOverlay } from '@/composables/useOverlay';
 import { SHOW_OBJECT } from '@/constants/overlays';
 import { useObjectLinker } from '@/composables/useObjectLinker';
 import { gridFitSize } from '@/utils/gridFitSize';
+import { mapOpened } from '@/domains/data/mapOpened';
 
-const { map } = useMap();
+const map = mapOpened;
 const { fastPreviewObjectId, currentObjectId, clone } = useMapObject();
 const { layerObjects, layer } = useLayer();
 
