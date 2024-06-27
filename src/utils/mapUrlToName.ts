@@ -5,5 +5,5 @@ export const mapUrlToName = (url: string) => {
     mapName = `_${mapName}`;
   }
 
-  return mapName;
+  return mapName || 'current';
 };

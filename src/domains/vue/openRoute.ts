@@ -1,4 +1,4 @@
-import { useRouter } from 'vue-router';
+import { useRouter } from '@/composables/useRouter';
 
 export const openRoute = (routeUrl: string) => {
   const router = useRouter();

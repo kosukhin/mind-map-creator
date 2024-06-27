@@ -15,11 +15,11 @@ import '@/assets/styles.scss';
 
 // Если файл открыт из файловой системы
 new Applicative()
-  .ap(fileFromFS)
-  .ap(readFileHandler)
-  .ap(jsonParse)
-  .ap(partial(set, allMaps, 'value'))
-  .ap(initApplication);
+  .ap(fileFromFS) // Пробуем открыть файл из ФС для PWA
+  .ap(readFileHandler) // Если получилось то читаем содержимое файла
+  .ap(jsonParse) // Парсим json файла
+  .ap(partial(set, allMaps, 'value')) // Запоминаем все карты файла
+  .ap(initApplication); // Запускаем инициализацию приложения
 
 // Если файл открыт по ссылке
 new Applicative('Открываем по ссылке')

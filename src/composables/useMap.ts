@@ -10,12 +10,14 @@ import { watch } from '@vue/runtime-core';
 import { createSharedComposable } from '@vueuse/core';
 import { AnyFn } from '@/entities/Utils';
 import { modelsPoolSet } from '@/modulesHigh/models/modelsPool';
+import { mapOpened } from '@/domains/data/mapOpened';
+import { mapParentTypes } from '@/domains/data/mapParentTypes';
 
 export const useMap = createSharedComposable(() => {
   const { message } = useNotify();
   const firstMapLoad = ref(false);
-  const parentTypes = ref<MapType[]>([]);
-  const map = ref<MapStructure>();
+  const parentTypes = mapParentTypes;
+  const map = mapOpened;
   modelsPoolSet('map', map);
   const mapName = ref('current');
   const mapError = ref({ error: null });
