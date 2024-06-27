@@ -4,16 +4,16 @@ import { useCanvas } from '@/composables/useCanvas';
 import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
 import { useLayer } from '@/composables/useLayer';
 import { useLocks } from '@/composables/useLocks';
-import { useMap } from '@/composables/useMap';
 import { computed } from '@vue/reactivity';
 import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { watch } from 'vue';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useMapRenderer = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
   const { layer, stage, layerObjects } = useLayer();
-  const { map } = useMap();
+  const map = mapOpened;
   const { maybeDragLocked } = useLocks();
   const allInit = computed(() => !!layer.value && !!map.value);
   const { canvasSize } = useCanvas();

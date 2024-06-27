@@ -1,7 +1,6 @@
 import { ref, watch } from 'vue';
-import { createSharedComposable, watchOnce } from '@vueuse/core';
+import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
-import { useMap } from '@/composables/useMap';
 import { useLayer } from '@/composables/useLayer';
 import { useCanvas } from '@/composables/useCanvas';
 import { useLayerEvents } from '@/composables/useLayerEvents';
@@ -10,7 +9,6 @@ import { miniMapRedrawHandler } from '@/application/miniMapRedrawHandler';
 import { MINI_MAP_UPDATE_FREQ } from '@/constants/system';
 
 export const useMiniMap = createSharedComposable(() => {
-  const { firstMapLoad } = useMap();
   const { layer, stage } = useLayer();
   const { canvasSize } = useCanvas();
   const { dragmove, wheel } = useLayerEvents();
@@ -50,15 +48,15 @@ export const useMiniMap = createSharedComposable(() => {
     }
   };
 
-  watchOnce(firstMapLoad, () => {
-    setTimeout(() => {
-      calculateMiniMapSize();
-    });
-
-    setTimeout(() => {
-      calculateMiniMapPosition();
-    }, 300);
-  });
+  // watchOnce(firstMapLoad, () => {
+  //   setTimeout(() => {
+  //     calculateMiniMapSize();
+  //   });
+  //
+  //   setTimeout(() => {
+  //     calculateMiniMapPosition();
+  //   }, 300);
+  // });
 
   watch(
     [dragmove, wheel],

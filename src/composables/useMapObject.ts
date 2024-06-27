@@ -1,21 +1,21 @@
-import { ref, watch } from 'vue';
-import { createSharedComposable } from '@vueuse/core';
-import { useMap } from '@/composables/useMap';
-import { MapObject } from '@/entities/Map';
-import { isNotNullish } from '@/utils/isNotNullish';
-import { currentObjectSet } from '@/application/currentObjectSet';
-import { currentObjectSetAdditionalFields } from '@/application/currentObjectSetAdditionalFields';
-import { vueWithList } from '@/utils/vueWithList';
-import { cloneObject } from '@/utils/konva';
-import { useOverlay } from '@/composables/useOverlay';
-import { useLayer } from '@/composables/useLayer';
+import {ref, watch} from 'vue';
+import {createSharedComposable} from '@vueuse/core';
+import {MapObject} from '@/entities/Map';
+import {isNotNullish} from '@/utils/isNotNullish';
+import {currentObjectSet} from '@/application/currentObjectSet';
+import {currentObjectSetAdditionalFields} from '@/application/currentObjectSetAdditionalFields';
+import {vueWithList} from '@/utils/vueWithList';
+import {cloneObject} from '@/utils/konva';
+import {useOverlay} from '@/composables/useOverlay';
+import {useLayer} from '@/composables/useLayer';
+import {mapOpened} from "@/domains/data/mapOpened";
 
 export const useMapObject = createSharedComposable(() => {
   const fastPreviewIsLocked = ref(false);
   const fastPreviewObjectId = ref<number>();
   const currentObjectId = ref<number>();
   const currentObject = ref<MapObject>();
-  const { map } = useMap();
+  const map = mapOpened;
 
   watch([currentObjectId, map], () => {
     vueWithList([currentObjectId, map])

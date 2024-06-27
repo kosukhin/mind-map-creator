@@ -1,7 +1,6 @@
-import { ref, watch } from 'vue';
+import { ref } from 'vue';
 import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
-import { useMap } from '@/composables/useMap';
 
 export const useHashChange = createSharedComposable(() => {
   const hashChanged = ref<string>();

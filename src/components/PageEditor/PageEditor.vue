@@ -18,11 +18,9 @@ import TheObjectTransfer from '@/components/TheObjectTransfer/TheObjectTransfer.
 import TheSettings from '@/components/TheSettings/TheSettings.vue';
 import TheSideBar from '@/components/TheSideBar/TheSideBar.vue';
 import { useMoveToObject } from '@/composables/useMoveToObject';
-import { useProject } from '@/composables/useProject';
 import { useHashChange } from '@/composables/useHashChange';
 import { useKeybindings } from '@/composables/useKeybindings';
 import { useLocks } from '@/composables/useLocks';
-import { useMap } from '@/composables/useMap';
 import { useMeta } from '@/composables/useMeta';
 import { useOverlay } from '@/composables/useOverlay';
 import { useSideBar } from '@/composables/useSideBar';

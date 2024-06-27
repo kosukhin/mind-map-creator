@@ -2,15 +2,15 @@ import { AnyFn, createSharedComposable } from '@vueuse/core';
 import { watch } from '@vue/runtime-core';
 import { updateObjectOnLayer } from '@/utils/konva';
 import { useLayer } from '@/composables/useLayer';
-import { useMap } from '@/composables/useMap';
 import { useMapObject } from '@/composables/useMapObject';
 import { useLocks } from '@/composables/useLocks';
 import { useI18n } from 'vue-i18n';
 import { ref } from '@vue/reactivity';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useObjectLinker = createSharedComposable((defaultTitle?: string) => {
   const { layer, layerObjects } = useLayer();
-  const { map } = useMap();
+  const map = mapOpened;
   const { currentObjectId, fastPreviewIsLocked } = useMapObject();
   const { isClickLocked } = useLocks();
   const i18n = useI18n();
