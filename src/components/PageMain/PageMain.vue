@@ -7,7 +7,6 @@ import { useIdbGetMap } from '@/composables/useIdbGetMap';
 import { useOpenFile } from '@/composables/useOpenFile';
 import { useProject } from '@/composables/useProject';
 import { useRequestCreateMap } from '@/composables/useRequestCreateMap';
-import { useRequestGetMap } from '@/composables/useRequestGetMap';
 import { useRequestSearch } from '@/composables/useRequestSearch';
 import { setFiles, topMaps } from '@/libraries/browser-fs';
 import { urlTrim } from '@/utils/common';
@@ -52,48 +51,9 @@ watch(
   }, 500),
 );
 
-const { getMap } = useRequestGetMap();
 const topMapsWithNames = ref<any>([]);
 const favorites = ref<any>({});
 const favoriteGroups = ref<string[]>([]);
-
-watch(
-  topMaps,
-  async () => {
-    const files = await Promise.all(
-      topMaps.value.map((file) => getMap(file.url)),
-    );
-    topMapsWithNames.value = files.map((f) => ({
-      title: f[0].settings.title,
-      url: f[0].url,
-      favorite: f[0].settings.favoriteGroup,
-    }));
-
-    favorites.value = files
-      .sort((a: any, b: any) => (String(a[0].settings.title) > String(b[0].settings.title) ? a : b))
-      .reduce((acc: any, f) => {
-        const group = String(f[0].settings.favoriteGroup);
-        if (!group || group === 'undefined') {
-          return acc;
-        }
-
-        if (!acc[group]) {
-          acc[group] = [];
-        }
-
-        acc[group].push({
-          title: f[0].settings.title,
-          url: f[0].url,
-        });
-
-        return acc;
-      }, {});
-    favoriteGroups.value = Object.keys(favorites.value).sort();
-  },
-  {
-    immediate: true,
-  },
-);
 
 const newMapName = ref('');
 const { createMap } = useRequestCreateMap();
@@ -102,7 +62,7 @@ const onCreateMap = async () => {
 };
 
 const {
-  isProjectOpened, loadProjectFiles, saveProjectFiles, setProjectOff,
+  isProjectOpened, loadProjectFiles,
 } = useProject();
 [!isProjectOpened.value].filter(Boolean).forEach(loadProjectFiles);
 
@@ -121,17 +81,6 @@ useIdbGetMap()
 
     setFiles(files);
   });
-
-const router = useRouter();
-const { openedFile, forceFile } = useOpenFile();
-if (openedFile.value) {
-  openedFile.value.getFile().then(async (file) => {
-    (file as any).handle = openedFile.value;
-    forceFile.value = file;
-    router.push('/current');
-  });
-}
-
 </script>
 
 <template>

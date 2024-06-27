@@ -1,37 +1,35 @@
 import { mapBuildParentMapNames } from '@/application/mapBuildParentMapNames';
 import { requestNormalizeGetMap } from '@/application/requestNormalizeGetMap';
-import { useOpenFile } from '@/composables/useOpenFile';
 import { MapStructure, MapType } from '@/entities/Map';
-import { readFile } from '@/libraries/browser-fs';
 import { isNotNullish } from '@/utils/isNotNullish';
 import { iterateeHash } from '@/utils/iterateeHash';
-import { jsonParse } from '@/utils/jsonParse';
 import { createMap } from '@/utils/map';
 import { compose, property } from 'lodash/fp';
+import { allMaps } from '@/domains/data/allMaps';
 
 const isTypesNotNullish = compose(isNotNullish, property('types'));
-const { forceFile } = useOpenFile();
 
 // FIXME Подумать над именем
 export function useRequestGetMap() {
   const getMap = async (
     mapName: string,
   ): Promise<readonly [MapStructure, MapType[]]> => {
-    let data: any = null;
-    let allMaps: any = null;
-    try {
-      if (forceFile.value) {
-        allMaps = jsonParse(String(await readFile(forceFile.value))) as MapStructure;
-      }
-      data = allMaps[mapName] ?? createMap('', mapName);
-    } catch (e) {
-      data = createMap('', mapName);
+    if (!mapName) {
+      mapName = 'current';
     }
+
+    console.trace('get map');
+    console.log('get map all maps', JSON.stringify(allMaps.value));
+
+    const data: any = allMaps.value[mapName] ?? createMap('', mapName);
+
+    console.log('get map name', mapName);
+    console.log('req get map', data);
 
     const parentNames = mapBuildParentMapNames(mapName);
     let parentTypes: any[] = [];
-    if (allMaps) {
-      const parentsData = parentNames.map((parentMapName) => allMaps[parentMapName]);
+    if (allMaps.value) {
+      const parentsData = parentNames.map((parentMapName) => allMaps.value[parentMapName]);
       const parentNamesDictionary = parentsData
         .reduce(iterateeHash('url', 'settings.title'), {});
       [data].filter(isNotNullish).forEach(() => {
