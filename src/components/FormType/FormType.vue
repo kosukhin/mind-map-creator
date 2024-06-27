@@ -72,7 +72,7 @@ watch(ctrlSFired, () => {
       </BaseInputRow>
       <BaseInputRow>
         <BaseInputTitle>
-          SVG
+          Разметка HTML
         </BaseInputTitle>
         <BaseTextarea v-model="form.svg" />
       </BaseInputRow>

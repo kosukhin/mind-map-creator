@@ -9,25 +9,23 @@ import { allMaps } from '@/domains/data/allMaps';
 
 const isTypesNotNullish = compose(isNotNullish, property('types'));
 
-// FIXME Подумать над именем
 export function useRequestGetMap() {
+  /*
+  Здесь логика получает объект текущей карты и получает родительские типы
+  - По урлу найти текущую карту в allMaps
+  - По текущей карте найти ее родительские типы
+   */
   const getMap = async (
     mapName: string,
   ): Promise<readonly [MapStructure, MapType[]]> => {
     if (!mapName) {
       mapName = 'current';
     }
-
-    console.trace('get map');
-    console.log('get map all maps', JSON.stringify(allMaps.value));
-
     const data: any = allMaps.value[mapName] ?? createMap('', mapName);
-
-    console.log('get map name', mapName);
-    console.log('req get map', data);
-
     const parentNames = mapBuildParentMapNames(mapName);
     let parentTypes: any[] = [];
+
+    // Строятся родительские типы
     if (allMaps.value) {
       const parentsData = parentNames.map((parentMapName) => allMaps.value[parentMapName]);
       const parentNamesDictionary = parentsData
@@ -40,15 +38,20 @@ export function useRequestGetMap() {
         .map((parent) => Object.values(parent.types) as MapType[])
         .flat();
     }
+    // Строятся родительские типы
 
+    // Строится не нужный никому формат ответа
     const response = {
       document: mapName,
       ok: !!data,
       parentTypes,
       data: data && 'structure' in data ? data : ({ structure: data } as any),
     };
+    // Строится не нужный никому формат ответа
 
+    // Не нужный формат ответа переводится в 2 значение массив род типов и текущая карта
     return requestNormalizeGetMap(response, mapName);
+    // Не нужный формат ответа переводится в 2 значение массив род типов и текущая карта
   };
 
   return {

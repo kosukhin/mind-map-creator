@@ -46,11 +46,13 @@ export const useMap = createSharedComposable(() => {
 
   const isLoading = ref(false);
   const openMapOfCurrentUrl = (mapValue: MapStructure, parentsTypes: MapType[]) => {
-    isLoading.value = false;
-
-    console.log('open map of current url');
+    // Записать текущие модели карты
     map.value = mapValue;
+    // Записать текущие модели карты
+
+    // Записать текущие модели типов карт
     parentTypes.value = parentsTypes;
+    // Записать текущие модели типов карт
   };
 
   return {
