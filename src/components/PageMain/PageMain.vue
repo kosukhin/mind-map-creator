@@ -4,7 +4,6 @@ import { windowReload } from '@/application/windowReload';
 import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import { useIdbGetMap } from '@/composables/useIdbGetMap';
-import { useOpenFile } from '@/composables/useOpenFile';
 import { useProject } from '@/composables/useProject';
 import { useRequestCreateMap } from '@/composables/useRequestCreateMap';
 import { useRequestSearch } from '@/composables/useRequestSearch';
@@ -15,7 +14,6 @@ import { watch } from '@vue/runtime-core';
 import { useSeoMeta } from '@vueuse/head';
 import debounce from 'lodash/debounce';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
 
 const i18n = useI18n();
 useSeoMeta({

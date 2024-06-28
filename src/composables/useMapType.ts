@@ -2,6 +2,7 @@ import { ref, watch } from 'vue';
 import { createSharedComposable } from '@vueuse/core';
 import { MapType } from '@/entities/Map';
 import { setValue } from '@/utils/common';
+import { mapOpened } from '@/domains/data/mapOpened';
 
 type StrNum = string | number
 

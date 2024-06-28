@@ -1,5 +1,3 @@
-import { None } from '@/domains/branching/Maybe';
-
 declare global {
   interface Window {
     launchQueue: {
@@ -16,11 +14,11 @@ export const fileFromFS = () => {
           const [file] = launchParams.files;
           resolve(file);
         } else {
-          resolve(new None());
+          resolve(null);
         }
       });
     });
   }
 
-  return new None();
+  return null;
 };

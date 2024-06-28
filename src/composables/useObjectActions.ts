@@ -5,9 +5,11 @@ import { useOverlay } from '@/composables/useOverlay';
 import { removeObjectOnLayer, updateObjectOnLayer } from '@/utils/konva';
 import { findRelationsToRemove } from '@/application/findRelationsToRemove';
 import { mapOpened } from '@/domains/data/mapOpened';
+import { useLayer } from '@/composables/useLayer';
 
 export const useObjectActions = createSharedComposable((needConfirm = true) => {
   const i18n = useI18n();
+  const { layer, layerObjects } = useLayer();
   const map = mapOpened;
   const { currentObject } = useMapObject();
   const { close } = useOverlay();
@@ -44,7 +46,10 @@ export const useObjectActions = createSharedComposable((needConfirm = true) => {
         });
       });
       delete map.value.objects[currentObject.value.id];
-      removeObjectOnLayer(layerObjects, currentObject.value);
+
+      if (currentObject.value) {
+        removeObjectOnLayer(layerObjects, currentObject.value);
+      }
     }
   };
 
