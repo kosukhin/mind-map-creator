@@ -1,4 +1,4 @@
-import { allMaps } from '@/domains/data/allMaps';
+import { mapsAll } from '@/domains/data/mapsAll';
 import { isNotNullish } from '@/utils/isNotNullish';
 import { MapStructure, MapType } from '@/entities/Map';
 import { mapBuildParentMapNames } from '@/application/mapBuildParentMapNames';
@@ -10,7 +10,7 @@ const isTypesNotNullish = compose(isNotNullish, property('types'));
 export const buildMapParentTypes = (map: MapStructure) => {
   const mapName = mapUrlToName(map.url);
   const parentNames = mapBuildParentMapNames(mapName);
-  const parentsData = parentNames.map((parentMapName) => allMaps.value[parentMapName]);
+  const parentsData = parentNames.map((parentMapName) => mapsAll.value[parentMapName]);
 
   return parentsData
     .filter(isTypesNotNullish)

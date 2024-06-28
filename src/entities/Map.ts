@@ -60,6 +60,8 @@ export interface MapStructure {
   namedSearches?: NamedSearch[]
 }
 
+export type MapFile = Record<string, MapStructure>;
+
 export interface Map {
   document: string
   structure: MapStructure

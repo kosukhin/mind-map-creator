@@ -6,9 +6,11 @@ import { readFileHandler } from '@/domains/browser/readFileHandler';
 import { jsonParse } from '@/domains/browser/jsonParse';
 import partial from 'lodash/partial';
 import { set } from 'lodash';
-import { allMaps } from '@/domains/data/allMaps';
-import { initApplication } from '@/domains/application/initApplication';
+import { mapsAll } from '@/domains/data/mapsAll';
+import { initApplication } from '@/domains/applicationHigher/initApplication';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
+import { mapFileHandler } from '@/domains/data/mapFileHandler';
+import { tap } from '@/domains/branching/tap';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
@@ -18,9 +20,10 @@ import '@/assets/styles.scss';
 new Applicative()
   .ap(fileFromFS) // Пробуем открыть файл из ФС для PWA
   .ap(ensureNotNullish) // Убеждаемся что получилось открыть файл
-  .ap(readFileHandler) // Если получилось то читаем содержимое файла
+  .ap(tap(partial(set, mapFileHandler, 'value'))) // Запоминаем хэндлер файла, чтобы потом управлять файлом
+  .ap(readFileHandler) // Читаем содержимое файла
   .ap(jsonParse) // Парсим json файла
-  .ap(partial(set, allMaps, 'value')) // Запоминаем все карты файла
+  .ap(partial(set, mapsAll, 'value')) // Запоминаем все карты файла
   .ap(initApplication); // Запускаем инициализацию приложения
 
 // Если файл открыт по ссылке
