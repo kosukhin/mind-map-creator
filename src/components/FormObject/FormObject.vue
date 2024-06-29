@@ -16,7 +16,6 @@ import { useMapObject } from '@/composables/useMapObject';
 import { createMapObjectUrl } from '@/utils/map';
 import { useLayer } from '@/composables/useLayer';
 import { MapObject } from '@/entities/Map';
-import { useNotify } from '@/composables/useNotify';
 import { setValue } from '@/utils/common';
 import { COPIED, NOT_SUPPOERTED } from '@/constants/messages';
 import { NOTIFY_ERROR, NOTIFY_SUCCESS } from '@/constants/system';
@@ -28,6 +27,7 @@ import BaseInputTitle from '@/components/BaseInputTitle/BaseInputTitle.vue';
 import BaseInputRow from '@/components/BaseInput/BaseInputRow.vue';
 import BaseEditor from '@/components/BaseEditor/BaseEditor.vue';
 import { mapOpened } from '@/domains/data/mapOpened';
+import { notificationMessage } from '@/domains/data/notificationMessage';
 
 const map = mapOpened;
 const mapTypes = computed(() => {
@@ -116,18 +116,15 @@ const cancel = () => {
   close();
 };
 
-const { clone } = useMapObject();
-
-const { message } = useNotify();
 const { copy, isSupported } = useClipboard();
 function onCopyUrl() {
   if (!isSupported) {
-    setValue(message, [NOT_SUPPOERTED, NOTIFY_ERROR]);
+    setValue(notificationMessage, [NOT_SUPPOERTED, NOTIFY_ERROR]);
     return;
   }
   if (currentObject.value) {
     copy(`${getLocation().pathname}#${currentObject.value.id}`);
-    setValue(message, [COPIED, NOTIFY_SUCCESS]);
+    setValue(notificationMessage, [COPIED, NOTIFY_SUCCESS]);
   }
 }
 

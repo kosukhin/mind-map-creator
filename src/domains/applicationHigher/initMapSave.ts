@@ -9,8 +9,10 @@ import { mapUrlToName } from '@/utils/mapUrlToName';
 import { tap } from '@/domains/branching/tap';
 import { MapStructure } from '@/entities/Map';
 import { writeToFileHandler } from '@/domains/browser/writeToFileHandler';
-import { partial } from 'lodash';
+import { partial, set } from 'lodash';
 import { readFileHandler } from '@/domains/browser/readFileHandler';
+import { notificationMessage } from '@/domains/data/notificationMessage';
+import { NOTIFY_SUCCESS } from '@/constants/system';
 
 export const initMapSave = () => {
   watch(mapOpened, () => {
@@ -28,8 +30,7 @@ export const initMapSave = () => {
               .ap(partial(buildMapToSave, map, mapFileContent))
               .ap(writeToFile)
               .ap(tap(() => {
-                // TODO отправить уведомление
-                console.log('saved!');
+                set(notificationMessage, 'value', ['Успешно сохранено', NOTIFY_SUCCESS]);
               }));
           }));
       }));
