@@ -1,7 +1,7 @@
 import {
   computed, ref, reactive, watch,
 } from 'vue';
-import { AnyFn } from '@vueuse/core';
+import { AnyFn, FileSystemFileHandle } from '@vueuse/core';
 import { GetMapsResponse } from '@/entities/GetMapsResponse';
 import { documentNormalize } from '@/utils/server';
 

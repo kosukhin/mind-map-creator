@@ -1,17 +1,11 @@
-import { useRequestSaveMap } from '@/composables/useRequestSaveMap';
-import { useRouter } from '@/composables/useRouter';
 import { isNullish } from '@/utils/isNullish';
 import { mapUrlToName } from '@/utils/mapUrlToName';
-import { partial } from 'lodash';
 import { unref } from 'vue';
 import { tryToGetMapByName } from '@/domains/application/tryToGetMapByName';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
 import { Applicative } from '@/domains/branching/Applicative';
 import { tap } from '@/domains/branching/tap';
 import { MapStructure } from '@/entities/Map';
-
-const { saveMap } = useRequestSaveMap();
-const { push } = useRouter();
 
 const transferMap = async (mapUrl: string, payload: any) => {
   const mapName = mapUrlToName(mapUrl);
@@ -25,7 +19,7 @@ const transferMap = async (mapUrl: string, payload: any) => {
         map.types[payload.type.id] = payload.type;
       });
 
-      saveMap(map, mapName).then(partial(push, mapUrl));
+      // saveMap(map, mapName).then(partial(push, mapUrl));
     }));
 };
 
