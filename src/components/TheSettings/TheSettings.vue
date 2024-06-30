@@ -7,7 +7,6 @@ import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseCheckbox from '@/components/BaseCheckbox/BaseCheckbox.vue';
 import BaseInput from '@/components/BaseInput/BaseInput.vue';
 import { MapSettings } from '@/entities/Map';
-import { useRequestRemoveMap } from '@/composables/useRequestRemoveMap';
 import { useOverlay } from '@/composables/useOverlay';
 import { useKeybindings } from '@/composables/useKeybindings';
 import {
@@ -22,24 +21,21 @@ import { downloadFile } from '@/utils/dom';
 import { createMapFileNameFromUrl } from '@/utils/map';
 import { mapOpened } from '@/domains/data/mapOpened';
 import { mapParentTypes } from '@/domains/data/mapParentTypes';
-import { useMapFeatures } from '@/domains/composables/useMapFeatures';
+import { mapRemove } from '@/domains/applicationHigher/mapRemove';
 
 const { stringify } = JSON;
 
 const form = ref<Partial<MapSettings>>({});
 const map = mapOpened;
 const parentTypes = mapParentTypes;
-const { mapName } = useMapFeatures();
 
 const { close, overlayName, isOpened } = useOverlay();
 
 const i18n = useI18n();
-const { removeMap } = useRequestRemoveMap();
 const onRemove = async () => {
   // eslint-disable-next-line no-restricted-globals
   if (confirm(i18n.t('general.notifications.thisWillTotallyRemoveMap'))) {
-    await removeMap(mapName.value);
-    close();
+    mapRemove().then(close);
   }
 };
 

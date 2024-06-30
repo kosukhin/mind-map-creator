@@ -11,6 +11,8 @@ import { initApplication } from '@/domains/applicationHigher/initApplication';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
 import { mapFileHandler } from '@/domains/data/mapFileHandler';
 import { tap } from '@/domains/branching/tap';
+import { defaultValue } from '@/domains/application/defaultValue';
+import { createMap } from '@/utils/map';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
@@ -22,6 +24,11 @@ new Applicative()
   .ap(ensureNotNullish) // Убеждаемся что получилось открыть файл
   .ap(tap(partial(set, mapFileHandler, 'value'))) // Запоминаем хэндлер файла, чтобы потом управлять файлом
   .ap(readFileHandler) // Читаем содержимое файла
+  .ap(partial(
+    defaultValue,
+    `{"current":${JSON.stringify(createMap('current'))}}`,
+  )) // Если карту не нашли создаем новую
+  .ap(tap((value) => console.log('json', value)))
   .ap(jsonParse) // Парсим json файла
   .ap(partial(set, mapsAll, 'value')) // Запоминаем все карты файла
   .ap(initApplication); // Запускаем инициализацию приложения

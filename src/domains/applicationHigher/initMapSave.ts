@@ -13,6 +13,8 @@ import { partial, set } from 'lodash';
 import { readFileHandler } from '@/domains/browser/readFileHandler';
 import { notificationMessage } from '@/domains/data/notificationMessage';
 import { NOTIFY_SUCCESS } from '@/constants/system';
+import { defaultValue } from '@/domains/application/defaultValue';
+import { createMap } from '@/utils/map';
 
 export const initMapSave = () => {
   watch(mapOpened, () => {
@@ -20,6 +22,11 @@ export const initMapSave = () => {
     new Applicative(mapFileHandler.value)
       .ap(ensureNotNullish)
       .ap(readFileHandler)
+      .ap(tap((value) => console.log('handler', typeof value, value)))
+      .ap(partial(
+        defaultValue,
+        `{"current":${JSON.stringify(createMap('current'))}}`,
+      ))
       .ap(jsonParse)
       .ap(tap((mapFileContent) => {
         new Applicative(mapOpened.value)
