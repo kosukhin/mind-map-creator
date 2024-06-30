@@ -21,7 +21,7 @@ import { downloadFile } from '@/utils/dom';
 import { createMapFileNameFromUrl } from '@/utils/map';
 import { mapOpened } from '@/domains/data/mapOpened';
 import { mapParentTypes } from '@/domains/data/mapParentTypes';
-import { mapRemove } from '@/domains/applicationHigher/mapRemove';
+import { useMapActions } from '@/domains/composables/useMapActions';
 
 const { stringify } = JSON;
 
@@ -31,6 +31,7 @@ const parentTypes = mapParentTypes;
 
 const { close, overlayName, isOpened } = useOverlay();
 
+const { mapRemove } = useMapActions();
 const i18n = useI18n();
 const onRemove = async () => {
   // eslint-disable-next-line no-restricted-globals

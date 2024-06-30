@@ -7,17 +7,18 @@ import { jsonParse } from '@/domains/browser/jsonParse';
 import partial from 'lodash/partial';
 import { set } from 'lodash';
 import { mapsAll } from '@/domains/data/mapsAll';
-import { initApplication } from '@/domains/applicationHigher/initApplication';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
 import { mapFileHandler } from '@/domains/data/mapFileHandler';
 import { tap } from '@/domains/branching/tap';
 import { defaultValue } from '@/domains/application/defaultValue';
 import { createMap } from '@/utils/map';
+import { useAppInit } from '@/domains/composables/useAppInit';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 import '@/assets/styles.scss';
 
+const { init } = useAppInit();
 // Если файл открыт из файловой системы
 new Applicative()
   .ap(fileFromFS) // Пробуем открыть файл из ФС для PWA
@@ -31,7 +32,7 @@ new Applicative()
   .ap(tap((value) => console.log('json', value)))
   .ap(jsonParse) // Парсим json файла
   .ap(partial(set, mapsAll, 'value')) // Запоминаем все карты файла
-  .ap(initApplication); // Запускаем инициализацию приложения
+  .ap(init); // Запускаем инициализацию приложения
 
 // Если файл открыт по ссылке
 new Applicative('Открываем по ссылке')
