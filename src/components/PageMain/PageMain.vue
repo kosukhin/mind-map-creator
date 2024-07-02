@@ -1,13 +1,6 @@
 <script lang="ts" setup>
-import { idbGet } from '@/application/idbGet';
-import { windowReload } from '@/application/windowReload';
-import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import BaseInput from '@/components/BaseInput/BaseInput.vue';
-import { useIdbGetMap } from '@/composables/useIdbGetMap';
-import { useProject } from '@/composables/useProject';
-import { useRequestCreateMap } from '@/composables/useRequestCreateMap';
 import { useRequestSearch } from '@/composables/useRequestSearch';
-import { setFiles, topMaps } from '@/libraries/browser-fs';
+import { topMaps } from '@/libraries/browser-fs';
 import { urlTrim } from '@/utils/common';
 import { ref } from '@vue/reactivity';
 import { watch } from '@vue/runtime-core';
@@ -52,33 +45,6 @@ watch(
 const topMapsWithNames = ref<any>([]);
 const favorites = ref<any>({});
 const favoriteGroups = ref<string[]>([]);
-
-const newMapName = ref('');
-const { createMap } = useRequestCreateMap();
-const onCreateMap = async () => {
-  await createMap(newMapName.value);
-};
-
-const {
-  isProjectOpened, loadProjectFiles,
-} = useProject();
-[!isProjectOpened.value].filter(Boolean).forEach(loadProjectFiles);
-
-const onCloseProject = () => {
-  idbGet().delete().then(windowReload);
-};
-
-useIdbGetMap()
-  .getMaps()
-  .then((v: any) => {
-    const files = v.map((item: any) => {
-      const file = new File([item.content], item.name) as any;
-      file.persistent = true;
-      return file;
-    });
-
-    setFiles(files);
-  });
 </script>
 
 <template>
@@ -87,18 +53,6 @@ useIdbGetMap()
       <img src="/icon-192x192.png" width="100" height="100" alt="mmc" />
       Mind Map Creator
     </h2>
-    <div v-if="isProjectOpened" class="PageMain-ButtonGroup">
-      <BaseButton @click="onCloseProject"> Закрыть проект </BaseButton>
-    </div>
-    <div v-if="isProjectOpened" class="PageMain-NewMap">
-      <BaseInput
-        v-model="newMapName"
-        :placeholder="$t('general.specifyNewCardName')"
-      />
-      <BaseButton class="PageMain-Button" type="primary" @click="onCreateMap">
-        {{ $t('general.create') }}
-      </BaseButton>
-    </div>
     <template v-if="topMaps.length">
       <br />
       <div v-if="lastSearchDate" class="PageMain-Row">

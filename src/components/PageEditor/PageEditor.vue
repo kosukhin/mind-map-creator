@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import AppMenuObject from '@/components/AppMenuObject/AppMenuObject.vue';
+import AppPresets from '@/components/AppPresets/AppPresets.vue';
 import AppSearch from '@/components/AppSearch/AppSearch.vue';
+import AppSessionLog from '@/components/AppSessionLog/AppSessionLog.vue';
 import AppTypesParent from '@/components/AppTypesParent/AppTypesParent.vue';
+import BaseButton from '@/components/BaseButton/BaseButton.vue';
 import BaseDrawer from '@/components/BaseDrawer/BaseDrawer.vue';
+import BaseIcon from '@/components/BaseIcon/BaseIcon.vue';
 import BaseModal from '@/components/BaseModal/BaseModal.vue';
 import BaseNotify from '@/components/BaseNotify/BaseNotify.vue';
+import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
+import FastPreviewObject from '@/components/FastPreviewObject/FastPreviewObject.vue';
 import FormJson from '@/components/FormJson/FormJson.vue';
 import FormObject from '@/components/FormObject/FormObject.vue';
 import FormType from '@/components/FormType/FormType.vue';
@@ -17,11 +23,11 @@ import TheMiniMap from '@/components/TheMiniMap/TheMiniMap.vue';
 import TheObjectTransfer from '@/components/TheObjectTransfer/TheObjectTransfer.vue';
 import TheSettings from '@/components/TheSettings/TheSettings.vue';
 import TheSideBar from '@/components/TheSideBar/TheSideBar.vue';
-import { useMoveToObject } from '@/composables/useMoveToObject';
 import { useHashChange } from '@/composables/useHashChange';
 import { useKeybindings } from '@/composables/useKeybindings';
-import { useLocks } from '@/composables/useLocks';
+import { useMapHistory } from '@/composables/useMapHistory';
 import { useMeta } from '@/composables/useMeta';
+import { useMoveToObject } from '@/composables/useMoveToObject';
 import { useOverlay } from '@/composables/useOverlay';
 import { useSideBar } from '@/composables/useSideBar';
 import {
@@ -34,16 +40,8 @@ import {
   SHOW_SESSION_LOG,
   SHOW_SETTINGS,
 } from '@/constants/overlays';
-import { getLocation } from '@/utils/globals';
 import { watch } from '@vue/runtime-core';
-import FastPreviewObject from '@/components/FastPreviewObject/FastPreviewObject.vue';
-import AppPresets from '@/components/AppPresets/AppPresets.vue';
-import AppSessionLog from '@/components/AppSessionLog/AppSessionLog.vue';
-import BaseTextTitle from '@/components/BaseText/BaseTextTitle.vue';
-import { useMapHistory } from '@/composables/useMapHistory';
 import { computed } from 'vue';
-import BaseButton from '@/components/BaseButton/BaseButton.vue';
-import BaseIcon from '@/components/BaseIcon/BaseIcon.vue';
 
 useMeta();
 
@@ -66,12 +64,6 @@ watch(ctrlMFired, () => {
 watch(ctrlHFired, () => {
   overlayName.value = SHOW_HISTORY_MAPS;
 });
-
-const { isDragLocked } = useLocks();
-const handleLock = () => {
-  isDragLocked.value = !isDragLocked.value;
-  setTimeout(() => getLocation().reload());
-};
 
 const version = '0.1';
 const { isSidebarOpen } = useSideBar();
