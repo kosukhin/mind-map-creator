@@ -1,7 +1,7 @@
 import { layerWheelHandler } from '@/application/layerWheelHandler';
-import { useCanvasBoundaries } from '@/composables/useCanvasBoundaries';
 import { useLayer } from '@/composables/useLayer';
 import { useLayerEvents } from '@/composables/useLayerEvents';
+import { useCanvasBoundaries } from '@/domains/composables/useCanvasBoundaries';
 import { watch } from '@vue/runtime-core';
 import { createSharedComposable } from '@vueuse/core';
 

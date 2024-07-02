@@ -39,7 +39,6 @@ export const useAppInit = () => {
       new Applicative(mapFileHandler.value)
         .ap(ensureNotNullish)
         .ap(readFileHandler)
-        .ap(tap((value) => console.log('handler', typeof value, value)))
         .ap(partial(
           defaultValue,
           `{"current":${JSON.stringify(createMap('current'))}}`,
