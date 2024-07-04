@@ -10,7 +10,6 @@ import { MINI_MAP_UPDATE_FREQ } from '@/constants/system';
 
 export const useMiniMap = createSharedComposable(() => {
   const { layer, stage } = useLayer();
-  const { canvasSize } = useCanvas();
   const { dragmove, wheel } = useLayerEvents();
   const miniMap = ref<HTMLElement>();
   const miniMapScreen = ref<HTMLElement>();
@@ -21,7 +20,6 @@ export const useMiniMap = createSharedComposable(() => {
       && stage.value
       && miniMap
       && miniMapScreen.value
-      && canvasSize.value
     ) {
       const { calculateMiniScreen } = miniMapRedrawHandler([
         stage.value,
@@ -34,18 +32,18 @@ export const useMiniMap = createSharedComposable(() => {
   };
 
   const calculateMiniMapSize = () => {
-    if (canvasSize.value) {
-      const [miniMapSizes, miniMapScreenSizes] = miniMapCalculateSizes([
-        canvasSize.value,
-      ]);
+    // if (canvasSize.value) {
+    //   const [miniMapSizes, miniMapScreenSizes] = miniMapCalculateSizes([
+    //     canvasSize.value,
+    //   ]);
 
-      if (miniMap.value && miniMapScreen.value) {
-        miniMap.value.style.width = `${miniMapSizes.w}px`;
-        miniMap.value.style.height = `${miniMapSizes.h}px`;
-        miniMapScreen.value.style.width = `${miniMapScreenSizes.w}px`;
-        miniMapScreen.value.style.height = `${miniMapScreenSizes.h}px`;
-      }
-    }
+    //   if (miniMap.value && miniMapScreen.value) {
+    //     miniMap.value.style.width = `${miniMapSizes.w}px`;
+    //     miniMap.value.style.height = `${miniMapSizes.h}px`;
+    //     miniMapScreen.value.style.width = `${miniMapScreenSizes.w}px`;
+    //     miniMapScreen.value.style.height = `${miniMapScreenSizes.h}px`;
+    //   }
+    // }
   };
 
   // watchOnce(firstMapLoad, () => {

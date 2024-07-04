@@ -9,6 +9,7 @@ import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { watch } from 'vue';
 import { mapOpened } from '@/domains/data/mapOpened';
+import { canvasSize } from '@/domains/data/canvasSize';
 
 export const useMapRenderer = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
@@ -16,7 +17,6 @@ export const useMapRenderer = createSharedComposable(() => {
   const map = mapOpened;
   const { maybeDragLocked } = useLocks();
   const allInit = computed(() => !!layer.value && !!map.value);
-  const { canvasSize } = useCanvas();
 
   watch(
     [layer, map],

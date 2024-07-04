@@ -1,9 +1,8 @@
-import { Size } from '@/entities/Size';
-import { ref, watch } from 'vue';
-import { useSessionLog } from '@/composables/useSessionLog';
+import { ref, watch } from "vue";
+import { useSessionLog } from "@/composables/useSessionLog";
+import { canvasSize } from "@/domains/data/canvasSize";
 
 const canvas = ref<HTMLElement>();
-const canvasSize = ref<Size>();
 const { sessionLog } = useSessionLog();
 
 watch(canvas, () => {
@@ -11,7 +10,7 @@ watch(canvas, () => {
     w: canvas.value?.clientWidth ?? 0,
     h: canvas.value?.clientHeight ?? 0,
   };
-  sessionLog('[useCanvas.ts]', 'canvas watcher', JSON.stringify(canvasSize.value));
+  sessionLog("[useCanvas.ts]", "canvas watcher", JSON.stringify(canvasSize.value));
 });
 
 const module = {

@@ -13,10 +13,10 @@ import Konva from 'konva';
 import { debounce, throttle } from 'lodash';
 import { mapOpened } from '@/domains/data/mapOpened';
 import { useCanvasBoundaries } from '@/domains/composables/useCanvasBoundaries';
+import { canvasSize } from '@/domains/data/canvasSize';
 
 // FIXME выделить вотчеры вынуть их из функции
 export const useLayerListenerDrag = createSharedComposable(() => {
-  const { canvasSize } = useCanvas();
   const { isDragLocked } = useLocks();
   const { dragend, dragmove, wheel } = useLayerEvents();
   const { triggerPartialRendering } = useMapPartialRenderer();
