@@ -26,6 +26,12 @@ export const useLayerListenerDrag = createSharedComposable(() => {
   const { restrictBoundaries } = useCanvasBoundaries();
   const { stage, layer, layerObjects } = useLayer();
 
+  setTimeout(() => {
+    if (stage.value) {
+      stage.value.dragBoundFunc(restrictBoundaries);
+    }
+  }, 100);
+
   watch(dragend, () => {
     if (isDragLocked.value) return;
     if (dragend.value && map.value) {
@@ -41,9 +47,10 @@ export const useLayerListenerDrag = createSharedComposable(() => {
     if (isDragLocked.value) return;
 
     if (dragmove.value && map.value) {
-      const {
-        arrows, relatedArrows,
-      } = layerDragObjectHandler(layerObjects)([dragmove.value, map.value]);
+      const { arrows, relatedArrows } = layerDragObjectHandler(layerObjects)([
+        dragmove.value,
+        map.value,
+      ]);
 
       if (arrows) {
         applyArrowPoints(arrows);
@@ -54,10 +61,7 @@ export const useLayerListenerDrag = createSharedComposable(() => {
     }
 
     if (stage.value && dragmove.value && canvasSize.value) {
-      if (
-        dragmove.value.evt instanceof PointerEvent
-        || dragmove.value.evt instanceof TouchEvent
-      ) {
+      if (dragmove.value.evt instanceof PointerEvent || dragmove.value.evt instanceof TouchEvent) {
         return;
       }
       // Логика автопрокрутки
@@ -66,10 +70,7 @@ export const useLayerListenerDrag = createSharedComposable(() => {
         || dragmove.value.target instanceof Konva.Group
       ) {
         const { offsetX: ofx, offsetY: ofy } = dragmove.value.evt;
-        const mustMove = ofx < 50
-          || ofx > canvasSize.value.w - 50
-          || ofy < 50
-          || ofy > canvasSize.value.h - 50;
+        const mustMove = ofx < 50 || ofx > canvasSize.value.w - 50 || ofy < 50 || ofy > canvasSize.value.h - 50;
 
         if (!mustMove) {
           if (dragMoveInterval) {

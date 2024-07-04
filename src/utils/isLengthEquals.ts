@@ -1,1 +1,1 @@
-export  const isLengthEquals = (neededLength: number) => (arr: any[]) => arr.length === neededLength
+export const isLengthEquals = (neededLength: number) => (arr: any[]) => arr.length === neededLength;
