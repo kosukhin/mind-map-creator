@@ -1,17 +1,16 @@
-import { AnyFn, createSharedComposable } from '@vueuse/core';
+import { CANVAS_DOM_ID } from '@/constants/system';
+import { canvas } from '@/domains/data/canvas';
+import { MapLayerObjects } from '@/entities/MapLayerObjects';
+import { modelsPoolSet } from '@/modulesHigh/models/modelsPool';
+import { setValue } from '@/utils/common';
+import { findById } from '@/utils/dom';
 import { createLayer } from '@/utils/konva';
-import { shallowRef } from 'vue';
-import { useCanvas } from '@/composables/useCanvas';
+import { AnyFn, createSharedComposable } from '@vueuse/core';
 import { Layer } from 'konva/lib/Layer';
 import { Stage } from 'konva/lib/Stage';
-import { MapLayerObjects } from '@/entities/MapLayerObjects';
-import { findById } from '@/utils/dom';
-import { CANVAS_DOM_ID } from '@/constants/system';
-import { setValue } from '@/utils/common';
-import { modelsPoolSet } from '@/modulesHigh/models/modelsPool';
+import { shallowRef } from 'vue';
 
 export const useLayer = createSharedComposable(() => {
-  const { canvas } = useCanvas();
   const layer = shallowRef<Layer>();
   const stage = shallowRef<Stage>();
   modelsPoolSet('layer', layer);

@@ -49,3 +49,5 @@ export class Applicative {
     return this.theValue;
   }
 }
+
+export const applicative = (value: any) => new Applicative(value);

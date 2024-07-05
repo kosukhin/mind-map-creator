@@ -1,6 +1,6 @@
-import { canvas } from "@/domains/data/canvas";
-import { watch } from "vue";
-import { canvasSize } from "@/domains/data/canvasSize";
+import { canvas } from '@/domains/data/canvas';
+import { watch } from 'vue';
+import { canvasSize } from '@/domains/data/canvasSize';
 
 export const useCanvasInit = () => {
   watch(canvas, () => {

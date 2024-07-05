@@ -1,15 +1,14 @@
 import { canvasRestrictBoundaries } from '@/application/canvasRestrictBoundaries';
 import { renderMapObjects } from '@/application/renderMapObjects';
-import { useCanvas } from '@/composables/useCanvas';
-import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
 import { useLayer } from '@/composables/useLayer';
 import { useLocks } from '@/composables/useLocks';
+import { useMapPartialRenderer } from '@/composables/useMapPartialRenderer';
+import { canvasSize } from '@/domains/data/canvasSize';
+import { mapOpened } from '@/domains/data/mapOpened';
 import { computed } from '@vue/reactivity';
 import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
 import { watch } from 'vue';
-import { mapOpened } from '@/domains/data/mapOpened';
-import { canvasSize } from '@/domains/data/canvasSize';
 
 export const useMapRenderer = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
