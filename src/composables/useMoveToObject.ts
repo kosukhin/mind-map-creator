@@ -5,7 +5,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useMoveToObject = createSharedComposable(() => {
   const { stage } = useLayer();
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { triggerPartialRendering } = useMapPartialRenderer();
 
   const scrollToObject = (id: string) => {

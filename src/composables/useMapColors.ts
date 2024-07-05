@@ -5,7 +5,7 @@ import { createSharedComposable } from '@vueuse/core';
 import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useMapColors = createSharedComposable(() => {
-  const map = mapOpened;
+  const map = mapOpened.value();
   const colorsHash = computed<Dictionary<string>>(
     () => (map.value ? canvasCreateColorsHash(map.value) : {}),
   );

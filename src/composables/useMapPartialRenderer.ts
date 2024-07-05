@@ -6,7 +6,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useMapPartialRenderer = createSharedComposable(() => {
   const { layer, stage, layerObjects } = useLayer();
-  const sharedMap = mapOpened;
+  const sharedMap = mapOpened.value();
   const partialRenderCounter = ref(0);
 
   const triggerPartialRendering = () => {

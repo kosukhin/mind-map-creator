@@ -1,12 +1,14 @@
 import { canvas } from '@/domains/data/canvas';
-import { watch } from 'vue';
 import { canvasSize } from '@/domains/data/canvasSize';
+import { lazyWatch } from '@/domains/vue/lazyWatch';
+import { partial, set } from 'lodash';
+import { placeholder } from 'lodash/fp';
 
 export const useCanvasInit = () => {
-  watch(canvas.value(), () => {
-    canvasSize.value = {
-      w: canvas.value().value?.clientWidth ?? 0,
-      h: canvas.value().value?.clientHeight ?? 0,
-    };
-  });
+  canvas.ap(lazyWatch((canvasElement: HTMLElement) => {
+    canvasSize.ap(partial(set, placeholder, 'value', {
+      w: canvasElement.clientWidth ?? 0,
+      h: canvasElement.clientHeight ?? 0,
+    }));
+  }));
 };
