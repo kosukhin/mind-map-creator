@@ -1,3 +1,3 @@
-import { mapsAll } from '@/domains/data/mapsAll';
+import { MapFile } from '@/entities/Map';
 
-export const tryToGetMapByName = (name: string) => mapsAll.value[name] ?? null;
+export const tryToGetMapByName = (mapsAll: MapFile, name: string) => mapsAll[name] ?? null;

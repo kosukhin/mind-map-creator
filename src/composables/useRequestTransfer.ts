@@ -6,11 +6,13 @@ import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
 import { Applicative } from '@/domains/branching/Applicative';
 import { tap } from '@/domains/branching/tap';
 import { MapStructure } from '@/entities/Map';
+import { ap } from '@/domains/branching/ap';
+import { mapsAll } from '@/domains/data/mapsAll';
 
 const transferMap = async (mapUrl: string, payload: any) => {
   const mapName = mapUrlToName(mapUrl);
   new Applicative(mapName)
-    .ap(tryToGetMapByName)
+    .ap(ap(mapsAll, tryToGetMapByName))
     .ap(ensureNotNullish)
     .ap(tap((map: MapStructure) => {
       map.objects[Date.now()] = unref(payload.object);

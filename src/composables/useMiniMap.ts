@@ -1,12 +1,10 @@
-import { ref, watch } from 'vue';
+import { miniMapRedrawHandler } from '@/application/miniMapRedrawHandler';
+import { useLayer } from '@/composables/useLayer';
+import { useLayerEvents } from '@/composables/useLayerEvents';
+import { MINI_MAP_UPDATE_FREQ } from '@/constants/system';
 import { createSharedComposable } from '@vueuse/core';
 import debounce from 'lodash/debounce';
-import { useLayer } from '@/composables/useLayer';
-import { useCanvas } from '@/composables/useCanvas';
-import { useLayerEvents } from '@/composables/useLayerEvents';
-import { miniMapCalculateSizes } from '@/application/miniMapCalculateSizes';
-import { miniMapRedrawHandler } from '@/application/miniMapRedrawHandler';
-import { MINI_MAP_UPDATE_FREQ } from '@/constants/system';
+import { ref, watch } from 'vue';
 
 export const useMiniMap = createSharedComposable(() => {
   const { layer, stage } = useLayer();

@@ -20,7 +20,7 @@ export const useLayer = createSharedComposable(() => {
   const doCreateLayer = (afterCreatedCb: AnyFn) => {
     setTimeout(() => {
       const wrapper = findById(CANVAS_DOM_ID);
-      canvas.value = wrapper ?? undefined;
+      canvas.value().value = wrapper ?? undefined;
 
       if (wrapper) {
         const [newLayer, newStage] = createLayer(wrapper);

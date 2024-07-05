@@ -3,10 +3,10 @@ import { watch } from 'vue';
 import { canvasSize } from '@/domains/data/canvasSize';
 
 export const useCanvasInit = () => {
-  watch(canvas, () => {
+  watch(canvas.value(), () => {
     canvasSize.value = {
-      w: canvas.value?.clientWidth ?? 0,
-      h: canvas.value?.clientHeight ?? 0,
+      w: canvas.value().value?.clientWidth ?? 0,
+      h: canvas.value().value?.clientHeight ?? 0,
     };
   });
 };

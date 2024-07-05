@@ -4,6 +4,7 @@ import { buildMapToSave } from '@/domains/application/buildMapToSave';
 import { defaultValue } from '@/domains/application/defaultValue';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
 import { applicative } from '@/domains/branching/Applicative';
+import { ap } from '@/domains/branching/ap';
 import { tap } from '@/domains/branching/tap';
 import { currentUrl } from '@/domains/browser/currentUrl';
 import { jsonParse } from '@/domains/browser/jsonParse';
@@ -14,6 +15,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 import { mapParentTypes } from '@/domains/data/mapParentTypes';
 import { mapsAll } from '@/domains/data/mapsAll';
 import { notificationMessage } from '@/domains/data/notificationMessage';
+import { browserWindow } from '@/domains/io/browserWindow';
 import { openRoute } from '@/domains/vue/openRoute';
 import { MapStructure } from '@/entities/Map';
 import { createMap } from '@/utils/map';
@@ -24,13 +26,20 @@ import { watch } from 'vue';
 
 export const useAppInit = () => {
   const init = () => {
-    applicative(currentUrl())
+    browserWindow
+      .ap(currentUrl) // От браузера берем урл
+      .ap(tap(console.log.bind(console, 'curl')))
       .ap(mapUrlToName) // По урлу получаем имя карты
-      .ap(partial(get, mapsAll.value)) // По имени получаем объект карты
+      .ap(tap(console.log.bind(console, 'map name is')))
+      .ap(ap(mapsAll, get)) // По имени получаем объект карты
+      .ap(tap(console.log.bind(console, 'map object is')))
       .ap(tap(partial(set, mapOpened, 'value'))) // Сохраняем объект
       .ap( // Строим родительские типы
-        tap((map) => applicative((map))
-          .ap(buildMapParentTypes)
+        tap((map) => applicative(map)
+          .ap(tap((cmap: any) => {
+            console.log(cmap);
+          }))
+          .ap(ap(mapsAll, buildMapParentTypes))
           .ap(partial(set, mapParentTypes, 'value'))),
       )
       .ap(tap(partial(setTimeout, openRoute, 1, '/current'))); // Открываем карту

@@ -8,38 +8,51 @@ export class Applicative {
    * Внутренняя логика контейнера
    */
   private applyFn = (fn: (...args: any[]) => any, realValue: any) => {
-    if (realValue instanceof None && realValue.isEmpty()) {
-      return realValue;
+    // Значение - функция
+    if (typeof realValue === 'function') {
+      return fn(realValue());
     }
 
+    // Значение - апликатив
+    if (realValue instanceof Applicative) {
+      return new Promise((resolve, reject) => {
+        realValue.promise().then((promiseValue: any) => resolve(fn(promiseValue))).catch(reject);
+      });
+    }
+
+    // Значение - промис
+    if (realValue !== null && typeof realValue === 'object' && 'then' in realValue) {
+      return new Promise((resolve, reject) => {
+        realValue.then((promiseValue: any) => resolve(fn(promiseValue))).catch(reject);
+      });
+    }
+
+    // Значение - Left объект
     if (realValue instanceof Left) {
       return Promise.reject(realValue.message());
     }
 
-    return fn();
+    // Значение - None объект
+    if (realValue instanceof None && realValue.isEmpty()) {
+      return realValue;
+    }
+
+    // Значение - обычное без специального поведения
+    return fn(this.value());
   }
 
   /**
    * Применить функцию fn к значению внутри контейнера
    */
   ap(fn: (...args: any[]) => any) {
-    if (this.theValue !== null && typeof this.theValue === 'object' && 'then' in this.theValue) {
-      return new Applicative(new Promise((resolve, reject) => {
-        this.theValue.then((realValue: any) => resolve(
-          this.applyFn(() => fn(realValue), realValue),
-        )).catch(reject);
-      }));
-    }
-
-    return new Applicative(this.applyFn(() => fn(this.theValue), this.theValue));
+    return new Applicative(this.applyFn((theValue: any) => fn(theValue), this.value()));
   }
 
   /**
    * Асинхронное значение, на случай асинхронной логики
    */
   promise() {
-    const result = this.applyFn(() => this.theValue, this.theValue);
-    return Promise.resolve(result);
+    return Promise.resolve(this.applyFn(() => this.value(), this.value()));
   }
 
   /**

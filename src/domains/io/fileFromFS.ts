@@ -1,3 +1,5 @@
+import { applicative } from '@/domains/branching/Applicative';
+
 declare global {
   interface Window {
     launchQueue: {
@@ -6,7 +8,7 @@ declare global {
   }
 }
 
-export const fileFromFS = () => {
+export const fileFromFS = applicative(() => {
   if ('launchQueue' in window) {
     return new Promise((resolve) => {
       window.launchQueue.setConsumer((launchParams: any) => {
@@ -21,4 +23,4 @@ export const fileFromFS = () => {
   }
 
   return null;
-};
+});
