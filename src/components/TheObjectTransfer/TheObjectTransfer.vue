@@ -17,7 +17,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 useOverlayAutoClose(SHOW_TRANSFER);
 const { currentObject } = useMapObject();
-const map = mapOpened;
+const map = mapOpened.value();
 const linkedObjects = ref<any>([]);
 
 const getObjectLink = (object: MapObject) => {

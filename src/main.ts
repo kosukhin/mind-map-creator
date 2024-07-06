@@ -24,7 +24,7 @@ const { init } = useAppInit();
 
 fileFromFS
   .ap(ensureNotNullish)
-  .ap(tap(partial(set, mapFileHandler, 'value')))
+  .ap(tap(partial(set, mapFileHandler.value(), 'value')))
   .ap(readFileHandler)
   .ap(partial(
     defaultValue,

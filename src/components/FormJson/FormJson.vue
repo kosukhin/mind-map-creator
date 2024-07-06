@@ -15,7 +15,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 const { stringify } = JSON;
 
 const form = ref('');
-const map = mapOpened;
+const map = mapOpened.value();
 
 watch(
   map,

@@ -20,12 +20,12 @@ export const useMapRenderer = createSharedComposable(() => {
   watch(
     [layer, map],
     debounce(() => {
-      if (stage.value && map.value?.position && canvasSize.value) {
+      if (stage.value && map.value?.position && canvasSize.value().value) {
         const [x, y] = map.value.position;
-        const halfWidth = canvasSize.value.w / 2;
-        const halfHeight = canvasSize.value.h / 2;
+        const halfWidth = canvasSize.value().value.w / 2;
+        const halfHeight = canvasSize.value().value.h / 2;
         const savedPos = { x: -x + halfWidth, y: -y + halfHeight };
-        const pos = canvasRestrictBoundaries(savedPos)(canvasSize.value);
+        const pos = canvasRestrictBoundaries(savedPos)(canvasSize.value().value);
         stage.value.position(pos);
       }
 

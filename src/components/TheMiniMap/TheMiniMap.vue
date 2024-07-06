@@ -4,7 +4,7 @@ import { MINIMAP_SCALE } from '@/constants/system';
 import { mapOpened } from '@/domains/data/mapOpened';
 
 const { miniMap, miniMapScreen } = useMiniMap();
-const map = mapOpened;
+const map = mapOpened.value();
 
 const scaledPos = (pos: number) => `${(pos * MINIMAP_SCALE).toFixed(2)}px`;
 </script>

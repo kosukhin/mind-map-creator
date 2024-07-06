@@ -8,7 +8,7 @@ import { MapType } from '@/entities/Map';
 import { partial } from 'lodash';
 
 export const useMapActions = () => {
-  const mapRemove = () => applicative(mapFileHandler.value)
+  const mapRemove = () => applicative(mapFileHandler.value().value)
     .ap(ensureNotNullish)
     .ap((fileHandle: any) => fileHandle.remove())
     .ap(partial(openRoute, '/'))

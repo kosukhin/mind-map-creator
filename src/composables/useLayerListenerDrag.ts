@@ -59,7 +59,7 @@ export const useLayerListenerDrag = createSharedComposable(() => {
       }
     }
 
-    if (stage.value && dragmove.value && canvasSize.value) {
+    if (stage.value && dragmove.value && canvasSize.value().value) {
       if (dragmove.value.evt instanceof PointerEvent || dragmove.value.evt instanceof TouchEvent) {
         return;
       }
@@ -69,7 +69,7 @@ export const useLayerListenerDrag = createSharedComposable(() => {
         || dragmove.value.target instanceof Konva.Group
       ) {
         const { offsetX: ofx, offsetY: ofy } = dragmove.value.evt;
-        const mustMove = ofx < 50 || ofx > canvasSize.value.w - 50 || ofy < 50 || ofy > canvasSize.value.h - 50;
+        const mustMove = ofx < 50 || ofx > canvasSize.value().value.w - 50 || ofy < 50 || ofy > canvasSize.value().value.h - 50;
 
         if (!mustMove) {
           if (dragMoveInterval) {
@@ -78,8 +78,8 @@ export const useLayerListenerDrag = createSharedComposable(() => {
           return;
         }
 
-        const offsetX = (Math.round(canvasSize.value.w / 2) - dragmove.value.evt.offsetX) / 10;
-        const offsetY = (Math.round(canvasSize.value.h / 2) - dragmove.value.evt.offsetY) / 10;
+        const offsetX = (Math.round(canvasSize.value().value.w / 2) - dragmove.value.evt.offsetX) / 10;
+        const offsetY = (Math.round(canvasSize.value().value.h / 2) - dragmove.value.evt.offsetY) / 10;
 
         if (dragMoveInterval) {
           clearInterval(dragMoveInterval);

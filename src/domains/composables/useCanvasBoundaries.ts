@@ -8,7 +8,7 @@ import { partial } from 'lodash';
 
 export const useCanvasBoundaries = () => ({
   restrictBoundaries(pos: Vector2d) {
-    return applicative(canvasSize.value)
+    return applicative(canvasSize.value().value)
       .ap(partial(defaultValue, DEFAULT_BOUNDARIES))
       .ap(canvasRestrictBoundaries(pos))
       .value();

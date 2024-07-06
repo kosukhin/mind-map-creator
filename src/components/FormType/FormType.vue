@@ -18,7 +18,7 @@ const { stringify } = JSON;
 
 const form = ref<any>({});
 const { currentTypeId, currentType } = useMapType();
-const map = mapOpened;
+const map = mapOpened.value();
 
 watch(
   currentType,

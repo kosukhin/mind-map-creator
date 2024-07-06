@@ -10,7 +10,7 @@ import { mapParentTypes } from '@/domains/data/mapParentTypes';
 
 useOverlayAutoClose(SHOW_PARENT_TYPES);
 
-const map = mapOpened;
+const map = mapOpened.value();
 const parentTypes = mapParentTypes;
 const addType = (type: MapType) => {
   if (map.value) {

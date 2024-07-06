@@ -45,8 +45,8 @@ export const useAppInit = () => {
       .ap(tap(partial(setTimeout, openRoute, 1, '/current'))); // Открываем карту
 
     watch(mapOpened, () => {
-      const writeToFile = partial(writeToFileHandler, mapFileHandler.value as FileSystemFileHandle);
-      applicative(mapFileHandler.value)
+      const writeToFile = partial(writeToFileHandler, mapFileHandler.value().value as FileSystemFileHandle);
+      applicative(mapFileHandler.value().value)
         .ap(ensureNotNullish)
         .ap(readFileHandler) // Читаем содержимое файла
         .ap(partial( // Если контент карты пуст - создаем из заготовки

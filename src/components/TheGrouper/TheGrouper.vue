@@ -18,7 +18,7 @@ const i18n = useI18n();
 const title = ref(i18n.t('general.group'));
 const type = ref('standard');
 const isGrouping = computed(() => type.value === 'danger');
-const map = mapOpened;
+const map = mapOpened.value();
 const { currentObjectId, fastPreviewIsLocked } = useMapObject();
 let stopNextObjectWatcher: AnyFn | null = null;
 const { isClickLocked } = useLocks();

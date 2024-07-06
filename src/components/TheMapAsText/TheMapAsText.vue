@@ -12,7 +12,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 useOverlayAutoClose(SHOW_TEXT);
 
-const map = mapOpened;
+const map = mapOpened.value();
 const mapAsString = computed(() => (
   (map.value
       && Object.values(map.value.objects)

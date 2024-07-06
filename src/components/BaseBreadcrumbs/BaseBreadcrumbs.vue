@@ -2,7 +2,7 @@
 import uniqueId from 'lodash/uniqueId';
 import { mapOpened } from '@/domains/data/mapOpened';
 
-const map = mapOpened;
+const map = mapOpened.value();
 </script>
 
 <template>

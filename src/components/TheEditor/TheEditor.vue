@@ -32,7 +32,7 @@ onMounted(() => {
 });
 
 const objectsRendered = ref<any>([]);
-const map = mapOpened;
+const map = mapOpened.value();
 const { dragmove, dragend, wheel } = useLayerEvents();
 
 const recalcObjectsRendered = () => {

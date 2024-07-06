@@ -29,7 +29,7 @@ import BaseEditor from '@/components/BaseEditor/BaseEditor.vue';
 import { mapOpened } from '@/domains/data/mapOpened';
 import { notificationMessage } from '@/domains/data/notificationMessage';
 
-const map = mapOpened;
+const map = mapOpened.value();
 const mapTypes = computed(() => {
   const result: { id: string; name: string }[] = [];
 

@@ -14,7 +14,7 @@ import { useObjectLinker } from '@/composables/useObjectLinker';
 import { gridFitSize } from '@/utils/gridFitSize';
 import { mapOpened } from '@/domains/data/mapOpened';
 
-const map = mapOpened;
+const map = mapOpened.value();
 const { fastPreviewObjectId, currentObjectId, clone } = useMapObject();
 const { layerObjects, layer } = useLayer();
 
