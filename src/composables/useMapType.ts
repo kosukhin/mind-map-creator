@@ -7,7 +7,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 type StrNum = string | number
 
 export const useMapType = createSharedComposable(() => {
-  const map = mapOpened;
+  const map = mapOpened.value();
   const currentTypeId = ref<StrNum>();
   const currentType = ref<MapType>();
   watch(currentTypeId, () => {

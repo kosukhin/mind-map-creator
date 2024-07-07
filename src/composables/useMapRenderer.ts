@@ -13,7 +13,7 @@ import { watch } from 'vue';
 export const useMapRenderer = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
   const { layer, stage, layerObjects } = useLayer();
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { maybeDragLocked } = useLocks();
   const allInit = computed(() => !!layer.value && !!map.value);
 

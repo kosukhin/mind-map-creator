@@ -10,7 +10,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useObjectLinker = createSharedComposable((defaultTitle?: string) => {
   const { layer, layerObjects } = useLayer();
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { currentObjectId, fastPreviewIsLocked } = useMapObject();
   const { isClickLocked } = useLocks();
   const i18n = useI18n();

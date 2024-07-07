@@ -12,7 +12,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 
 export const useLayerListenerClick = createSharedComposable(() => {
   const { click, tap, stageClick } = useLayerEvents();
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { isSidebarOpen } = useSideBar();
   const { currentObjectId, fastPreviewObjectId, fastPreviewIsLocked } = useMapObject();
   const { overlayName } = useOverlay();

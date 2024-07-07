@@ -14,7 +14,7 @@ export const useMapActions = () => {
     .ap(partial(openRoute, '/'))
     .promise();
 
-  const addType = (type: MapType) => applicative(mapOpened.value)
+  const addType = (type: MapType) => mapOpened
     .ap(ensureNotNullish)
     .ap(partial(mapAddType, type));
 

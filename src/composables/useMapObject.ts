@@ -15,7 +15,7 @@ export const useMapObject = createSharedComposable(() => {
   const fastPreviewObjectId = ref<number>();
   const currentObjectId = ref<number>();
   const currentObject = ref<MapObject>();
-  const map = mapOpened;
+  const map = mapOpened.value();
 
   watch([currentObjectId, map], () => {
     vueWithList([currentObjectId, map])

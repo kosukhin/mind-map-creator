@@ -21,7 +21,7 @@ export const useLayerListenerDrag = createSharedComposable(() => {
   const { triggerPartialRendering } = useMapPartialRenderer();
   let dragMoveInterval: any = null;
 
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { restrictBoundaries } = useCanvasBoundaries();
   const { stage, layer, layerObjects } = useLayer();
 

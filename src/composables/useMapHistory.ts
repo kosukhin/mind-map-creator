@@ -4,7 +4,7 @@ import { mapOpened } from '@/domains/data/mapOpened';
 export const useMapHistory = createSharedComposable(() => {
   const {
     history, commit, canUndo, canRedo, undo, redo,
-  } = useRefHistory(mapOpened, {
+  } = useRefHistory(mapOpened.value(), {
     capacity: 10,
     clone: structuredClone,
     deep: true,

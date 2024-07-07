@@ -3,8 +3,9 @@ import { buildMapParentTypes } from '@/domains/application/buildMapParentTypes';
 import { buildMapToSave } from '@/domains/application/buildMapToSave';
 import { defaultValue } from '@/domains/application/defaultValue';
 import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
+import { valuePath } from '@/domains/application/valuePath';
 import { applicative } from '@/domains/branching/Applicative';
-import { ap } from '@/domains/branching/ap';
+import { ap, apToEnd } from '@/domains/branching/ap';
 import { tap } from '@/domains/branching/tap';
 import { currentUrl } from '@/domains/browser/currentUrl';
 import { jsonParse } from '@/domains/browser/jsonParse';
@@ -16,25 +17,23 @@ import { mapParentTypes } from '@/domains/data/mapParentTypes';
 import { mapsAll } from '@/domains/data/mapsAll';
 import { notificationMessage } from '@/domains/data/notificationMessage';
 import { browserWindow } from '@/domains/io/browserWindow';
+import { lazyWatch } from '@/domains/vue/lazyWatch';
 import { openRoute } from '@/domains/vue/openRoute';
 import { MapStructure } from '@/entities/Map';
 import { createMap } from '@/utils/map';
 import { mapUrlToName } from '@/utils/mapUrlToName';
 import { get, set } from 'lodash';
 import partial from 'lodash/partial';
-import { watch } from 'vue';
 
 export const useAppInit = () => {
   const init = () => {
     browserWindow
-      .ap(currentUrl) // От браузера берем урл
-      .ap(tap(console.log.bind(console, 'curl')))
-      .ap(mapUrlToName) // По урлу получаем имя карты
-      .ap(tap(console.log.bind(console, 'map name is')))
-      .ap(ap(mapsAll, get)) // По имени получаем объект карты
-      .ap(tap(console.log.bind(console, 'map object is')))
-      .ap(tap(partial(set, mapOpened, 'value'))) // Сохраняем объект
-      .ap( // Строим родительские типы
+      .ap(currentUrl)
+      .ap(mapUrlToName)
+      .ap(valuePath)
+      .ap(ap(mapsAll, get))
+      .ap(tap(apToEnd(mapOpened, set, 'value')))
+      .ap(
         tap((map) => applicative(map)
           .ap(tap((cmap: any) => {
             console.log(cmap);
@@ -42,11 +41,11 @@ export const useAppInit = () => {
           .ap(ap(mapsAll, buildMapParentTypes))
           .ap(partial(set, mapParentTypes, 'value'))),
       )
-      .ap(tap(partial(setTimeout, openRoute, 1, '/current'))); // Открываем карту
+      .ap(tap(partial(setTimeout, openRoute, 1, '/current')));
 
-    watch(mapOpened, () => {
+    mapOpened.ap(lazyWatch(() => {
       const writeToFile = partial(writeToFileHandler, mapFileHandler.value().value as FileSystemFileHandle);
-      applicative(mapFileHandler.value().value)
+      applicative(mapFileHandler.value)
         .ap(ensureNotNullish)
         .ap(readFileHandler) // Читаем содержимое файла
         .ap(partial( // Если контент карты пуст - создаем из заготовки
@@ -67,7 +66,7 @@ export const useAppInit = () => {
                 }));
             }));
         }));
-    }, { deep: true });
+    }, { deep: true }));
   };
 
   return {

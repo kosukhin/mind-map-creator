@@ -38,7 +38,7 @@ export class Applicative {
     }
 
     // Значение - обычное без специального поведения
-    return fn(this.value());
+    return fn(this.theValue);
   }
 
   /**
@@ -52,14 +52,14 @@ export class Applicative {
    * Асинхронное значение, на случай асинхронной логики
    */
   promise() {
-    return Promise.resolve(this.applyFn(() => this.value(), this.value()));
+    return Promise.resolve(this.value());
   }
 
   /**
    * Синхронное значение на случай синхронной композиции
    */
   value() {
-    return this.theValue;
+    return this.applyFn((theValue) => theValue, this.theValue);
   }
 }
 

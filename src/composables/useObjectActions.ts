@@ -10,7 +10,7 @@ import { useLayer } from '@/composables/useLayer';
 export const useObjectActions = createSharedComposable((needConfirm = true) => {
   const i18n = useI18n();
   const { layer, layerObjects } = useLayer();
-  const map = mapOpened;
+  const map = mapOpened.value();
   const { currentObject } = useMapObject();
   const { close } = useOverlay();
 

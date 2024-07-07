@@ -1,24 +1,23 @@
-import i18n from '@/plugins/i18n';
-import { createApp } from 'vue';
-import { Applicative } from '@/domains/branching/Applicative';
-import { fileFromFS } from '@/domains/io/fileFromFS';
-import { readFileHandler } from '@/domains/browser/readFileHandler';
-import { jsonParse } from '@/domains/browser/jsonParse';
-import partial from 'lodash/partial';
-import { set } from 'lodash';
-import { mapsAll } from '@/domains/data/mapsAll';
-import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
-import { mapFileHandler } from '@/domains/data/mapFileHandler';
-import { tap } from '@/domains/branching/tap';
+import '@/assets/styles.scss';
 import { defaultValue } from '@/domains/application/defaultValue';
-import { createMap } from '@/utils/map';
-import { useAppInit } from '@/domains/composables/useAppInit';
+import { ensureNotNullish } from '@/domains/application/ensureNotNullish';
+import { applicative } from '@/domains/branching/Applicative';
 import { apToEnd } from '@/domains/branching/ap';
-import { debug } from '@/domains/system/debug';
+import { tap } from '@/domains/branching/tap';
+import { jsonParse } from '@/domains/browser/jsonParse';
+import { readFileHandler } from '@/domains/browser/readFileHandler';
+import { useAppInit } from '@/domains/composables/useAppInit';
+import { mapFileHandler } from '@/domains/data/mapFileHandler';
+import { mapsAll } from '@/domains/data/mapsAll';
+import { fileFromFS } from '@/domains/io/fileFromFS';
+import i18n from '@/plugins/i18n';
+import { createMap } from '@/utils/map';
+import { set } from 'lodash';
+import partial from 'lodash/partial';
+import { createApp } from 'vue';
 import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
-import '@/assets/styles.scss';
 
 const { init } = useAppInit();
 
@@ -30,14 +29,12 @@ fileFromFS
     defaultValue,
     `{"current":${JSON.stringify(createMap('current'))}}`,
   ))
-  .ap(debug('json as string is'))
   .ap(jsonParse)
   .ap(apToEnd(mapsAll, set, 'value'))
-  .ap(debug('all maps is'))
   .ap(init);
 
 // Если файл открыт по ссылке
-new Applicative('Открываем по ссылке')
+applicative('Открываем по ссылке')
   .ap(console.log);
 
 createApp(App)
