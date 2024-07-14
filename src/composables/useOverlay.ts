@@ -5,10 +5,11 @@ import { computed, ref } from '@vue/reactivity';
 import { watch } from '@vue/runtime-core';
 import { AnyFn, createSharedComposable } from '@vueuse/core';
 import { modelsPoolSet } from '@/modulesHigh/models/modelsPool';
+import { overlayName as outerOverlayName, overlayNameToClose } from '@/domains/data/overlay';
 
 export const useOverlay = createSharedComposable(() => {
-  const overlayName = ref<string>();
-  const tryToClose = ref<string>();
+  const overlayName = outerOverlayName.value();
+  const tryToClose = overlayNameToClose.value();
   modelsPoolSet('overlayName', overlayName);
   modelsPoolSet('overlayNameToClose', tryToClose);
   const history = ref<string[]>([]);
